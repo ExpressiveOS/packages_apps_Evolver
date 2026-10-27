@@ -4,9 +4,6 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Evolver -->
-    <string name="evolver_dashboard_title">Evolução</string>
-    <string name="evolver_dashboard_summary">Evolua seu dispositivo, do seu jeito</string>
     <!-- Categories -->
     <string name="themes_title">Temas</string>
     <string name="themes_summary">Tema, fontes, ícones, animações</string>

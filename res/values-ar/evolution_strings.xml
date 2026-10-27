@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="evolver_dashboard_title">Evolver</string>
-    <string name="evolver_dashboard_summary">طوّر جهازك بطريقتك</string>
     <string name="themes_title">السمات</string>
     <string name="themes_summary">محرك Monet والخطوط والأيقونات والحركات</string>
     <string name="lock_screen_title">شاشة القفل</string>

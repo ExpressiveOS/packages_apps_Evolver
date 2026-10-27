@@ -4,9 +4,6 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Evolver -->
-    <string name="evolver_dashboard_title">Evolver</string>
-    <string name="evolver_dashboard_summary">나만의 방식으로 기기를 발전시키세요</string>
     <!-- Categories -->
     <string name="themes_title">테마</string>
     <string name="themes_summary">모네 엔진, 폰트, 아이콘, 애니메이션</string>

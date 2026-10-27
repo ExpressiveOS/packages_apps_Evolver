@@ -5,8 +5,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Evolver -->
-    <string name="evolver_dashboard_title">The Evolver</string>
-    <string name="evolver_dashboard_summary">Evolving your device, your way</string>
+    <string name="evolver_dashboard_title">Expressive Studio</string>
+    <string name="evolver_dashboard_summary">Make your device yours</string>
 
     <!-- Categories -->
     <string name="themes_title">Themes</string>
