@@ -474,7 +474,7 @@ Beállítás:
     <string name="status_bar_logo_position_right">Jobbra</string>
     <string name="status_bar_logo_style_title">A logó stílusa</string>
     <string name="status_bar_logo_style_summary">Megjelenítendő egyéni logó kiválasztása</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Földönkívüli</string>
@@ -1077,7 +1077,6 @@ Beállítás:
     <string name="ts_verification_cert_count">%1$d cert (teljes) módban</string>
     <string name="ts_verification_leaf_count">%1$d leaf (külső héj) módban</string>
     <string name="ts_fetch_keybox">A hivatalos keybox lekérése</string>
-    <string name="ts_fetch_keybox_summary">Keybox letöltése az Evolution X szerverről</string>
     <string name="ts_fetch_keybox_fetching">Keybox lekérése…</string>
     <string name="ts_fetch_keybox_success">A hivatalos keybox sikeresen lekérve</string>
     <string name="ts_fetch_keybox_failed">A lekérés meghiúsult: %s</string>
@@ -1093,7 +1092,7 @@ Beállítás:
     <string name="ts_expiring_soon_message">Ennek a keyboxnak a tanusítványa %1$s -n elévül. Jelenleg még megfelel az egységes előírásoknak, de a lejárati idő után nem fog működni. Lecseréli most a hivatalos keybox-ra?</string>
     <string name="ts_expiry_unknown">ismeretlen lejárat</string>
     <string name="ts_untrusted_root_title">Beazonosíthatatlan keybox forrás</string>
-    <string name="ts_untrusted_root_message">Ennek a keybox-nak a tanúsítványlánca egy olyan engedélyben található, amelyet az Evolution X nem ismer fel. Néhány eszközön továbbra is átmehet az erős integritási teszten. Megtartja ezt, vagy lecseréli egy hivatalos keybox-ra?</string>
+    <string name="ts_untrusted_root_message">Ennek a keybox-nak a tanúsítványlánca egy olyan engedélyben található, amelyet az ExpressiveOS nem ismer fel. Néhány eszközön továbbra is átmehet az erős integritási teszten. Megtartja ezt, vagy lecseréli egy hivatalos keybox-ra?</string>
     <string name="ts_untrusted_root_keep">Megtartás</string>
     <string name="ts_untrusted_root_replace">Lecserélés</string>
     <!-- Revocation status -->

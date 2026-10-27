@@ -468,7 +468,7 @@
     <string name="status_bar_logo_position_right">Kanan</string>
     <string name="status_bar_logo_style_title">Gaya logo</string>
     <string name="status_bar_logo_style_summary">Pilih logo khusus yang ingin ditampilkan</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alien</string>
@@ -1055,7 +1055,6 @@
     <string name="ts_verification_cert_count">%1$d sertifikat</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_fetch_keybox">Ambil keybox terbaru</string>
-    <string name="ts_fetch_keybox_summary">Unduh keybox dari server Evolution X</string>
     <string name="ts_fetch_keybox_fetching">Mengambil keybox…</string>
     <string name="ts_fetch_keybox_success">Keybox terbaru berhasil diambil</string>
     <string name="ts_fetch_keybox_failed">Pengambilan data gagal: %s</string>
@@ -1071,7 +1070,7 @@
     <string name="ts_expiring_soon_message">Sertifikat keybox ini akan kedaluwarsa pada %1$s. Saat ini sertifikat tersebut lolos uji integritas, tetapi akan berhenti berfungsi setelah kedaluwarsa. Ganti sekarang dengan keybox terbaru?</string>
     <string name="ts_expiry_unknown">tanggal kedaluwarsa tidak diketahui</string>
     <string name="ts_untrusted_root_title">Root keybox tidak dikenali</string>
-    <string name="ts_untrusted_root_message">Keybox ini memiliki rantai sertifikat yang ber-root pada otoritas yang tidak diakui oleh Evolution X. Namun, keybox ini mungkin masih lolos uji integritas kuat pada beberapa perangkat. Apakah sebaiknya tetap terpasang atau diganti dengan keybox terbaru?</string>
+    <string name="ts_untrusted_root_message">Keybox ini memiliki rantai sertifikat yang ber-root pada otoritas yang tidak diakui oleh ExpressiveOS. Namun, keybox ini mungkin masih lolos uji integritas kuat pada beberapa perangkat. Apakah sebaiknya tetap terpasang atau diganti dengan keybox terbaru?</string>
     <string name="ts_untrusted_root_keep">Tetap</string>
     <string name="ts_untrusted_root_replace">Ganti</string>
     <!-- Revocation status -->

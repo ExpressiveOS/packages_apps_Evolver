@@ -507,7 +507,7 @@
     <string name="status_bar_logo_position_right">Right</string>
     <string name="status_bar_logo_style_title">Logo style</string>
     <string name="status_bar_logo_style_summary">Select a custom logo to display</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alien</string>
@@ -1117,7 +1117,7 @@
     <string name="ts_verification_cert_count">%1$d cert</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_fetch_keybox">Fetch latest keybox</string>
-    <string name="ts_fetch_keybox_summary">Download keybox from Evolution X servers</string>
+    <string name="ts_fetch_keybox_summary">Download the latest shared keybox</string>
     <string name="ts_fetch_keybox_fetching">Fetching keybox…</string>
     <string name="ts_fetch_keybox_success">Latest keybox fetched successfully</string>
     <string name="ts_fetch_keybox_failed">Fetch failed: %s</string>
@@ -1134,7 +1134,7 @@
     <string name="ts_expiring_soon_message">This keybox\'s certificate expires on %1$s. It currently passes integrity but will stop working after expiry. Replace it now with the latest keybox?</string>
     <string name="ts_expiry_unknown">unknown expiry</string>
     <string name="ts_untrusted_root_title">Unrecognized keybox root</string>
-    <string name="ts_untrusted_root_message">This keybox has a certificate chain rooted at an authority not recognized by Evolution X. It may still pass Strong Integrity on some devices. Keep it installed or replace it with the latest keybox?</string>
+    <string name="ts_untrusted_root_message">This keybox has a certificate chain rooted at an authority not recognized by ExpressiveOS. It may still pass Strong Integrity on some devices. Keep it installed or replace it with the latest keybox?</string>
     <string name="ts_untrusted_root_keep">Keep</string>
     <string name="ts_untrusted_root_replace">Replace</string>
 

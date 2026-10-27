@@ -429,7 +429,7 @@
     <string name="status_bar_logo_position_right">اليمين</string>
     <string name="status_bar_logo_style_title">نمط الشعار</string>
     <string name="status_bar_logo_style_summary">اختر شعارًا مخصصًا لعرضه</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">فضائي</string>
@@ -995,7 +995,6 @@
     <string name="ts_verification_cert_count">%1$d Cert</string>
     <string name="ts_verification_leaf_count">%1$d Leaf</string>
     <string name="ts_fetch_keybox">جلب Keybox الرسمي</string>
-    <string name="ts_fetch_keybox_summary">تنزيل Keybox من خوادم Evolution X</string>
     <string name="ts_fetch_keybox_fetching">جارٍ جلب Keybox…</string>
     <string name="ts_fetch_keybox_success">تم جلب Keybox الرسمي بنجاح</string>
     <string name="ts_fetch_keybox_failed">فشل الجلب: %s</string>
@@ -1010,7 +1009,7 @@
     <string name="ts_expiring_soon_message">تنتهي صلاحية شهادة Keybox هذه في %1$s. هي تجتاز فحص النزاهة حاليًا لكنها ستتوقف بعد انتهاء الصلاحية. هل تريد استبدالها الآن بـ Keybox الرسمي؟</string>
     <string name="ts_expiry_unknown">تاريخ الانتهاء غير معروف</string>
     <string name="ts_untrusted_root_title">جذر Keybox غير معروف</string>
-    <string name="ts_untrusted_root_message">لدى Keybox هذا سلسلة شهادات متجذرة بجهة غير معترف بها من Evolution X. قد يظل قادرًا على اجتياز Strong Integrity على بعض الأجهزة. هل تريد الاحتفاظ به أم استبداله بـ Keybox الرسمي؟</string>
+    <string name="ts_untrusted_root_message">لدى Keybox هذا سلسلة شهادات متجذرة بجهة غير معترف بها من ExpressiveOS. قد يظل قادرًا على اجتياز Strong Integrity على بعض الأجهزة. هل تريد الاحتفاظ به أم استبداله بـ Keybox الرسمي؟</string>
     <string name="ts_untrusted_root_keep">الاحتفاظ</string>
     <string name="ts_untrusted_root_replace">استبدال</string>
     <string name="ts_revocation_expiring_soon">ستنتهي صلاحية Keybox قريبًا — اضغط للمراجعة</string>

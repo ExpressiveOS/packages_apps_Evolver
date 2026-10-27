@@ -470,7 +470,7 @@
     <string name="status_bar_logo_position_right">右側</string>
     <string name="status_bar_logo_style_title">圖示樣式</string>
     <string name="status_bar_logo_style_summary">自訂漸層</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">安卓</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">外星人</string>
@@ -1060,7 +1060,6 @@
     <string name="ts_verification_cert_count">%1$d Cert</string>
     <string name="ts_verification_leaf_count">%1$d Leaf</string>
     <string name="ts_fetch_keybox">擷取官方金鑰匣</string>
-    <string name="ts_fetch_keybox_summary">從 Evolution X 伺服器下載金鑰匣</string>
     <string name="ts_fetch_keybox_fetching">正在擷取金鑰匣…</string>
     <string name="ts_fetch_keybox_success">官方金鑰匣擷取成功</string>
     <string name="ts_fetch_keybox_failed">擷取失敗：%s</string>
@@ -1076,7 +1075,7 @@
     <string name="ts_expiring_soon_message">這個金鑰匣的憑證將於 %1$s 到期。目前仍可通過完整性驗證，但到期後就會失效。要現在改用官方金鑰匣嗎？</string>
     <string name="ts_expiry_unknown">到期日未知</string>
     <string name="ts_untrusted_root_title">無法識別的金鑰匣根憑證</string>
-    <string name="ts_untrusted_root_message">這個金鑰匣的憑證鏈根憑證並非 Evolution X 認可的授權單位。在某些裝置上仍可能通過嚴格完整性驗證。要保留現有的金鑰匣，還是改用官方金鑰匣？</string>
+    <string name="ts_untrusted_root_message">這個金鑰匣的憑證鏈根憑證並非 ExpressiveOS 認可的授權單位。在某些裝置上仍可能通過嚴格完整性驗證。要保留現有的金鑰匣，還是改用官方金鑰匣？</string>
     <string name="ts_untrusted_root_keep">保留</string>
     <string name="ts_untrusted_root_replace">更換</string>
     <!-- Revocation status -->

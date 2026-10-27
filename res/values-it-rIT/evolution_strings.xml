@@ -445,7 +445,7 @@
     <string name="status_bar_logo_position_right">Destra</string>
     <string name="status_bar_logo_style_title">Stile del logo</string>
     <string name="status_bar_logo_style_summary">Seleziona un logo personalizzato da visualizzare</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alieno</string>
@@ -1017,7 +1017,6 @@
     <string name="ts_verification_cert_count">%1$d certificati</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_fetch_keybox">Scarica keybox ufficiale</string>
-    <string name="ts_fetch_keybox_summary">Scarica il keybox dai server di Evolution X</string>
     <string name="ts_fetch_keybox_fetching">Download keybox in corso…</string>
     <string name="ts_fetch_keybox_success">Keybox ufficiale scaricato correttamente</string>
     <string name="ts_fetch_keybox_failed">Download non riuscito: %s</string>
@@ -1033,7 +1032,7 @@
     <string name="ts_expiring_soon_message">Il certificato di questo keybox scade il %1$s. Attualmente supera il controllo di integrità, ma smetterà di funzionare dopo la scadenza. Vuoi sostituirlo ora con il keybox ufficiale?</string>
     <string name="ts_expiry_unknown">scadenza sconosciuta</string>
     <string name="ts_untrusted_root_title">Radice del keybox non riconosciuta</string>
-    <string name="ts_untrusted_root_message">Questo keybox ha una catena di certificati basata su un\'autorità non riconosciuta da Evolution X. Potrebbe comunque superare l\'integrità forte su alcuni dispositivi. Vuoi mantenerlo installato o sostituirlo con il keybox ufficiale?</string>
+    <string name="ts_untrusted_root_message">Questo keybox ha una catena di certificati basata su un\'autorità non riconosciuta da ExpressiveOS. Potrebbe comunque superare l\'integrità forte su alcuni dispositivi. Vuoi mantenerlo installato o sostituirlo con il keybox ufficiale?</string>
     <string name="ts_untrusted_root_keep">Mantieni</string>
     <string name="ts_untrusted_root_replace">Sostituisci</string>
     <!-- Revocation status -->

@@ -472,7 +472,7 @@
     <string name="status_bar_logo_position_right">右侧</string>
     <string name="status_bar_logo_style_title">Logo 样式</string>
     <string name="status_bar_logo_style_summary">选择要显示的自定义标志</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">外星人</string>
@@ -1060,7 +1060,6 @@
     <string name="ts_verification_cert_count">%1$d Cert</string>
     <string name="ts_verification_leaf_count">%1$d Leaf</string>
     <string name="ts_fetch_keybox">获取官方 Keybox</string>
-    <string name="ts_fetch_keybox_summary">从 Evolution X 服务器下载 Keybox</string>
     <string name="ts_fetch_keybox_fetching">正在获取 Keybox…</string>
     <string name="ts_fetch_keybox_success">已成功获取官方 Keybox</string>
     <string name="ts_fetch_keybox_failed">获取失败: %s</string>
@@ -1076,7 +1075,7 @@
     <string name="ts_expiring_soon_message">此密钥箱中的证书将于 %1$s 到期。它当前通过完整性验证，但到期后将停止工作。现在用官方密钥箱替换它？</string>
     <string name="ts_expiry_unknown">未知过期</string>
     <string name="ts_untrusted_root_title">无法识别的 Keybox 证书链根</string>
-    <string name="ts_untrusted_root_message">此 Keybox 的证书链根植于一个 Evolution X 未认可的证书颁发机构。尽管如此，它仍可能在某些设备上通过强完整性验证。是保留当前安装，还是替换为官方密钥库？</string>
+    <string name="ts_untrusted_root_message">此 Keybox 的证书链根植于一个 ExpressiveOS 未认可的证书颁发机构。尽管如此，它仍可能在某些设备上通过强完整性验证。是保留当前安装，还是替换为官方密钥库？</string>
     <string name="ts_untrusted_root_keep">保持</string>
     <string name="ts_untrusted_root_replace">替换</string>
     <!-- Revocation status -->

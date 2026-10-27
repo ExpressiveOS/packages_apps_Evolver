@@ -468,7 +468,7 @@
     <string name="status_bar_logo_position_right">Direita</string>
     <string name="status_bar_logo_style_title">Estilo do logotipo</string>
     <string name="status_bar_logo_style_summary">Selecione um logotipo personalizado para tela</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alienígena</string>
@@ -1055,7 +1055,6 @@
     <string name="ts_verification_cert_count">%1$d certificado</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_fetch_keybox">Buscando a última keybox</string>
-    <string name="ts_fetch_keybox_summary">Baixe o keybox dos servidores Evolution X</string>
     <string name="ts_fetch_keybox_fetching">Buscando keybox…</string>
     <string name="ts_fetch_keybox_success">Última caixa de chaves obtida com sucesso</string>
     <string name="ts_fetch_keybox_failed">Falha na busca: %s</string>
@@ -1071,7 +1070,7 @@
     <string name="ts_expiring_soon_message">O certificado desta keybox expira em %1$s. Atualmente passa pela integridade, mas deixará de funcionar após o expirar. Substituir agora com a keybox mais recente?</string>
     <string name="ts_expiry_unknown">data de validade desconhecida</string>
     <string name="ts_untrusted_root_title">Raiz de keybox não reconhecida</string>
-    <string name="ts_untrusted_root_message">Esta keybox possui uma cadeia de certificados com raiz em uma autoridade não reconhecida pelo Evolution X. Ela ainda pode passar no teste de Integridade Forte em alguns dispositivos. Devo mantê-la instalada ou substituí-la pela keybox oficial?</string>
+    <string name="ts_untrusted_root_message">Esta keybox possui uma cadeia de certificados com raiz em uma autoridade não reconhecida pelo ExpressiveOS. Ela ainda pode passar no teste de Integridade Forte em alguns dispositivos. Devo mantê-la instalada ou substituí-la pela keybox oficial?</string>
     <string name="ts_untrusted_root_keep">Manter</string>
     <string name="ts_untrusted_root_replace">Substituir</string>
     <!-- Revocation status -->

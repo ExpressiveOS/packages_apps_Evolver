@@ -469,7 +469,7 @@
     <string name="status_bar_logo_position_right">Höger</string>
     <string name="status_bar_logo_style_title">Logotypstil</string>
     <string name="status_bar_logo_style_summary">Välj en anpassad logotyp att visa</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alien</string>
@@ -1057,7 +1057,6 @@
     <string name="ts_verification_cert_count">%1$d certifikat</string>
     <string name="ts_verification_leaf_count">%1$d slutcertifikat</string>
     <string name="ts_fetch_keybox">Hämta officiell keybox</string>
-    <string name="ts_fetch_keybox_summary">Hämta keybox från Evolution X-servrar</string>
     <string name="ts_fetch_keybox_fetching">Hämtar keybox…</string>
     <string name="ts_fetch_keybox_success">Officiell keybox har hämtats</string>
     <string name="ts_fetch_keybox_failed">Hämtningen misslyckades: %s</string>
@@ -1073,7 +1072,7 @@
     <string name="ts_expiring_soon_message">Certifikatet för denna keybox upphör att gälla den %1$s. Den klarar för närvarande integritetskontrollen men slutar fungera efter utgångsdatumet. Vill du ersätta den med den officiella keyboxen nu?</string>
     <string name="ts_expiry_unknown">okänt utgångsdatum</string>
     <string name="ts_untrusted_root_title">Okänd keybox-rot</string>
-    <string name="ts_untrusted_root_message">Denna keybox har en certifikatkedja med rot i en utfärdare som Evolution X inte känner igen. Den kan ändå klara Strong Integrity på vissa enheter. Vill du behålla den installerad eller ersätta den med den officiella keyboxen?</string>
+    <string name="ts_untrusted_root_message">Denna keybox har en certifikatkedja med rot i en utfärdare som ExpressiveOS inte känner igen. Den kan ändå klara Strong Integrity på vissa enheter. Vill du behålla den installerad eller ersätta den med den officiella keyboxen?</string>
     <string name="ts_untrusted_root_keep">Behåll</string>
     <string name="ts_untrusted_root_replace">Ersätt</string>
     <!-- Revocation status -->

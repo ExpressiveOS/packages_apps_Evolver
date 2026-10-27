@@ -471,7 +471,7 @@
     <string name="status_bar_logo_position_right">Праворуч</string>
     <string name="status_bar_logo_style_title">Стиль логотипу</string>
     <string name="status_bar_logo_style_summary">Виберіть користувацький логотип для відображення</string>
-    <string name="status_bar_logo_style_evolution">Еволюція X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Андроїд</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Інопланетянин</string>
@@ -1058,7 +1058,6 @@
     <string name="ts_verification_cert_count">%1$d Сертифікат</string>
     <string name="ts_verification_leaf_count">%1$d Листок</string>
     <string name="ts_fetch_keybox">Завантажити останній keybox</string>
-    <string name="ts_fetch_keybox_summary">Завантажити ключ з серверів Evolution X</string>
     <string name="ts_fetch_keybox_fetching">Отримання keybox…</string>
     <string name="ts_fetch_keybox_success">Останній keybox успішно завантажено</string>
     <string name="ts_fetch_keybox_failed">Не вдалося отримати: %s</string>
@@ -1074,7 +1073,7 @@
     <string name="ts_expiring_soon_message">Термін дії сертифіката цього keybox закінчується %1$s. Наразі він проходить перевірку цілісності, але перестане працювати після закінчення терміну дії. Замінити його зараз на останній keybox?</string>
     <string name="ts_expiry_unknown">невідомий термін дії</string>
     <string name="ts_untrusted_root_title">Нерозпізнаний кореневий ключ</string>
-    <string name="ts_untrusted_root_message">Цей keybox має ланцюжок сертифікатів із кореневим центром сертифікації, який не розпізнається Evolution X. Він все ще може проходити Strong Integrity на деяких пристроях. Залишити його встановленим чи замінити на останній keybox?</string>
+    <string name="ts_untrusted_root_message">Цей keybox має ланцюжок сертифікатів із кореневим центром сертифікації, який не розпізнається ExpressiveOS. Він все ще може проходити Strong Integrity на деяких пристроях. Залишити його встановленим чи замінити на останній keybox?</string>
     <string name="ts_untrusted_root_keep">Зберегти</string>
     <string name="ts_untrusted_root_replace">Замінити</string>
     <!-- Revocation status -->

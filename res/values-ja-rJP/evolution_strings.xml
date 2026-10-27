@@ -467,7 +467,7 @@
     <string name="status_bar_logo_position_right">右</string>
     <string name="status_bar_logo_style_title">ロゴのスタイル</string>
     <string name="status_bar_logo_style_summary">表示するカスタムロゴを選択</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">adidas</string>
     <string name="status_bar_logo_style_alien">エイリアン</string>
@@ -1054,7 +1054,6 @@
     <string name="ts_verification_cert_count">%1$d 証明書</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_fetch_keybox">最新のキーボックスを取得</string>
-    <string name="ts_fetch_keybox_summary">EvolutionXのサーバーからキーボックスをダウンロードする</string>
     <string name="ts_fetch_keybox_fetching">キーボックスを取得中…</string>
     <string name="ts_fetch_keybox_success">公式キーボックスの取得に成功しました</string>
     <string name="ts_fetch_keybox_failed">取得失敗: %s</string>
@@ -1070,7 +1069,7 @@
     <string name="ts_expiring_soon_message">このキーボックスの証明書は %1$sに期限が切れます。現在は整合性を渡しますが、有効期限が切れると動作を停止します。今すぐ公式キーボックスに置き換えますか？</string>
     <string name="ts_expiry_unknown">有効期限が不明</string>
     <string name="ts_untrusted_root_title">キーボックスのルートが認識できません</string>
-    <string name="ts_untrusted_root_message">このキーボックスには、Evolution Xによって認識されていない権限に根ざした証明書チェーンがあります。 それでも一部のデバイスでは強力な整合性を通過する可能性があります。インストールしたままにしておくか、公式のキーボックスに置き換えてください。</string>
+    <string name="ts_untrusted_root_message">このキーボックスには、ExpressiveOSによって認識されていない権限に根ざした証明書チェーンがあります。 それでも一部のデバイスでは強力な整合性を通過する可能性があります。インストールしたままにしておくか、公式のキーボックスに置き換えてください。</string>
     <string name="ts_untrusted_root_keep">維持</string>
     <string name="ts_untrusted_root_replace">置き換え</string>
     <!-- Revocation status -->

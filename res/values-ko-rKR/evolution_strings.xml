@@ -324,7 +324,7 @@
     <string name="status_bar_logo_position_right">오른쪽</string>
     <string name="status_bar_logo_style_title">로고 스타일</string>
     <string name="status_bar_logo_style_summary">표시할 사용자 지정 로고를 선택하세요.</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">안드로이드</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">외계인</string>
@@ -877,7 +877,6 @@
     <string name="ts_verification_cert_count">%1$d 인증서</string>
     <string name="ts_verification_leaf_count">%1$d 잎</string>
     <string name="ts_fetch_keybox">Fetch 공식 키박스</string>
-    <string name="ts_fetch_keybox_summary">Evolution X 서버에서 키박스를 다운로드하세요.</string>
     <string name="ts_fetch_keybox_fetching">열쇠 보관함을 가져오는 중…</string>
     <string name="ts_fetch_keybox_success">공식 키박스를 성공적으로 가져왔습니다.</string>
     <string name="ts_fetch_keybox_failed">가져오기 실패: %s</string>
@@ -893,7 +892,7 @@
     <string name="ts_expiring_soon_message">이 키박스의 인증서는 %1$s에 만료됩니다. 현재는 무결성 검사를 통과했지만 만료 후에는 작동이 중단됩니다. 지금 공식 키박스로 교체하시겠습니까?</string>
     <string name="ts_expiry_unknown">만료일 미상</string>
     <string name="ts_untrusted_root_title">인식할 수 없는 키박스 루트</string>
-    <string name="ts_untrusted_root_message">이 키박스는 Evolution X에서 인정하지 않는 인증 기관의 인증서 체인을 사용하고 있습니다. 일부 기기에서는 강력한 무결성 검사를 통과할 수도 있습니다. 이 키박스를 계속 설치해 둘까요, 아니면 공식 키박스로 교체할까요?</string>
+    <string name="ts_untrusted_root_message">이 키박스는 ExpressiveOS에서 인정하지 않는 인증 기관의 인증서 체인을 사용하고 있습니다. 일부 기기에서는 강력한 무결성 검사를 통과할 수도 있습니다. 이 키박스를 계속 설치해 둘까요, 아니면 공식 키박스로 교체할까요?</string>
     <string name="ts_untrusted_root_keep">유지</string>
     <string name="ts_untrusted_root_replace">위젯 변경</string>
     <!-- Revocation status -->

@@ -466,7 +466,7 @@
     <string name="status_bar_logo_position_right">Z prawej</string>
     <string name="status_bar_logo_style_title">Styl logo</string>
     <string name="status_bar_logo_style_summary">Wybierz niestandardowe logo do wyświetlenia</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Obcy</string>
@@ -1054,7 +1054,6 @@
     <string name="ts_verification_cert_count">%1$d generowanie certyfikatu</string>
     <string name="ts_verification_leaf_count">%1$d podmiana certyfikatu</string>
     <string name="ts_fetch_keybox">Pobierz najnowszy zestaw kluczy</string>
-    <string name="ts_fetch_keybox_summary">Pobieranie zestawu kluczy z serwerów Evolution X</string>
     <string name="ts_fetch_keybox_fetching">Pobieranie zestawu kluczy…</string>
     <string name="ts_fetch_keybox_success">Najnowszy zestaw kluczy pobrany pomyślnie</string>
     <string name="ts_fetch_keybox_failed">Pobieranie nieudane: %s</string>
@@ -1070,7 +1069,7 @@
     <string name="ts_expiring_soon_message">Łańcuch certyfikatów tego zestawu kluczy wygasa %1$s. Obecnie spełnia on kryteria integralności, ale przestanie działać po wygaśnięciu. Zastąpić go teraz najnowszym zestawem kluczy?</string>
     <string name="ts_expiry_unknown">nieznany termin ważności</string>
     <string name="ts_untrusted_root_title">Nierozpoznany główny zestaw kluczy</string>
-    <string name="ts_untrusted_root_message">Ten zestaw kluczy ma łańcuch certyfikatów powiązany z instytucją nieuznawaną przez Evolution X. Nadal może przejść test silnej integralności na niektórych urządzeniach. Zachować go, czy wymienić na najnowszy zestaw kluczy?</string>
+    <string name="ts_untrusted_root_message">Ten zestaw kluczy ma łańcuch certyfikatów powiązany z instytucją nieuznawaną przez ExpressiveOS. Nadal może przejść test silnej integralności na niektórych urządzeniach. Zachować go, czy wymienić na najnowszy zestaw kluczy?</string>
     <string name="ts_untrusted_root_keep">Zachowaj</string>
     <string name="ts_untrusted_root_replace">Zastąp</string>
     <!-- Revocation status -->

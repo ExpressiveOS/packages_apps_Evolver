@@ -470,7 +470,7 @@
     <string name="status_bar_logo_position_right">Sağ</string>
     <string name="status_bar_logo_style_title">Logo stili</string>
     <string name="status_bar_logo_style_summary">Gösterilecek özel logoyu seç</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Uzaylı</string>
@@ -1051,7 +1051,6 @@
     <string name="ts_verification_cert_count">%1$d sertifika</string>
     <string name="ts_verification_leaf_count">%1$d yaprak</string>
     <string name="ts_fetch_keybox">Resmi keybox getir</string>
-    <string name="ts_fetch_keybox_summary">Evolution X sunucularından keybox indir</string>
     <string name="ts_fetch_keybox_fetching">Keybox getiriliyor...</string>
     <string name="ts_fetch_keybox_success">Remi keybox başarılı bir şekilde getirildi</string>
     <string name="ts_fetch_keybox_failed">Çekme başarısız oldu: %s</string>
@@ -1067,7 +1066,7 @@
     <string name="ts_expiring_soon_message">Bu keybox\'ın sertifikası %1$s tarihinde geçersiz olacak. Şuan bütünlük testini geçiyor ama süresi dolduktan sonra çalışmayacaktır. Resmi olan keybox ile şu an değiştirmek ister misiniz?</string>
     <string name="ts_expiry_unknown">bilinmeyen süre dolumu</string>
     <string name="ts_untrusted_root_title">Tanınmayan keybox kökü</string>
-    <string name="ts_untrusted_root_message">Bu keybox, Evolution X tarafından tanınmayan bir otoriteye dayanan bir sertifika zincirine sahip. Yine de bazı cihazlarda Strong Integrity testini geçebilir. Bunu yüklü tutmak mı yoksa resmi keybox ile mi değiştirmek istersiniz?</string>
+    <string name="ts_untrusted_root_message">Bu keybox, ExpressiveOS tarafından tanınmayan bir otoriteye dayanan bir sertifika zincirine sahip. Yine de bazı cihazlarda Strong Integrity testini geçebilir. Bunu yüklü tutmak mı yoksa resmi keybox ile mi değiştirmek istersiniz?</string>
     <string name="ts_untrusted_root_keep">Sakla</string>
     <string name="ts_untrusted_root_replace">Değiştir</string>
     <!-- Revocation status -->

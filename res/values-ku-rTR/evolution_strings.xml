@@ -308,14 +308,13 @@
     <string name="clock_chip_gradient_mask_text_default">بنەڕەتی</string>
     <string name="clock_chip_gradient_mask_text_mask">ڕوون (ماسک)</string>
     <!-- Status bar/Logo -->
-    <string name="status_bar_logo_title">لۆگۆی Evolution X</string>
     <string name="status_bar_logo_summary">نیشاندانی لۆگۆی تایبەت لە شریتی زانیاری</string>
     <string name="status_bar_logo_position_title">شوێنی لۆگۆ</string>
     <string name="status_bar_logo_position_left">لای چەپ</string>
     <string name="status_bar_logo_position_right">لای ڕاست</string>
     <string name="status_bar_logo_style_title">شێوازی لۆگۆ</string>
     <string name="status_bar_logo_style_summary">لۆگۆیەکی تایبەت هەڵبژێرە بۆ نیشاندان</string>
-    <string name="status_bar_logo_style_evolution">Evolution X</string>
+    <string name="status_bar_logo_style_evolution">ExpressiveOS</string>
     <string name="status_bar_logo_style_android">Android</string>
     <string name="status_bar_logo_style_adidas">Adidas</string>
     <string name="status_bar_logo_style_alien">Alien</string>
@@ -866,7 +865,6 @@
     <string name="ts_revocation_suspended">⚠ ڕاگیراوە (%s)</string>
     <string name="ts_revocation_error">پشکنین شکستی هێنا: %s</string>
     <string name="ts_fetch_keybox">هێنانی Keyboxـی فەرمی</string>
-    <string name="ts_fetch_keybox_summary">داگرتنی Keybox لە سێرڤەرەکانی Evolution X</string>
     <string name="ts_fetch_keybox_fetching">لە کاتی هێنانی Keybox…</string>
     <string name="ts_fetch_keybox_success">Keyboxـی فەرمی بە سەرکەوتوویی هێنرا</string>
     <string name="ts_fetch_keybox_failed">هێنان شکستی هێنا: %s</string>
