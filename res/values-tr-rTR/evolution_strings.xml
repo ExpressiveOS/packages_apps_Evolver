@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Eylemler, kilit ekranı</string>
     <string name="miscellaneous_title">Çeşitli</string>
     <string name="miscellaneous_summary">Kimlik yanıltma, geliştirici seçenekleri</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">ROM Hakkında</string>
     <string name="gestures_category_title">Hareketler</string>
     <!-- Reorganized categories -->
@@ -1173,27 +1173,10 @@
     <string name="custom_system_theme_title">Temalar</string>
     <string name="custom_system_theme_summary">Sistem görünümünü temalar ve simge paketleriyle kişiselleştir</string>
     <!-- About -->
-    <string name="about_info">Evolution X, Google Pixel deneyimini ek özelleştirme ile çoğaltmayı amaçlayan özel bir Android ROM\'dur. LineageOS Projesine dayanmaktadır.</string>
-    <string name="about_website_title">İnternet sitesi</string>
-    <string name="about_website_summary">Güncellemeler için sitemizi ziyaret edin</string>
-    <string name="about_x_summary">En son haberlerimizi X\'te yakalayın</string>
-    <string name="about_discord_summary">Discord\'da bizimle sohbet edin</string>
     <string name="about_github_summary">GitHub\'daki kodumuza göz atın</string>
-    <string name="about_founders_title">Kurucular</string>
-    <string name="about_team_members_title">Ekip üyeleri</string>
-    <string name="about_remembering_title">Hatırlanıyor</string>
-    <string name="about_current_maintainers_title">Mevcut geliştiriciler</string>
-    <string name="about_current_maintainers_loading_summary">Güncel geliştiriciler OTA\'dan çekiliyor</string>
-    <string name="about_current_maintainers_empty_title">Aktif geliştirici bulunamadı</string>
-    <string name="about_current_maintainers_tap_to_view">Aktif geliştiricileri görmek için dokunun</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d aktif geliştirici</string>
-    <string name="about_current_maintainers_search_hint">Geliştiricileri veya cihazları arayın…</string>
-    <string name="about_current_maintainers_no_results">Aramanızla eşleşen geliştirici bulunamadı</string>
-    <string name="maintainer_link_forum">Forum</string>
     <!-- Changelog -->
     <string name="changelog_title">Değişiklikler</string>
     <string name="changelog_summary">ROM kaynak kodundaki değişiklikleri görüntüle</string>
-    <string name="changelog_error_no_official">Bu cihaz veya sürüm için resmi bir değişiklik günlüğü mevcut değil. Daha fazla bilgi için %1$s adresini ziyaret edin.</string>
     <!-- Color picker -->
     <string name="accent_color">Vurgu rengi (Varsayılan)</string>
     <string name="notification_color">Bildirim rengi</string>

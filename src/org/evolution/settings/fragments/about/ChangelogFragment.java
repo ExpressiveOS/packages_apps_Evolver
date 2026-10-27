@@ -37,13 +37,9 @@ public class ChangelogFragment extends SettingsPreferenceFragment {
     private TextView textView;
     private volatile boolean mViewDestroyed;
 
-    // Branch lookup order for changelog resolution. CNB (Android 17) is tried
-    // first, bka (Android 16) is the legacy fallback, and vic (Android 15) is
-    // last. udc (Android 14) is no longer supported and has been dropped.
-    private static final String[] BRANCH_PRIORITY = {"cnb", "bka", "vic"};
     private static final String CHANGELOG_URL_TEMPLATE =
-            "https://raw.githubusercontent.com/Evolution-X/OTA/%s/changelogs/%s.txt";
-    private static final String EVOLUTION_X_ORG_URL = "https://github.com/Evolution-X";
+            "https://raw.githubusercontent.com/denson9874/expressiveos_ota/main/changelogs/%s.txt";
+    private static final String OTA_REPO_URL = "https://github.com/denson9874/expressiveos_ota";
 
     private int getThemeColor(Context context, int attr) {
         TypedValue typedValue = new TypedValue();
@@ -77,19 +73,11 @@ public class ChangelogFragment extends SettingsPreferenceFragment {
         final TextView targetView = textView;
 
         new Thread(() -> {
-            String data = null;
-
-            for (String branch : BRANCH_PRIORITY) {
-                final String url = String.format(CHANGELOG_URL_TEMPLATE, branch, device);
-                data = fetchChangelog(url);
-                if (data != null) {
-                    break;
-                }
-            }
+            String data = fetchChangelog(String.format(CHANGELOG_URL_TEMPLATE, device));
 
             if (data == null) {
                 final String fallbackText = context.getString(
-                        R.string.changelog_error_no_official, EVOLUTION_X_ORG_URL);
+                        R.string.changelog_error_no_official, OTA_REPO_URL);
                 targetView.post(() -> {
                     if (!mViewDestroyed && textView == targetView) {
                         targetView.setText(fallbackText);

@@ -18,8 +18,8 @@
     <string name="power_menu_summary">操作、鎖定螢幕</string>
     <string name="miscellaneous_title">其他</string>
     <string name="miscellaneous_summary">開發者和系統偽裝選項</string>
-    <string name="about_title">Evolution X</string>
-    <string name="about_summary">關於 Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
+    <string name="about_summary">關於 ExpressiveOS</string>
     <string name="gestures_category_title">手勢</string>
     <!-- Reorganized categories -->
     <string name="themes_monet_colors_category">莫内 &amp; 顔色</string>
@@ -1182,27 +1182,10 @@
     <string name="custom_system_theme_title">主題</string>
     <string name="custom_system_theme_summary">使用主題與圖示包自訂系統外觀</string>
     <!-- About -->
-    <string name="about_info">Evolution X 是一款致力於復刻 Google Pixel 體驗的客製化 Android 項目，擁有許多自訂項目。本項目基於 LineageOS 項目。</string>
-    <string name="about_website_title">網站</string>
-    <string name="about_website_summary">訪問我們的網站以獲取更新</string>
-    <string name="about_x_summary">在X上取得我們的最新動態</string>
-    <string name="about_discord_summary">在 Discord 上與我們聊天</string>
     <string name="about_github_summary">在 GitHub 上瀏覽我們的程式碼</string>
-    <string name="about_founders_title">創辦人</string>
-    <string name="about_team_members_title">團隊成員</string>
-    <string name="about_remembering_title">追思</string>
-    <string name="about_current_maintainers_title">現任維護者</string>
-    <string name="about_current_maintainers_loading_summary">正在從 OTA 擷取現任維護者</string>
-    <string name="about_current_maintainers_empty_title">找不到現任維護者</string>
-    <string name="about_current_maintainers_tap_to_view">輕觸查看現任維護者</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d 位現任維護者</string>
-    <string name="about_current_maintainers_search_hint">搜尋維護者或裝置…</string>
-    <string name="about_current_maintainers_no_results">沒有符合搜尋條件的維護者</string>
-    <string name="maintainer_link_forum">討論區</string>
     <!-- Changelog -->
     <string name="changelog_title">更新日誌</string>
     <string name="changelog_summary">查看 ROM 的變更內容</string>
-    <string name="changelog_error_no_official">這個裝置或版本沒有官方更新日誌。請前往 %1$s 查看更多資訊。</string>
     <!-- Color picker -->
     <string name="accent_color">強調色（預設）</string>
     <string name="notification_color">通知顏色</string>

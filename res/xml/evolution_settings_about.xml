@@ -8,7 +8,7 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/about_title">
 
-    <!-- Evolution X logo -->
+    <!-- ExpressiveOS logo -->
     <com.android.settingslib.widget.LayoutPreference
         android:key="evolution_logo"
         android:layout="@layout/evolution_logo"
@@ -32,15 +32,15 @@
                  android:targetClass="org.evolution.settings.fragments.about.ChangelogActivity"/>
         </Preference>
 
-        <!-- Website -->
+        <!-- Telegram -->
         <Preference
-            android:key="about_website"
-            android:title="@string/about_website_title"
-            android:summary="@string/about_website_summary"
-            android:icon="@drawable/ic_evolver_about">
+            android:key="about_telegram"
+            android:title="@string/about_telegram_title"
+            android:summary="@string/about_telegram_summary"
+            android:icon="@drawable/ic_about_telegram">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://evolution-x.org" />
+                android:data="https://t.me/ExpressiveGroup" />
         </Preference>
 
         <!-- Github -->
@@ -51,99 +51,22 @@
             android:icon="@drawable/ic_about_github">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/Evolution-X" />
-        </Preference>
-
-        <!-- Discord -->
-        <Preference
-            android:key="about_discord"
-            android:title="@string/about_discord_title"
-            android:summary="@string/about_discord_summary"
-            android:icon="@drawable/ic_about_discord">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://discord.gg/3qbSZHx" />
-        </Preference>
-
-        <!-- X -->
-        <Preference
-            android:key="about_x"
-            android:title="@string/about_x_title"
-            android:summary="@string/about_x_summary"
-            android:icon="@drawable/ic_about_x">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://x.com/EvolutionXROM" />
+                android:data="https://github.com/denson9874" />
         </Preference>
     </com.android.settingslib.widget.UntitledPreferenceCategory>
 
     <PreferenceCategory
-        android:key="founders"
-        android:title="@string/about_founders_title">
-
-        <!-- Founder 1 -->
-        <Preference
-            android:key="about_founder_1"
-            android:title="@string/about_founder_1_title"
-            android:summary="@string/about_founder_1_summary" />
-
-        <!-- Founder 2 -->
-        <!--<Preference
-            android:key="about_founder_2"
-            android:title="@string/about_founder_2_title"
-            android:summary="@string/about_founder_2_summary" />-->
-
-        <!-- Founder 3 -->
-        <Preference
-            android:key="about_founder_3"
-            android:title="@string/about_founder_3_title"
-            android:summary="@string/about_founder_3_summary" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="team_members"
-        android:title="@string/about_team_members_title">
+        android:key="maintainers"
+        android:title="@string/about_maintainer_title">
 
         <Preference
-            android:key="about_member_1"
-            android:title="@string/about_member_1_title"
-            android:summary="@string/about_member_1_summary" />
-
-        <Preference
-            android:key="about_member_2"
-            android:title="@string/about_member_2_title"
-            android:summary="@string/about_member_2_summary" />
-
-        <Preference
-            android:key="about_member_3"
-            android:title="@string/about_member_3_title"
-            android:summary="@string/about_member_3_summary" />
-
-        <!--<Preference
-            android:key="about_member_4"
-            android:title="@string/about_member_4_title"
-            android:summary="@string/about_member_4_summary" />-->
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="current_maintainers_category"
-        android:title="@string/about_current_maintainers_title">
-
-        <Preference
-            android:key="current_maintainers"
-            android:title="@string/about_current_maintainers_title"
-            android:summary="@string/about_current_maintainers_tap_to_view"
-            android:persistent="false" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="remembering"
-        android:title="@string/about_remembering_title">
-
-        <Preference
-            android:key="about_member_5"
-            android:title="@string/about_member_5_title"
-            android:summary="@string/about_member_5_summary" />
+            android:key="about_maintainer"
+            android:title="@string/about_maintainer_name"
+            android:summary="@string/about_maintainer_summary">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/denson9874" />
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>

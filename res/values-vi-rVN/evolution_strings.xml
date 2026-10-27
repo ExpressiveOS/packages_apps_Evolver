@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Hành động, màn hình khóa</string>
     <string name="miscellaneous_title">Cài đặt khác</string>
     <string name="miscellaneous_summary">Giả mạo, tùy chọn nhà phát triển</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">Về ROM của chúng tôi</string>
     <string name="gestures_category_title">Cử chỉ</string>
     <!-- Themes -->
@@ -397,23 +397,7 @@
     <string name="tensor_targets_count">%1$d ứng dụng đích</string>
     <string name="tensor_targets_empty_description">Ứng dụng được chọn sẽ báo cáo các tính năng phần cứng Tensor để mở khóa AI và các chức năng độc quyền của Pixel</string>
     <!-- About -->
-    <string name="about_info">Evolution X là một bản ROM Android tùy chỉnh nhằm mục đích tái tạo trải nghiệm Google Pixel, với tùy chỉnh được thêm vào. Dựa trên Dự án LineageOS.</string>
-    <string name="about_website_title">Trang web</string>
-    <string name="about_website_summary">Ghé thăm trang web của chúng tôi</string>
-    <string name="about_x_summary">Hãy theo dõi tin tức mới nhất của chúng tôi trên X</string>
-    <string name="about_discord_summary">Tham gia cộng đồng trò chuyện</string>
     <string name="about_github_summary">Xem GitHub của chúng tôi</string>
-    <string name="about_founders_title">Người sáng lập</string>
-    <string name="about_team_members_title">Thành viên Đội ngũ</string>
-    <string name="about_remembering_title">Remembering</string>
-    <string name="about_current_maintainers_title">Người bảo trì hiện tại</string>
-    <string name="about_current_maintainers_loading_summary">Đang tải thông tin người bảo trì hiện tại từ OTA</string>
-    <string name="about_current_maintainers_empty_title">Không tìm thấy người bảo trì nào đang hoạt động</string>
-    <string name="about_current_maintainers_tap_to_view">Nhấn vào đây để xem những người bảo trì đang hoạt động</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d người bảo trì hoạt động</string>
-    <string name="about_current_maintainers_search_hint">Tìm kiếm người bảo trì hoặc thiết bị…</string>
-    <string name="about_current_maintainers_no_results">Không có người bảo trì nào phù hợp với tìm kiếm của bạn</string>
-    <string name="maintainer_link_forum">Diễn đàn</string>
     <!-- Color Picker -->
     <string name="accent_color">Accent color</string>
     <string name="notification_color">Màu thông báo</string>

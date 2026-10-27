@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Дії, екран блокування</string>
     <string name="miscellaneous_title">Різне</string>
     <string name="miscellaneous_summary">Spoofing hub, параметри розробника</string>
-    <string name="about_title">Еволюція X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">Про прошивку</string>
     <string name="gestures_category_title">Жести</string>
     <!-- Reorganized categories -->
@@ -1208,27 +1208,10 @@
     <string name="custom_system_theme_title">Теми</string>
     <string name="custom_system_theme_summary">Налаштування зовнішнього вигляду системи за допомогою тем та пакетів значків</string>
     <!-- About -->
-    <string name="about_info">Evolution X — це кастомізована прошивка для Android, метою якої є відтворення роботи з Google Pixel з додатковими можливостями налаштування. Заснована на проекті LineageOS.</string>
-    <string name="about_website_title">Сайт</string>
-    <string name="about_website_summary">Відвідати наш сайт для оновлень</string>
-    <string name="about_x_summary">Злови наші останні новини на X</string>
-    <string name="about_discord_summary">Спілкуватися з нами у Discord</string>
     <string name="about_github_summary">Переглянути наш код на GitHub</string>
-    <string name="about_founders_title">Засновники</string>
-    <string name="about_team_members_title">Учасники команди</string>
-    <string name="about_remembering_title">Згадуючи</string>
-    <string name="about_current_maintainers_title">Поточні супроводжуючі</string>
-    <string name="about_current_maintainers_loading_summary">Отримання поточних розробників з OTA</string>
-    <string name="about_current_maintainers_empty_title">Активних супроводжуючих не знайдено</string>
-    <string name="about_current_maintainers_tap_to_view">Торкніться, щоб переглянути активних супроводжувальних осіб</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d Активні супроводжувальні</string>
-    <string name="about_current_maintainers_search_hint">Пошук супроводжувальних або пристроїв…</string>
-    <string name="about_current_maintainers_no_results">Жоден супроводжувальний не відповідає вашому пошуку</string>
-    <string name="maintainer_link_forum">Форум</string>
     <!-- Changelog -->
     <string name="changelog_title">Список змін</string>
     <string name="changelog_summary">Переглянути зміни в джерелі прошивки</string>
-    <string name="changelog_error_no_official">Немає офіційного списку змін для цього пристрою чи збірки. Відвідайте %1$s для отримання додаткової інформації.</string>
     <!-- Color picker -->
     <string name="color_picker_reset">Скинути до стандартних</string>
     <string name="color_picker_apply">Застосувати</string>

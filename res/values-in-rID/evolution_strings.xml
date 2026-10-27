@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Tindakan, layar kunci</string>
     <string name="miscellaneous_title">Lain-lain</string>
     <string name="miscellaneous_summary">Pusat pemalsuan (spoofing), opsi pengembang</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">Tentang ROM kami</string>
     <string name="gestures_category_title">Gestur</string>
     <!-- Reorganized categories -->
@@ -1205,27 +1205,10 @@
     <string name="custom_system_theme_title">Tema</string>
     <string name="custom_system_theme_summary">Sesuaikan tampilan sistem dengan tema dan paket ikon</string>
     <!-- About -->
-    <string name="about_info">Evolution X adalah ROM Android kustom yang bertujuan untuk meniru pengalaman Google Pixel, dengan tambahan kustomisasi. Berbasis pada Proyek LineageOS.</string>
-    <string name="about_website_title">Situs web</string>
-    <string name="about_website_summary">Kunjungi situs kami untuk pembaruan</string>
-    <string name="about_x_summary">Simak berita terbaru kami di X</string>
-    <string name="about_discord_summary">Mengobrol dengan kami di Discord</string>
     <string name="about_github_summary">Telusuri kode kami di GitHub</string>
-    <string name="about_founders_title">Pendiri</string>
-    <string name="about_team_members_title">Anggota Tim</string>
-    <string name="about_remembering_title">Mengingat</string>
-    <string name="about_current_maintainers_title">Pengelola saat ini</string>
-    <string name="about_current_maintainers_loading_summary">Mengambil pengelola terkini dari OTA</string>
-    <string name="about_current_maintainers_empty_title">Tidak ditemukan pengelola aktif</string>
-    <string name="about_current_maintainers_tap_to_view">Ketuk untuk melihat pengelola aktif</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d pengelola aktif</string>
-    <string name="about_current_maintainers_search_hint">Cari pengelola atau perangkat…</string>
-    <string name="about_current_maintainers_no_results">Tidak ada pengelola yang sesuai dengan pencarian Anda</string>
-    <string name="maintainer_link_forum">Forum</string>
     <!-- Changelog -->
     <string name="changelog_title">Catatan perubahan</string>
     <string name="changelog_summary">Lihat perubahan pada ROM</string>
-    <string name="changelog_error_no_official">Tidak tersedia catatan perubahan resmi untuk perangkat atau build ini. Kunjungi %1$s untuk informasi lebih lanjut.</string>
     <!-- Color picker -->
     <string name="color_picker_reset">Atur ulang ke default</string>
     <string name="color_picker_apply">Terapkan</string>

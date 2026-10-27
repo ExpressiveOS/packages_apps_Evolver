@@ -19,7 +19,7 @@
     <string name="miscellaneous_title">Sonstiges</string>
     <string name="miscellaneous_summary">Entwickler Einstellungen, Spoofing</string>
     <string name="about_title">Über</string>
-    <string name="about_summary">Über Evolution X</string>
+    <string name="about_summary">Über ExpressiveOS</string>
     <!-- Themes -->
     <string name="themes_monet_title">Monet Einstellungen</string>
     <string name="themes_monet_summary">Integrierten Android Theme Engine anpassen</string>
@@ -293,11 +293,6 @@
     <string name="spoofing_snap_title">Snapchat</string>
     <string name="spoofing_snap_summary">in Snapchat als Pixel XL Gerät ausgeben, um mögliche Chat-Probleme zu beheben</string>
     <!-- About -->
-    <string name="about_info">Evolution X setzt sich, um die Benutzer das Pixel Gefühl und viele zusätzliche Funktionen für die Anwendung anzubieten</string>
-    <string name="about_website_title">Webseite</string>
-    <string name="about_website_summary">Tippe hier, um unsere fantastische Website zu besuchen!</string>
-    <string name="about_x_summary">zu unseren Beiträgen</string>
-    <string name="about_discord_summary">Tippe hier, um unsere fantastische Discord Community zu besuchen</string>
     <string name="about_github_summary">Tippe hier, um unseren GitHub zu öffnen!</string>
     <!-- Color Picker -->
     <string name="accent_color">Akzentfarbe (Standard)</string>

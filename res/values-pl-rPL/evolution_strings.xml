@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Akcje, ekran blokady</string>
     <string name="miscellaneous_title">Różne</string>
     <string name="miscellaneous_summary">Centrum fałszowania, opcje programisty</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">O naszym ROM-ie</string>
     <string name="gestures_category_title">Gesty</string>
     <!-- Reorganized categories -->
@@ -1204,27 +1204,10 @@
     <string name="custom_system_theme_title">Motywy</string>
     <string name="custom_system_theme_summary">Dostosuj wygląd systemu z motywami i paczkami ikon</string>
     <!-- About -->
-    <string name="about_info">Evolution X to niestandardowy ROM Android, który ma odzwierciedlać wrażenia z Google Pixel z dodatkowymi możliwościami personalizacji. Oparty na projekcie LineageOS.</string>
-    <string name="about_website_title">Strona internetowa</string>
-    <string name="about_website_summary">Odwiedź naszą stronę, aby być na bieżąco z aktualizacjami</string>
-    <string name="about_x_summary">Dowiedz się więcej na X</string>
-    <string name="about_discord_summary">Porozmawiaj z nami na Discordzie</string>
     <string name="about_github_summary">Przeglądaj nasz kod na GitHubie</string>
-    <string name="about_founders_title">Założyciele</string>
-    <string name="about_team_members_title">Członkowie zespołu</string>
-    <string name="about_remembering_title">Upamiętnienie</string>
-    <string name="about_current_maintainers_title">Obecni opiekunowie</string>
-    <string name="about_current_maintainers_loading_summary">Pobieranie bieżących opiekunów z OTA</string>
-    <string name="about_current_maintainers_empty_title">Nie znaleziono aktywnych opiekunów</string>
-    <string name="about_current_maintainers_tap_to_view">Naciśnij, aby wyświetlić aktywnych opiekunów</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d aktywnych opiekunów</string>
-    <string name="about_current_maintainers_search_hint">Wyszukaj opiekunów lub urządzenia…</string>
-    <string name="about_current_maintainers_no_results">Brak opiekunów odpowiadających twojemu wyszukiwaniu</string>
-    <string name="maintainer_link_forum">Forum</string>
     <!-- Changelog -->
     <string name="changelog_title">Dziennik zmian</string>
     <string name="changelog_summary">Wyświetl zmiany w źródle ROM</string>
-    <string name="changelog_error_no_official">Brak oficjalnego rejestru zmian dla tego urządzenia lub kompilacji. Więcej informacji znajdziesz na stronie %1$s.</string>
     <!-- Color picker -->
     <string name="color_picker_reset">Przywróć ustawienia domyślne</string>
     <string name="color_picker_apply">Zastosuj</string>

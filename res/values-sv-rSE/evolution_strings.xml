@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Åtgärder, låsskärm</string>
     <string name="miscellaneous_title">Övrigt</string>
     <string name="miscellaneous_summary">Enhetsmaskering, utvecklaralternativ</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">Om vår ROM</string>
     <string name="gestures_category_title">Gester</string>
     <!-- Reorganized categories -->
@@ -1179,27 +1179,10 @@
     <string name="custom_system_theme_title">Teman</string>
     <string name="custom_system_theme_summary">Anpassa systemutseende med teman och ikonpaket</string>
     <!-- About -->
-    <string name="about_info">Evolution X är en anpassad Android-ROM som efterliknar Google Pixel-upplevelsen och samtidigt ger fler anpassningsmöjligheter. Den bygger på LineageOS-projektet.</string>
-    <string name="about_website_title">Hemsida</string>
-    <string name="about_website_summary">Besök vår webbplats för uppdateringar</string>
-    <string name="about_x_summary">Läs våra senaste nyheter på X</string>
-    <string name="about_discord_summary">Chatta med oss på Discord</string>
     <string name="about_github_summary">Bläddra i vår kod på GitHub</string>
-    <string name="about_founders_title">Grundare</string>
-    <string name="about_team_members_title">Teammedlemmar</string>
-    <string name="about_remembering_title">Till minne av</string>
-    <string name="about_current_maintainers_title">Aktuella underhållare</string>
-    <string name="about_current_maintainers_loading_summary">Hämtar aktuella underhållare från OTA</string>
-    <string name="about_current_maintainers_empty_title">Inga aktiva underhållare hittades</string>
-    <string name="about_current_maintainers_tap_to_view">Tryck för att visa aktiva underhållare</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d aktiva underhållare</string>
-    <string name="about_current_maintainers_search_hint">Sök efter underhållare eller enheter…</string>
-    <string name="about_current_maintainers_no_results">Inga underhållare matchar din sökning</string>
-    <string name="maintainer_link_forum">Forum</string>
     <!-- Changelog -->
     <string name="changelog_title">Ändringslogg</string>
     <string name="changelog_summary">Visa ändringar i ROM</string>
-    <string name="changelog_error_no_official">Det finns ingen officiell ändringslogg för den här enheten eller versionen. Besök %1$s för mer information.</string>
     <!-- Color picker -->
     <string name="accent_color">Accentfärg</string>
     <string name="notification_color">Aviseringsfärg</string>

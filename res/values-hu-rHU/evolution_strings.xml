@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Műveletek, záróképernyő</string>
     <string name="miscellaneous_title">Különlegességek</string>
     <string name="miscellaneous_summary">Álcázás, hamisítás, fejlesztői lehetőségek</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">A ROM-unkról</string>
     <string name="gestures_category_title">Mozdulatvezérlés</string>
     <!-- Reorganized categories -->
@@ -1198,27 +1198,10 @@ Beállítás:
     <string name="custom_system_theme_title">Témák</string>
     <string name="custom_system_theme_summary">Varázsolja egyénivé a rendszer megjelenését témákkal és ikoncsomagokkal</string>
     <!-- About -->
-    <string name="about_info">Az Evolution X egy egyéni Android ROM, amely további testreszabási lehetőségekkel a Google Pixel élményét kívánja megvalósítani. A LineageOS projekten alapul.</string>
-    <string name="about_website_title">Honlap</string>
-    <string name="about_website_summary">Látogassa meg weboldalunkat frissítésekért</string>
-    <string name="about_x_summary">Olvassa el a legfrissebb infókat az X-en</string>
-    <string name="about_discord_summary">Kommunikáljon velünk a Discordon</string>
     <string name="about_github_summary">Nézze át a kódjainkat a GitHubon</string>
-    <string name="about_founders_title">Alapítók</string>
-    <string name="about_team_members_title">Csapattagok</string>
-    <string name="about_remembering_title">Emlékezés</string>
-    <string name="about_current_maintainers_title">Jelenlegi felelősök</string>
-    <string name="about_current_maintainers_loading_summary">Az aktuális felelősök lekérése az OTA-ból</string>
-    <string name="about_current_maintainers_empty_title">Nem található aktív fejlesztő</string>
-    <string name="about_current_maintainers_tap_to_view">Kattintson az aktív fejlesztők megtekintéséhez</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d aktív készülékfelelős</string>
-    <string name="about_current_maintainers_search_hint">Fejlesztők vagy készülékek keresése…</string>
-    <string name="about_current_maintainers_no_results">Nincs a keresésnek megfelelő fejlesztő</string>
-    <string name="maintainer_link_forum">Fórum</string>
     <!-- Changelog -->
     <string name="changelog_title">Változáslista</string>
     <string name="changelog_summary">A ROM változásainak megtekintése</string>
-    <string name="changelog_error_no_official">Nincs hivatalos változáslista ehhez a készülékhez vagy kiadáshoz. További infóért látogasson el ide: %1$s</string>
     <!-- Color picker -->
     <string name="color_picker_reset">Alapértelmezés visszaállítása</string>
     <string name="accent_color">Kiemelőszín</string>

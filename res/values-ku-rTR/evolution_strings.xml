@@ -18,7 +18,7 @@
     <string name="power_menu_summary">تایبەتمەندکردنی بژاردەکانی دوگمەی وزە</string>
     <string name="miscellaneous_title">هەمەجۆر</string>
     <string name="miscellaneous_summary">یاری، نیشاندەری FPS، وێنەی ڕوونما</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">زانیاری دەربارەی تیمی پەرەپێدەر</string>
     <string name="gestures_category_title">ئاماژەکان</string>
     <!-- Reorganized categories -->
@@ -961,23 +961,7 @@
     <string name="custom_system_theme_title">تێماکان</string>
     <string name="custom_system_theme_summary">تایبەتکردنی شێوەی سیستەم بە ڕووکار و پاکێجی وێنۆچکەکان</string>
     <!-- About -->
-    <string name="about_info">Evolution X ڕۆمێکی تایبەتی ئەندرۆیدە کە ئامانجی ئەوەیە ئەزموونی Google Pixel دووبارە بکاتەوە لەگەڵ زیادکردنی تایبەتمەندی. لەسەر بنەمای پڕۆژەی LineageOS دروست کراوە.</string>
-    <string name="about_website_title">ماڵپەڕ</string>
-    <string name="about_website_summary">بۆ نوێکارییەکان سەردانی ماڵپەڕەکەمان بکە</string>
-    <string name="about_x_summary">دوایین هەواڵەکانمان لە X (تویتەری پێشوو) ببینە</string>
-    <string name="about_discord_summary">لە Discord لەگەڵمان چات بکە</string>
     <string name="about_github_summary">بینینی کۆدەکەمان لە GitHub</string>
-    <string name="about_founders_title">دامەزرێنەران</string>
-    <string name="about_team_members_title">ئەندامانی تیم</string>
-    <string name="about_remembering_title">یادەوەرییەکان</string>
-    <string name="about_current_maintainers_title">سەرپەرشتیارانی ئێستا</string>
-    <string name="about_current_maintainers_loading_summary">وەرگرتنی ناوی سەرپەرشتیارانی ئێستا لە OTAـوە</string>
-    <string name="about_current_maintainers_empty_title">هیچ سەرپەرشتیارێکی چالاک نەدۆزرایەوە</string>
-    <string name="about_current_maintainers_tap_to_view">دایبگرە بۆ بینینی سەرپەرشتیارە چالاکەکان</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d سەرپەرشتیاری چالاک</string>
-    <string name="about_current_maintainers_search_hint">گەڕان بۆ سەرپەرشتیاران یان ئامێرەکان…</string>
-    <string name="about_current_maintainers_no_results">هیچ سەرپەرشتیارێک لەگەڵ گەڕانەکەت ناگونجێت</string>
-    <string name="maintainer_link_forum">کۆڕبەند</string>
     <!-- Changelog -->
     <string name="changelog_title">گۆڕانکارییەکان</string>
     <string name="changelog_summary">بینینی گۆڕانکارییەکان لە سەرچاوەی ROMـدا</string>

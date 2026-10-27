@@ -19,7 +19,7 @@
     <string name="miscellaneous_title">Divers</string>
     <string name="miscellaneous_summary">Options pour les développeurs, usurpation</string>
     <string name="about_title">À propos</string>
-    <string name="about_summary">À propos d’Evolution X</string>
+    <string name="about_summary">À propos d’ExpressiveOS</string>
     <!-- Themes -->
     <string name="themes_monet_title">Paramètres de Monet</string>
     <string name="themes_monet_summary">Personnaliser le moteur de thème intégré à Android</string>
@@ -286,10 +286,6 @@
     <string name="spoofing_snap_summary">Spoof Snapchat en tant que Pixel XL pour résoudre les éventuels problèmes de chat</string>
     <!-- Navigation Bar -->
     <!-- About -->
-    <string name="about_info">Evolution X vise à offrir aux utilisateurs une sensation de pixel à première vue, avec des fonctionnalités supplémentaires à votre disposition</string>
-    <string name="about_website_title">Site web</string>
-    <string name="about_website_summary">N\'hésitez pas à consulter notre site web</string>
-    <string name="about_discord_summary">Visitez notre chat communautaire</string>
     <string name="about_github_summary">Allez voir notre GitHub</string>
     <!-- Color Picker -->
     <string name="accent_color">Couleur d\'accentuation (par défaut)</string>

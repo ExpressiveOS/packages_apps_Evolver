@@ -18,7 +18,7 @@
     <string name="power_menu_summary">ロック画面のアクション</string>
     <string name="miscellaneous_title">その他</string>
     <string name="miscellaneous_summary">偽装ハブ、開発者向けオプション</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">この ROM について</string>
     <string name="gestures_category_title">ジェスチャー</string>
     <!-- Reorganized categories -->
@@ -1204,27 +1204,10 @@
     <string name="custom_system_theme_title">テーマ</string>
     <string name="custom_system_theme_summary">テーマやアイコンパックでシステムの見た目をカスタマイズする</string>
     <!-- About -->
-    <string name="about_info">EvolutionXは、Google Pixel の体験を再現しつつカスタマイズ機能を追加することを目指したカスタムROMです。LineageOSプロジェクトに基づいています。</string>
-    <string name="about_website_title">ウェブサイト</string>
-    <string name="about_website_summary">アップデートについてはサイトをご覧ください</string>
-    <string name="about_x_summary">X で最新ニュースをチェック！</string>
-    <string name="about_discord_summary">Discord でチャット</string>
     <string name="about_github_summary">GitHub でコードを見る</string>
-    <string name="about_founders_title">創設者</string>
-    <string name="about_team_members_title">チームメンバー</string>
-    <string name="about_remembering_title">記憶</string>
-    <string name="about_current_maintainers_title">現在のメンテナー</string>
-    <string name="about_current_maintainers_loading_summary">OTAから現在のメンテナーを取得しています</string>
-    <string name="about_current_maintainers_empty_title">有効なメンテナーが見つかりません</string>
-    <string name="about_current_maintainers_tap_to_view">タップしてアクティブなメンテナーを表示</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d 人のアクティブなメンテナー</string>
-    <string name="about_current_maintainers_search_hint">メンテナーまたはデバイスを検索…</string>
-    <string name="about_current_maintainers_no_results">検索に一致するメンテナーはいません</string>
-    <string name="maintainer_link_forum">フォーラム</string>
     <!-- Changelog -->
     <string name="changelog_title">更新履歴</string>
     <string name="changelog_summary">ROMの変更点を表示</string>
-    <string name="changelog_error_no_official">このデバイスでは公式の更新履歴は利用できません。詳細は %1$s をご覧ください。</string>
     <!-- Color picker -->
     <string name="color_picker_reset">デフォルトに戻す</string>
     <string name="color_picker_apply">適用</string>

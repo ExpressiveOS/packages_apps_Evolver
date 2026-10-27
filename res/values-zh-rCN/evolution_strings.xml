@@ -18,7 +18,7 @@
     <string name="power_menu_summary">电源键操作、锁屏设置</string>
     <string name="miscellaneous_title">杂项</string>
     <string name="miscellaneous_summary">开发者选项、伪装设置</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">关于 ROM</string>
     <string name="gestures_category_title">手势</string>
     <!-- Reorganized categories -->
@@ -1182,27 +1182,10 @@
     <string name="custom_system_theme_title">主题</string>
     <string name="custom_system_theme_summary">使用主题和图标包自定义系统外观</string>
     <!-- About -->
-    <string name="about_info">Evolution X 是一款致力于复刻 Google Pixel 体验的定制化 Android 项目，拥有诸多自定义项目。本项目基于 LineageOS 项目。</string>
-    <string name="about_website_title">网站</string>
-    <string name="about_website_summary">访问我们的网站以获取更新</string>
-    <string name="about_x_summary">在 X（Twitter）上获取我们的最新动态</string>
-    <string name="about_discord_summary">在 Discord 上与我们交流</string>
     <string name="about_github_summary">在 GitHub 上浏览我们的代码</string>
-    <string name="about_founders_title">创始人</string>
-    <string name="about_team_members_title">团队成员</string>
-    <string name="about_remembering_title">记住中</string>
-    <string name="about_current_maintainers_title">当前维护者</string>
-    <string name="about_current_maintainers_loading_summary">正在从 OTA 获取当前维护者信息</string>
-    <string name="about_current_maintainers_empty_title">未找到活跃的维护者</string>
-    <string name="about_current_maintainers_tap_to_view">点击查看活动维护者</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d 位活跃的维护者</string>
-    <string name="about_current_maintainers_search_hint">搜索维护者或设备……</string>
-    <string name="about_current_maintainers_no_results">没有符合搜索条件的维护者</string>
-    <string name="maintainer_link_forum">论坛</string>
     <!-- Changelog -->
     <string name="changelog_title">更改日志</string>
     <string name="changelog_summary">查看ROM源码变更</string>
-    <string name="changelog_error_no_official">此设备或此构建没有官方更新日志。请访问 %1$s 获取更多信息。</string>
     <!-- Color picker -->
     <string name="accent_color">首选颜色 (默认)</string>
     <string name="notification_color">通知颜色</string>

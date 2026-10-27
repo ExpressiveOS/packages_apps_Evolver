@@ -6,5 +6,5 @@
 
 <com.android.settings.widget.TintDrawable
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_discord"
-    android:tint="@color/homepage_purple_fg" />
+    android:drawable="@drawable/ic_telegram"
+    android:tint="@color/homepage_blue_fg" />

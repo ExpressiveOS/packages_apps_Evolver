@@ -19,7 +19,7 @@
     <string name="miscellaneous_title">Rôzne</string>
     <string name="miscellaneous_summary">Možnosti pre vývojárov, falšovanie</string>
     <string name="about_title">O</string>
-    <string name="about_summary">O Evolution X</string>
+    <string name="about_summary">O ExpressiveOS</string>
     <!-- Themes -->
     <string name="themes_monet_title">Nastavenia Monet</string>
     <string name="themes_monet_summary">Prispôsobiť vstavaný prostriedok motívu systému Android</string>
@@ -241,10 +241,6 @@
     <string name="spoofing_app_specific_category">Pre konkrétnu aplikáciu</string>
     <!-- Navigation Bar -->
     <!-- About -->
-    <string name="about_info">Cieľom Evolution X je poskytnúť používateľom, na prvý pohľad, pocit podobný Pixelom, pričom máte k dispozícii ďalšie funkcie</string>
-    <string name="about_website_title">Webová stránka</string>
-    <string name="about_website_summary">Neváhajte a navštívte našu webovú stránku</string>
-    <string name="about_discord_summary">Navštívte náš komunitný chat</string>
     <string name="about_github_summary">Pozrite si náš blog</string>
     <!-- Color Picker -->
     <string name="accent_color">Farba zvýraznenia (základné)</string>

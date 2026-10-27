@@ -18,8 +18,8 @@
     <string name="power_menu_summary">Ações, tela de bloqueio</string>
     <string name="miscellaneous_title">Diversos</string>
     <string name="miscellaneous_summary">Central de falsificação, opções de desenvolvedor</string>
-    <string name="about_title">Evolution X</string>
-    <string name="about_summary">Sobre Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
+    <string name="about_summary">Sobre ExpressiveOS</string>
     <string name="gestures_category_title">Gestos</string>
     <!-- Reorganized categories -->
     <string name="themes_monet_colors_category">Monet e as cores</string>
@@ -1205,27 +1205,10 @@
     <string name="custom_system_theme_title">Temas</string>
     <string name="custom_system_theme_summary">Personalize a aparência do sistema com temas e pacotes de ícones</string>
     <!-- About -->
-    <string name="about_info">Evolution X é um Android ROM personalizado que visa replicar a experiência do Google Pixel com personalização adicional. Baseado no Projeto LineageOS.</string>
-    <string name="about_website_title">Site</string>
-    <string name="about_website_summary">Visite nosso site para atualizações</string>
-    <string name="about_x_summary">Veja nossas últimas notícias sobre X</string>
-    <string name="about_discord_summary">Converse conosco no Discord</string>
     <string name="about_github_summary">Navegue pelo nosso código no GitHub</string>
-    <string name="about_founders_title">Fundadores</string>
-    <string name="about_team_members_title">Membros da equipe</string>
-    <string name="about_remembering_title">Memorizando</string>
-    <string name="about_current_maintainers_title">Mantenedores atuais</string>
-    <string name="about_current_maintainers_loading_summary">Buscando mantenedores atuais via OTA</string>
-    <string name="about_current_maintainers_empty_title">Nenhum mantenedor ativo encontrado</string>
-    <string name="about_current_maintainers_tap_to_view">Toque para ver os mantenedores ativos</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d mantenedores ativos</string>
-    <string name="about_current_maintainers_search_hint">Pesquisar mantenedores ou dispositivos…</string>
-    <string name="about_current_maintainers_no_results">Nenhum mantenedor corresponde à sua pesquisa</string>
-    <string name="maintainer_link_forum">Fórum</string>
     <!-- Changelog -->
     <string name="changelog_title">Registro de alterações</string>
     <string name="changelog_summary">Ver alterações na ROM</string>
-    <string name="changelog_error_no_official">Nenhum registro de mudanças está disponível para este dispositivo ou compilação. Visite %1$s para obter mais informações.</string>
     <!-- Color picker -->
     <string name="color_picker_reset">Redefinir para padrão</string>
     <string name="color_picker_apply">Aplicar</string>

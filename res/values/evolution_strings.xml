@@ -22,7 +22,7 @@
     <string name="power_menu_summary">Actions, lock screen</string>
     <string name="miscellaneous_title">Miscellaneous</string>
     <string name="miscellaneous_summary">Spoofing hub, developer options</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">About our ROM</string>
     <string name="gestures_category_title">Gestures</string>
 
@@ -1277,47 +1277,19 @@
     <string name="custom_system_theme_summary">Customize system appearance with themes and icon packs</string>
 
     <!-- About -->
-    <string name="about_info">Evolution X is a custom Android ROM that aims to replicate the Google Pixel experience with added customization. Based on the LineageOS Project.</string>
-    <string name="about_website_title">Website</string>
-    <string name="about_website_summary">Visit our site for updates</string>
-    <string name="about_x_title" translatable="false">X</string>
-    <string name="about_x_summary">Catch our latest news on X</string>
-    <string name="about_discord_title" translatable="false">Discord</string>
-    <string name="about_discord_summary">Chat with us on Discord</string>
+    <string name="about_info">ExpressiveOS is a custom Android ROM that brings the Pixel experience with extra customization. Based on the LineageOS Project.</string>
+    <string name="about_telegram_title" translatable="false">Telegram</string>
+    <string name="about_telegram_summary">Chat with us on Telegram</string>
     <string name="about_github_title" translatable="false">GitHub</string>
     <string name="about_github_summary">Browse our code on GitHub</string>
-    <string name="about_founders_title">Founders</string>
-    <string name="about_team_members_title">Team members</string>
-    <string name="about_remembering_title">Remembering</string>
-    <string name="about_founder_1_title" translatable="false">Joey</string>
-    <string name="about_founder_1_summary" translatable="false">Founder / Lead Developer</string>
-    <string name="about_founder_2_title" translatable="false">Anierin Bliss</string>
-    <string name="about_founder_2_summary" translatable="false">Co-founder / Co-developer</string>
-    <string name="about_founder_3_title" translatable="false">Akito Mizukito</string>
-    <string name="about_founder_3_summary" translatable="false">Co-founder / Project Manager</string>
-    <string name="about_member_1_title" translatable="false">TechPanelGM</string>
-    <string name="about_member_1_summary" translatable="false">Project Manager / Maintainer</string>
-    <string name="about_member_2_title" translatable="false">Aidan Warner</string>
-    <string name="about_member_2_summary" translatable="false">Infrastructure Manager</string>
-    <string name="about_member_3_title" translatable="false">Onelots</string>
-    <string name="about_member_3_summary" translatable="false">Maintainer relations / Maintainer</string>
-    <string name="about_member_4_title" translatable="false">Manidweep</string>
-    <string name="about_member_4_summary" translatable="false">Maintainer relations / Maintainer</string>
-    <string name="about_member_5_title" translatable="false">Apelete Seketeli</string>
-    <string name="about_member_5_summary" translatable="false">Maintainer (2025–2026)</string>
-    <string name="about_current_maintainers_title">Current maintainers</string>
-    <string name="about_current_maintainers_loading_summary">Fetching current maintainers from OTA</string>
-    <string name="about_current_maintainers_empty_title">No active maintainers found</string>
-    <string name="about_current_maintainers_tap_to_view">Tap to view active maintainers</string>
-    <string name="about_current_maintainers_sheet_subtitle">%1$d active maintainers</string>
-    <string name="about_current_maintainers_search_hint">Search maintainers or devices…</string>
-    <string name="about_current_maintainers_no_results">No maintainers match your search</string>
-    <string name="maintainer_link_forum">Forum</string>
+    <string name="about_maintainer_title">Maintainer</string>
+    <string name="about_maintainer_name" translatable="false">Daryl Denson</string>
+    <string name="about_maintainer_summary" translatable="false">denson9874</string>
 
     <!-- Changelog -->
     <string name="changelog_title">Changelog</string>
     <string name="changelog_summary">View changes in the ROM</string>
-    <string name="changelog_error_no_official">No official changelog is available for this device or build. Visit %1$s for more information.</string>
+    <string name="changelog_error_no_official">No changelog is available for this device or build. Visit %1$s for more information.</string>
 
     <!-- Color picker -->
     <string name="color_picker_hex" translatable="false">HEX</string>

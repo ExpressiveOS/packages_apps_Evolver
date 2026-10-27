@@ -18,7 +18,7 @@
     <string name="power_menu_summary">Действия, экран блокировки</string>
     <string name="miscellaneous_title">Прочее</string>
     <string name="miscellaneous_summary">Опции разработчика, подмена устройства</string>
-    <string name="about_title">Evolution X</string>
+    <string name="about_title">ExpressiveOS</string>
     <string name="about_summary">О нашей прошивке</string>
     <!-- Themes -->
     <string name="themes_monet_title">Настройки Monet</string>
@@ -345,13 +345,7 @@
     <!-- Miscellaneous/Spoofing/Play Integrity fix JSON update -->
     <!-- Miscellaneous/Spoofing/Keybox Data -->
     <!-- About -->
-    <string name="about_info">Evolution X — это измененная прошивка Android ROM, призванная воссоздать функционал Google Pixel с расширенными возможностями настройки. Основана на проекте LineageOS.</string>
-    <string name="about_website_title">Сайт</string>
-    <string name="about_website_summary">Следите за обновлениями на нашем сайте</string>
-    <string name="about_x_summary">Ловите наши свежие посты в X</string>
-    <string name="about_discord_summary">Общайтесь с нами в Discord</string>
     <string name="about_github_summary">Изучайте наш код на GitHub</string>
-    <string name="about_founders_title">Основатели проекта</string>
     <!-- Color Picker -->
     <string name="accent_color">Акцентный цвет (по умолчанию)</string>
     <string name="notification_color">Цвет уведомлений</string>
