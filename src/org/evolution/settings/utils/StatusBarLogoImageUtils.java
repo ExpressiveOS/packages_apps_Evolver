@@ -50,7 +50,7 @@ public class StatusBarLogoImageUtils {
     /** Target dimension in pixels for the saved logo bitmap. */
     private static final int TARGET_SIZE = 64;  // 64 px is crisp enough at any density
 
-    /** Folder inside /sdcard/Evolution-X/ where the file is stored. */
+    /** Folder inside /sdcard/ExpressiveOS/ where the file is stored. */
     private static final String FEATURE_PATH = "statusbar_logo";
 
     /** Prefix used for the saved file and for cleaning up old copies. */
@@ -80,7 +80,7 @@ public class StatusBarLogoImageUtils {
                     ? source
                     : Bitmap.createScaledBitmap(source, width, height, true);
 
-            File directory = new File("/sdcard/Evolution-X/" + FEATURE_PATH);
+            File directory = new File("/sdcard/ExpressiveOS/" + FEATURE_PATH);
             if (!directory.exists() && !directory.mkdirs()) {
                 Log.e(TAG, "Failed to create directory: " + directory.getAbsolutePath());
                 return null;

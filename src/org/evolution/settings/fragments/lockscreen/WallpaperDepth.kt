@@ -241,7 +241,7 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
         private const val REQUEST_WRITE_STORAGE = 10002
 
         private const val FILE_PREFIX = "DEPTH_WALLPAPER_SUBJECT"
-        private const val SAVE_DIR = "Evolution-X/depthwallpaper"
+        private const val SAVE_DIR = "ExpressiveOS/depthwallpaper"
 
         /**
          * For search

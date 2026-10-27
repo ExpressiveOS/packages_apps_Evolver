@@ -248,7 +248,7 @@ class WallpaperSubjectExtractorService : Service() {
         var file: File? = null
         return try {
             val baseDir = Environment.getExternalStorageDirectory()
-            val dir = File(baseDir, "Evolution-X/depthwallpaper")
+            val dir = File(baseDir, "ExpressiveOS/depthwallpaper")
 
             if (!dir.exists() && !dir.mkdirs()) {
                 Log.e(TAG, "Failed to create save directory")

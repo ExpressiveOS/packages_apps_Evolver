@@ -56,7 +56,7 @@ public class ImageUtils {
                     .format(new Date());
             String imageFileName = filePrefix + "_" + timeStamp + outputExtension;
 
-            File directory = new File("/sdcard/Evolution-X/" + featurePath);
+            File directory = new File("/sdcard/ExpressiveOS/" + featurePath);
             if (!directory.exists() && !directory.mkdirs()) {
                 Log.e(TAG, "Failed to create directory: " + directory.getAbsolutePath());
                 return null;
