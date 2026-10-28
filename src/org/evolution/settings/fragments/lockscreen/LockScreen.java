@@ -26,6 +26,7 @@ import com.android.settingslib.search.SearchIndexable;
 import java.util.List;
 
 import org.evolution.settings.preferences.SecureSettingSwitchPreference;
+import org.evolution.settings.studio.StudioLockHeader;
 import org.evolution.settings.utils.DeviceUtils;
 import org.evolution.settings.utils.PixelAmbientIndicationDetector;
 import org.evolution.settings.utils.PreferenceUtils;
@@ -58,6 +59,7 @@ public class LockScreen extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.evolution_settings_lock_screen);
+        StudioLockHeader.bind(this, findPreference(StudioLockHeader.KEY));
 
         final Context context = getContext();
 

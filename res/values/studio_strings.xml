@@ -16,4 +16,8 @@
     <!-- Summary of the clock styles card: %1$s is the clock face's name, e.g. "Default Clock" -->
     <string name="studio_clock_using">Using <xliff:g id="clock_name" example="Default Clock">%1$s</xliff:g></string>
     <string name="studio_whats_new_title">What\'s new in ExpressiveOS</string>
+
+    <!-- Expressive Studio's lock screen page -->
+    <string name="studio_lock_clock_face">Clock face</string>
+    <string name="studio_lock_browse_clocks">Browse clocks</string>
 </resources>

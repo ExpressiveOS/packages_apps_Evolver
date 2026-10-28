@@ -8,6 +8,13 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/lock_screen_title">
 
+    <!-- ExpressiveOS: the lock screen as it is now (org.evolution.settings.studio.StudioLockHeader) -->
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="studio_lock_preview"
+        android:layout="@layout/studio_compose"
+        android:selectable="false"
+        settings:searchable="false" />
+
     <PreferenceCategory
         android:key="lock_screen_clock_category"
         android:title="@string/lock_screen_clock_category">
