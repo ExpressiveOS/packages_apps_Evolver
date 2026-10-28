@@ -1285,6 +1285,9 @@
     <string name="about_maintainer_title">Maintainer</string>
     <string name="about_maintainer_name" translatable="false">Daryl Denson</string>
     <string name="about_maintainer_summary" translatable="false">denson9874</string>
+    <string name="about_thanks_title">Special thanks</string>
+    <string name="about_thanks_loic_name" translatable="false">Loïc</string>
+    <string name="about_thanks_loic_summary">Without Loïc, this ROM would never have happened. His concept inspired the boot animation’s motion, and he even offered to translate the ROM into French. Thank you, Loïc.</string>
 
     <!-- Changelog -->
     <string name="changelog_title">Changelog</string>

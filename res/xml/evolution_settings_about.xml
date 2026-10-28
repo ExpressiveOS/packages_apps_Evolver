@@ -69,4 +69,17 @@
         </Preference>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="special_thanks"
+        android:title="@string/about_thanks_title">
+
+        <!-- Loïc: there would be no ExpressiveOS without him -->
+        <Preference
+            android:key="about_thanks_loic"
+            android:icon="@drawable/ic_about_thanks"
+            android:title="@string/about_thanks_loic_name"
+            android:summary="@string/about_thanks_loic_summary"
+            android:selectable="false" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
