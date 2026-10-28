@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+
+<!-- The Bloom petals, untinted, on a white tile like a GitHub avatar's -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <com.android.settingslib.widget.AdaptiveIconShapeDrawable
+            android:width="@dimen/dashboard_tile_image_size"
+            android:height="@dimen/dashboard_tile_image_size"
+            android:color="@android:color/white" />
+    </item>
+
+    <item
+        android:width="@dimen/dashboard_tile_foreground_image_size"
+        android:height="@dimen/dashboard_tile_foreground_image_size"
+        android:start="@dimen/dashboard_tile_foreground_image_inset"
+        android:top="@dimen/dashboard_tile_foreground_image_inset"
+        android:drawable="@drawable/studio_bloom_mark" />
+</layer-list>
