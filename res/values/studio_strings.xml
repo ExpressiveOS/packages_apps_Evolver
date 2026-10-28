@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Expressive Studio's home (org.evolution.settings.studio) -->
+    <string name="studio_wallpaper_summary">Home and lock screen</string>
+    <string name="studio_colors_title">Colors</string>
+    <string name="studio_colors_summary">Your Monet palette</string>
+    <string name="studio_fonts_title">Fonts</string>
+    <string name="studio_fonts_summary">Font and emoji style</string>
+    <string name="studio_fonts_specimen_name" translatable="false">ExpressiveOS</string>
+    <string name="studio_fonts_specimen_letters" translatable="false">Aa Bb Cc</string>
+    <string name="studio_fonts_specimen_digits" translatable="false">0123456789</string>
+    <!-- Summary of the clock styles card: %1$s is the clock face's name, e.g. "Default Clock" -->
+    <string name="studio_clock_using">Using <xliff:g id="clock_name" example="Default Clock">%1$s</xliff:g></string>
+    <string name="studio_whats_new_title">What\'s new in ExpressiveOS</string>
+</resources>

@@ -8,8 +8,17 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/evolver_dashboard_title">
 
+    <!-- ExpressiveOS: the home's tiles (org.evolution.settings.studio.StudioHome) -->
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="studio_home"
+        android:layout="@layout/studio_compose"
+        android:selectable="false"
+        settings:searchable="false" />
+
+    <!-- The rows the home's tiles open: kept for search, the tiles show them -->
     <com.android.settingslib.widget.UntitledPreferenceCategory
-        android:key="top_level_evolver_category">
+        android:key="top_level_evolver_category"
+        settings:isPreferenceVisible="false">
 
         <!-- About -->
         <Preference
@@ -74,5 +83,33 @@
             android:summary="@string/miscellaneous_summary"
             android:icon="@drawable/ic_evolver_miscellaneous"
             android:fragment="org.evolution.settings.fragments.miscellaneous.Miscellaneous"/>
+
+        <!-- Pages the home opens directly -->
+        <Preference
+            android:key="studio_colors"
+            android:title="@string/themes_monet_title"
+            android:fragment="org.evolution.settings.fragments.themes.ColorsSettingsFragment"
+            settings:searchable="false" />
+
+        <Preference
+            android:key="studio_wallpaper_styles"
+            android:title="@string/wallpaper_styles_title"
+            android:fragment="org.evolution.settings.fragments.themes.Wallpaper"
+            settings:searchable="false" />
+
+        <Preference
+            android:key="studio_clock_styles"
+            android:title="@string/ls_clock_title"
+            android:fragment="org.evolution.settings.fragments.lockscreen.ClockStyles"
+            settings:searchable="false" />
+
+        <Preference
+            android:key="studio_changelog"
+            android:title="@string/changelog_title"
+            settings:searchable="false">
+            <intent android:action="android.intent.action.MAIN"
+                 android:targetPackage="com.android.settings"
+                 android:targetClass="org.evolution.settings.fragments.about.ChangelogActivity"/>
+        </Preference>
     </com.android.settingslib.widget.UntitledPreferenceCategory>
 </PreferenceScreen>
