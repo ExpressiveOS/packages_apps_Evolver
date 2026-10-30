@@ -70,6 +70,8 @@ enum class Holiday(
     /** Stable id: stored in settings and in the brand palette string. */
     val id: String,
     @StringRes val title: Int,
+    /** What the holiday header at the top of Settings says ("Happy Halloween"). */
+    @StringRes val greeting: Int,
     @RawRes val wallpaper: Int,
     /** Its picture at the top of Quick Settings, which SystemUI finds by name (HolidayQsHeader). */
     @DrawableRes val qsHeader: Int,
@@ -79,6 +81,7 @@ enum class Holiday(
     THANKSGIVING(
         id = "thanksgiving",
         title = R.string.holiday_thanksgiving,
+        greeting = R.string.holiday_greeting_thanksgiving,
         wallpaper = R.raw.holiday_wallpaper_thanksgiving,
         qsHeader = R.drawable.holiday_qs_header_thanksgiving,
         colors = HolidayColors(
@@ -97,6 +100,7 @@ enum class Holiday(
     CHRISTMAS(
         id = "christmas",
         title = R.string.holiday_christmas,
+        greeting = R.string.holiday_greeting_christmas,
         wallpaper = R.raw.holiday_wallpaper_christmas,
         qsHeader = R.drawable.holiday_qs_header_christmas,
         colors = HolidayColors(
@@ -115,6 +119,7 @@ enum class Holiday(
     NEW_YEAR(
         id = "newyear",
         title = R.string.holiday_newyear,
+        greeting = R.string.holiday_greeting_newyear,
         wallpaper = R.raw.holiday_wallpaper_newyear,
         qsHeader = R.drawable.holiday_qs_header_newyear,
         colors = HolidayColors(
@@ -133,6 +138,7 @@ enum class Holiday(
     VALENTINES(
         id = "valentines",
         title = R.string.holiday_valentines,
+        greeting = R.string.holiday_greeting_valentines,
         wallpaper = R.raw.holiday_wallpaper_valentines,
         qsHeader = R.drawable.holiday_qs_header_valentines,
         colors = HolidayColors(
@@ -151,6 +157,7 @@ enum class Holiday(
     ST_PATRICKS(
         id = "stpatricks",
         title = R.string.holiday_stpatricks,
+        greeting = R.string.holiday_greeting_stpatricks,
         wallpaper = R.raw.holiday_wallpaper_stpatricks,
         qsHeader = R.drawable.holiday_qs_header_stpatricks,
         colors = HolidayColors(
@@ -169,6 +176,7 @@ enum class Holiday(
     EASTER(
         id = "easter",
         title = R.string.holiday_easter,
+        greeting = R.string.holiday_greeting_easter,
         wallpaper = R.raw.holiday_wallpaper_easter,
         qsHeader = R.drawable.holiday_qs_header_easter,
         colors = HolidayColors(
@@ -187,6 +195,7 @@ enum class Holiday(
     JULY_4(
         id = "july4",
         title = R.string.holiday_july4,
+        greeting = R.string.holiday_greeting_july4,
         wallpaper = R.raw.holiday_wallpaper_july4,
         qsHeader = R.drawable.holiday_qs_header_july4,
         colors = HolidayColors(
@@ -205,6 +214,7 @@ enum class Holiday(
     HALLOWEEN(
         id = "halloween",
         title = R.string.holiday_halloween,
+        greeting = R.string.holiday_greeting_halloween,
         wallpaper = R.raw.holiday_wallpaper_halloween,
         qsHeader = R.drawable.holiday_qs_header_halloween,
         colors = HolidayColors(
@@ -271,7 +281,9 @@ object HolidayCatalog {
 
     /**
      * Settings.Secure key holding the active theme's banner colours, read by Settings' GlowView
-     * and the Updater's wordmark. Empty or unset means the Bloom colours. See [brandPalette].
+     * (the wordmark in About and in the holiday header at the top of Settings), the Updater's
+     * wordmark and the easter egg's stars. Empty or unset means the Bloom colours. See
+     * [brandPalette].
      */
     const val KEY_BRAND_PALETTE = "expressiveos_holiday_palette"
 

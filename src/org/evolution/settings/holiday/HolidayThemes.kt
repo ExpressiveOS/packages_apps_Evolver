@@ -34,10 +34,16 @@ enum class HolidayPart {
     /** The icons on Settings' main page, in the holiday's petals. */
     ICONS,
 
-    /** Expressive Studio's tiles, in the holiday's petals. */
+    /**
+     * Expressive Studio's tiles, in the holiday's petals, and the greeting at the top of Settings
+     * (HolidayHeaderController).
+     */
     LOOK,
 
-    /** The glowing ExpressiveOS wordmark in About and the Updater. */
+    /**
+     * The colors of the glowing ExpressiveOS wordmark (in About, the Updater and the header at the
+     * top of Settings) and of the easter egg's stars.
+     */
     BANNER,
 
     /** The lock screen clock's color. Its face and font stay the user's. */
@@ -199,10 +205,38 @@ object HolidayThemes {
         }
     }
 
-    /** What Studio's tiles are drawn in: the applied holiday while its LOOK part is applied. */
+    /**
+     * What Studio's tiles are drawn in, and the holiday the header at the top of Settings greets:
+     * the applied holiday while its LOOK part is applied.
+     */
     fun studioHoliday(context: Context): Holiday? {
         val prefs = prefs(context) ?: return null
         return if (HolidayPart.LOOK in appliedParts(prefs)) applied(prefs) else null
+    }
+
+    /**
+     * For [listen]: calls [onChange] on the main thread each time the theme showing changes
+     * ([applied], its parts and so [studioHoliday]), with true, or the one tried, with false.
+     */
+    fun listener(onChange: (applied: Boolean) -> Unit) =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            when (key) {
+                // Null when all of it went
+                null, KEY_APPLIED, KEY_APPLIED_PARTS -> onChange(true)
+                KEY_TRIAL -> onChange(false)
+            }
+        }
+
+    /**
+     * Has [listener] follow the engine's state until [unlisten]. The state holds it weakly, so
+     * the caller keeps it.
+     */
+    fun listen(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs(context)?.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unlisten(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs(context)?.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     // -------------------------------------------------------------------------
@@ -404,7 +438,7 @@ object HolidayThemes {
                 HolidayCatalog.KEY_BRAND_PALETTE,
                 HolidayCatalog.brandPalette(holiday),
             )
-            // Studio reads studioHoliday()
+            // Studio and the Settings header read studioHoliday()
             HolidayPart.LOOK -> true
             HolidayPart.QS_HEADER -> HolidayQsHeader.apply(context, holiday, prefs)
         }.also { applied ->
