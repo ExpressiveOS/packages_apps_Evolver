@@ -124,6 +124,27 @@ internal object HolidayMonet {
     }
 
     /**
+     * Notes the home wallpaper that colors saved without one go with, as the first version of
+     * holiday themes saved them: the holiday wallpaper we last set, so a home wallpaper the user
+     * set since is noticed as their change. With none set, whether the user changed it can't be
+     * told: the colors are judged against the home wallpaper showing when they go back, as
+     * SystemUI would have judged them against a new one.
+     */
+    fun noteHomeWallpaper(context: Context, prefs: SharedPreferences) {
+        if (prefs.getString(KEY_ORIGINAL, null) == null || prefs.contains(KEY_HOME_ID)) return
+        try {
+            val set = HolidayWallpaper.setHomeId(context)
+            val home = set ?: WallpaperManager.getInstance(context)
+                .getWallpaperId(WallpaperManager.FLAG_SYSTEM)
+            val edit = prefs.edit().putInt(KEY_HOME_ID, home)
+            if (set == null) edit.putBoolean(KEY_HOME_CHANGED, true)
+            edit.commit()
+        } catch (e: Exception) {
+            Log.w(TAG, "Couldn't note the home wallpaper", e)
+        }
+    }
+
+    /**
      * Puts the user's own colors back, unless they changed them while the holiday's were on.
      * False when the setting couldn't be written: the saved colors stay for the next try.
      */

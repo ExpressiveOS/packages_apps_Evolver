@@ -115,7 +115,7 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
         val app = context?.applicationContext ?: return
         edit(app)
         refresh()
-        HolidayThemes.evaluateAsync(app) { if (isAdded) refresh() }
+        HolidayActionReceiver.evaluate(app) { if (isAdded) refresh() }
     }
 
     /** Shows the engine's state. */
