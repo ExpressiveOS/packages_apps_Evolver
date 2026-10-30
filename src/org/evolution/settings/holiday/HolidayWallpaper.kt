@@ -56,14 +56,19 @@ object HolidayWallpaper {
     /** Wallpapers can be set for this user and Wallpaper Glymps is off. */
     fun isAllowed(context: Context): Boolean = try {
         val wm = WallpaperManager.getInstance(context)
-        val um = context.getSystemService(UserManager::class.java)
-        wm != null && wm.isWallpaperSupported && wm.isSetWallpaperAllowed &&
-            um?.hasUserRestriction(UserManager.DISALLOW_SET_WALLPAPER) != true &&
+        wm != null && canSet(context, wm) &&
             // Glymps keeps changing the wallpaper itself
             Settings.System.getInt(context.contentResolver, KEY_LOCK_GLYMPS, 0) == 0
     } catch (e: Exception) {
         Log.w(TAG, "Can't tell whether the wallpaper may be set", e)
         false
+    }
+
+    /** Whether the wallpaper service takes wallpapers from this user: it ignores them otherwise. */
+    private fun canSet(context: Context, wm: WallpaperManager): Boolean {
+        val um = context.getSystemService(UserManager::class.java)
+        return wm.isWallpaperSupported && wm.isSetWallpaperAllowed &&
+            um?.hasUserRestriction(UserManager.DISALLOW_SET_WALLPAPER) != true
     }
 
     /** Whether the home screen shows the holiday wallpaper we set. Blocking IO. */
@@ -128,6 +133,8 @@ object HolidayWallpaper {
             val dir = File(storage.filesDir, BACKUP_DIR)
             if (prefs.contains(KEY_SET_HOME_ID)) {
                 val wm = WallpaperManager.getInstance(context)
+                // Nothing would go back, and the backup is still needed for when it can
+                if (!canSet(context, wm)) throw IOException("Wallpapers can't be set now")
                 val homeOurs = showsOurs(wm, prefs, Screen.HOME)
                 val lockOurs = showsOurs(wm, prefs, Screen.LOCK)
                 val lockShared = prefs.getString(Screen.LOCK.key, null) == KIND_SHARED
@@ -217,7 +224,10 @@ object HolidayWallpaper {
         edit.putString(screen.key, KIND_IMAGE)
     }
 
-    /** Whether [screen]'s backup can go back: a saved copy, or a live wallpaper still installed. */
+    /**
+     * Whether [screen]'s backup can go back: a saved copy, a live wallpaper still installed, or the
+     * built-in wallpaper on a lock screen of its own.
+     */
     private fun usable(
         context: Context,
         prefs: SharedPreferences,
@@ -226,6 +236,7 @@ object HolidayWallpaper {
     ): Boolean = when (prefs.getString(screen.key, null)) {
         KIND_IMAGE -> File(dir, screen.fileName).isFile
         KIND_LIVE -> liveComponent(context, prefs, screen) != null
+        KIND_DEFAULT -> screen == Screen.LOCK
         else -> false
     }
 
@@ -250,10 +261,10 @@ object HolidayWallpaper {
     }
 
     /**
-     * Puts [screen]'s backup on [which]. When there's no usable backup (the built-in wallpaper, a
-     * missing copy, an uninstalled live wallpaper), the screens go back to the built-in one unless
-     * not to [clear] them: this is only called for screens that still show the holiday wallpaper.
-     * False when the backup didn't go back.
+     * Puts [screen]'s backup on [which]. When there's no usable backup (the built-in home
+     * wallpaper, a missing copy, an uninstalled live wallpaper), the screens go back to the
+     * built-in one unless not to [clear] them: this is only called for screens that still show
+     * the holiday wallpaper. False when the backup didn't go back.
      */
     private fun putBack(
         context: Context,
@@ -276,6 +287,12 @@ object HolidayWallpaper {
                     val component = liveComponent(context, prefs, screen)
                     component != null && wm.setWallpaperComponentWithFlags(component, which)
                 }
+                // A lock screen of its own showing the built-in image: clearing it would show
+                // the home wallpaper there instead
+                KIND_DEFAULT -> screen == Screen.LOCK &&
+                    (WallpaperManager.openDefaultWallpaper(context, FLAG_LOCK)?.use {
+                        wm.setStream(it, null, true, FLAG_LOCK)
+                    } ?: 0) != 0
                 else -> false
             }
         } catch (e: Exception) {

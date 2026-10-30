@@ -34,6 +34,9 @@ internal object HolidayMonet {
     private const val KEY_HOME_ID = "monet_home_id"
     private const val KEY_HOME_CHANGED = "monet_home_changed"
 
+    // The home wallpaper showing when the colors were saved: a live one's component, or empty
+    private const val KEY_HOME_WALLPAPER = "monet_home_wallpaper"
+
     private const val SYSTEM_PALETTE = "android.theme.customization.system_palette"
     private const val ACCENT_COLOR = "android.theme.customization.accent_color"
     private const val COLOR_SOURCE = "android.theme.customization.color_source"
@@ -88,7 +91,16 @@ internal object HolidayMonet {
             save(prefs, savedOriginal, savedWritten)
         } else if (carried == null) {
             // Newly saved colors go with the home wallpaper showing now
-            prefs.edit().remove(KEY_HOME_CHANGED).commit()
+            val wallpaper = try {
+                homeWallpaper(WallpaperManager.getInstance(context))
+            } catch (e: Exception) {
+                Log.w(TAG, "Couldn't note the home wallpaper", e)
+                null
+            }
+            prefs.edit()
+                .remove(KEY_HOME_CHANGED)
+                .putString(KEY_HOME_WALLPAPER, wallpaper)
+                .commit()
             trackHomeWallpaper(context, prefs)
         }
         return ok
@@ -175,11 +187,11 @@ internal object HolidayMonet {
             if (source == SOURCE_LOCK && wm.getWallpaperId(WallpaperManager.FLAG_LOCK) >= 0) {
                 return false
             }
-            val home = wm.getWallpaperId(WallpaperManager.FLAG_SYSTEM)
             val colors = wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
-                // None yet from the one the engine just put back: SystemUI judges the colors
-                // when they come. One the user set without colors has none to keep them by.
-                ?: return home != prefs.getInt(KEY_HOME_ID, home)
+                // None from the wallpaper the colors were saved with: still to come, and SystemUI
+                // judges them then, or it never had any, as before the holiday. Another one
+                // without colors has none to keep them by.
+                ?: return prefs.getString(KEY_HOME_WALLPAPER, null) != homeWallpaper(wm)
             val seeds = HashSet<Int>()
             // Every color SystemUI could take as a seed (ColorScheme.getSeedColors)
             for (color in colors.allColors.keys) seeds += color or OPAQUE
@@ -217,6 +229,10 @@ internal object HolidayMonet {
             Log.w(TAG, "Couldn't note the home wallpaper", e)
         }
     }
+
+    /** The home wallpaper as KEY_HOME_WALLPAPER holds it: a live one's component, or empty. */
+    private fun homeWallpaper(wm: WallpaperManager): String =
+        wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)?.component?.flattenToString() ?: ""
 
     /** An RRGGBB (or #RRGGBB) color as the JSON holds it, opaque; null if it isn't one. */
     private fun parseColor(value: String): Int? {
@@ -279,7 +295,9 @@ internal object HolidayMonet {
     private fun save(prefs: SharedPreferences, original: String?, written: String?) {
         val edit = prefs.edit().putString(KEY_ORIGINAL, original).putString(KEY_WRITTEN, written)
         // No saved colors, no wallpaper for them to go with
-        if (original == null) edit.remove(KEY_HOME_ID).remove(KEY_HOME_CHANGED)
+        if (original == null) {
+            edit.remove(KEY_HOME_ID).remove(KEY_HOME_CHANGED).remove(KEY_HOME_WALLPAPER)
+        }
         edit.commit()
     }
 }
