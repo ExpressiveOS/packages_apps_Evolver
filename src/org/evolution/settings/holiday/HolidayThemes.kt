@@ -39,6 +39,9 @@ enum class HolidayPart {
 
     /** The glowing ExpressiveOS wordmark in About and the Updater. */
     BANNER,
+
+    /** The lock screen clock's color. Its face and font stay the user's. */
+    LOCK_CLOCK,
 }
 
 /**
@@ -65,10 +68,14 @@ object HolidayThemes {
     /** How long a theme change waits while the screen is on, before it looks again. */
     private val SCREEN_ON_DELAY_MS = TimeUnit.MINUTES.toMillis(15)
 
-    /** Colors before the wallpaper, so the new wallpaper's colors don't win. */
+    /**
+     * Colors before the wallpaper, so the new wallpaper's colors don't win, and the lock screen
+     * clock after it, so its tone is the one for the holiday's lock wallpaper.
+     */
     private val APPLY_ORDER = listOf(
         HolidayPart.COLORS,
         HolidayPart.WALLPAPER,
+        HolidayPart.LOCK_CLOCK,
         HolidayPart.ICONS,
         HolidayPart.BANNER,
         HolidayPart.LOOK,
@@ -79,6 +86,7 @@ object HolidayThemes {
      * does for any wallpaper change.
      */
     private val RESTORE_ORDER = listOf(
+        HolidayPart.LOCK_CLOCK,
         HolidayPart.LOOK,
         HolidayPart.BANNER,
         HolidayPart.ICONS,
@@ -214,8 +222,10 @@ object HolidayThemes {
                 Log.w(TAG, "Couldn't update the holiday theme notification", e)
             }
             try {
-                // What didn't go on or come off is tried again the next day
-                schedule(context, today, retry = pending(context, prefs, plan))
+                // What didn't go on or come off is tried again the next day, and while the lock
+                // screen clock is on its tone is looked at again: the lock wallpaper can change
+                val retry = pending(context, prefs, plan) || HolidayPart.LOCK_CLOCK in applied
+                schedule(context, today, retry)
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't schedule the next holiday theme change", e)
             }
@@ -288,14 +298,13 @@ object HolidayThemes {
         pending(context, prefs, planFor(context, prefs, LocalDate.now()))
 
     /**
-     * Whether what's showing isn't [plan] yet: another holiday or other parts, or the wallpaper
-     * still an earlier holiday's.
+     * Whether what's showing isn't [plan] yet: another holiday or other parts, the wallpaper still
+     * an earlier holiday's, or the lock screen clock in the tone for another lock wallpaper.
      */
     private fun pending(context: Context, prefs: SharedPreferences, plan: Plan?): Boolean {
         val parts = appliedParts(prefs)
         return plan?.holiday != applied(prefs) || plan?.parts.orEmpty() != parts ||
-            (plan != null && HolidayPart.WALLPAPER in parts &&
-                showsOther(context, HolidayPart.WALLPAPER, plan.holiday))
+            (plan != null && parts.any { showsOther(context, it, plan.holiday, prefs) })
     }
 
     /** Applies and restores part by part, persists what's on and returns it. */
@@ -323,9 +332,10 @@ object HolidayThemes {
         if (target != null) {
             for (part in APPLY_ORDER) {
                 if (part !in wanted) continue
-                // On already, unless it still shows an earlier holiday: it couldn't come off then
+                // On already, unless it still shows an earlier holiday (it couldn't come off then),
+                // or the lock screen clock a tone for another lock wallpaper
                 val stale = part in before && !switching
-                if (stale && !showsOther(context, part, target)) continue
+                if (stale && !showsOther(context, part, target, prefs)) continue
                 if (applyPart(context, part, target, prefs, refresh = stale)) {
                     now += part
                 } else if (part in before) {
@@ -368,6 +378,7 @@ object HolidayThemes {
                     HolidayWallpaper.apply(context, holiday)
                 }
             }
+            HolidayPart.LOCK_CLOCK -> HolidayLockClock.apply(context, holiday, prefs)
             HolidayPart.ICONS -> HolidayOverlay.apply(context, holiday)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver,
@@ -395,6 +406,7 @@ object HolidayThemes {
             HolidayPart.WALLPAPER -> HolidayMonet.changingWallpaper(context, prefs) {
                 HolidayWallpaper.restore(context)
             }
+            HolidayPart.LOCK_CLOCK -> HolidayLockClock.restore(context, prefs)
             HolidayPart.ICONS -> HolidayOverlay.remove(context)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver, HolidayCatalog.KEY_BRAND_PALETTE, null
@@ -409,12 +421,21 @@ object HolidayThemes {
     }
 
     /**
-     * Whether [part] shows a holiday other than [holiday]: the wallpaper, which can't come off
-     * while wallpapers can't be set, can still show the one before a switch.
+     * Whether [part] shows other than [holiday]'s: the wallpaper, which can't come off while
+     * wallpapers can't be set, can still show the one before a switch, and the lock screen clock
+     * can be in the tone for another lock wallpaper than the one up now.
      */
-    private fun showsOther(context: Context, part: HolidayPart, holiday: Holiday): Boolean =
-        part == HolidayPart.WALLPAPER &&
+    private fun showsOther(
+        context: Context,
+        part: HolidayPart,
+        holiday: Holiday,
+        prefs: SharedPreferences,
+    ): Boolean = when (part) {
+        HolidayPart.WALLPAPER ->
             HolidayWallpaper.setHoliday(context).let { it != null && it != holiday.id }
+        HolidayPart.LOCK_CLOCK -> HolidayLockClock.needsRefresh(context, holiday, prefs)
+        else -> false
+    }
 
     private fun wallpaperAllowed(context: Context): Boolean = try {
         HolidayWallpaper.isAllowed(context)

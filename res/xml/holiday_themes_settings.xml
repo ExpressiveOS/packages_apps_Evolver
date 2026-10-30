@@ -47,6 +47,13 @@
             android:persistent="false" />
 
         <SwitchPreferenceCompat
+            android:key="holiday_part_lock_clock"
+            android:title="@string/holiday_themes_part_lock_clock_title"
+            android:summary="@string/holiday_themes_part_lock_clock_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
             android:key="holiday_part_icons"
             android:title="@string/holiday_themes_part_icons_title"
             android:summary="@string/holiday_themes_part_icons_summary"

@@ -27,6 +27,8 @@
     <string name="holiday_themes_part_wallpaper_summary">Home and lock screen. Left alone while Wallpaper Glymps is on</string>
     <string name="holiday_themes_part_colors_title">System colors</string>
     <string name="holiday_themes_part_colors_summary">Material You colors across the phone</string>
+    <string name="holiday_themes_part_lock_clock_title">Lock screen clock</string>
+    <string name="holiday_themes_part_lock_clock_summary">The clock\'s color. Your clock face stays</string>
     <string name="holiday_themes_part_icons_title">Settings icons</string>
     <string name="holiday_themes_part_icons_summary">The icons on Settings\' main page</string>
     <string name="holiday_themes_part_look_title">Expressive Studio</string>
@@ -38,5 +40,5 @@
     <string name="holiday_themes_try_category">Try a theme</string>
     <string name="holiday_themes_stop_trying">Stop trying</string>
 
-    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper and colors are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
+    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper, colors and lock screen clock color are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
 </resources>
