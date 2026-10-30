@@ -94,14 +94,14 @@ object HolidayThemes {
     private class Plan(val holiday: Holiday, val window: DateWindow?, val parts: Set<HolidayPart>)
 
     // -------------------------------------------------------------------------
-    // Settings
+    // Settings: a change takes effect at the next [evaluate], which the page runs through
+    // HolidayActionReceiver.evaluate
     // -------------------------------------------------------------------------
 
     fun isAuto(context: Context): Boolean = prefs(context)?.getBoolean(KEY_AUTO, true) ?: true
 
     fun setAuto(context: Context, on: Boolean) {
         prefs(context)?.edit()?.putBoolean(KEY_AUTO, on)?.apply()
-        evaluateAsync(context)
     }
 
     fun isPartOn(context: Context, part: HolidayPart): Boolean =
@@ -109,14 +109,12 @@ object HolidayThemes {
 
     fun setPartOn(context: Context, part: HolidayPart, on: Boolean) {
         prefs(context)?.edit()?.putBoolean(KEY_PART + part.name, on)?.apply()
-        evaluateAsync(context)
     }
 
     fun trial(context: Context): Holiday? = prefs(context)?.let { trial(it) }
 
     fun setTrial(context: Context, holiday: Holiday?) {
         prefs(context)?.edit()?.putString(KEY_TRIAL, holiday?.id)?.apply()
-        evaluateAsync(context)
     }
 
     /** The theme showing now. */
@@ -134,14 +132,20 @@ object HolidayThemes {
 
     /** Turns [scheduled]'s theme off until the holiday comes round again next year. */
     fun skipThisYear(context: Context) {
-        skipThisYear(context, null, null)
+        skip(context, null)
+    }
+
+    /** The notification's "Skip this year": [skip], then puts the theme off. */
+    internal fun skipThisYear(context: Context, key: String?, onDone: (() -> Unit)?) {
+        skip(context, key)
+        evaluateAsync(context, onDone)
     }
 
     /**
      * Skips the window [key] names (a [skipKey], as the notification carries it: by the time it's
      * tapped the date may have moved on to the next holiday), or [scheduled]'s when it's null.
      */
-    internal fun skipThisYear(context: Context, key: String?, onDone: (() -> Unit)?) {
+    private fun skip(context: Context, key: String?) {
         val prefs = prefs(context)
         val named: Holiday? = key?.let { HolidayCatalog.byId(it.substringBefore(':')) }
         val skip: Pair<Holiday, String>? = if (key != null && named != null) {
@@ -156,7 +160,6 @@ object HolidayThemes {
             if (trial(prefs) == holiday) editor.remove(KEY_TRIAL)
             editor.apply()
         }
-        evaluateAsync(context, onDone)
     }
 
     /** Undoes [skipThisYear] for [scheduled]'s window. */
@@ -169,7 +172,6 @@ object HolidayThemes {
                 .putStringSet(KEY_SKIPPED, skipped(prefs) - skipKey(holiday, window))
                 .apply()
         }
-        evaluateAsync(context)
     }
 
     /** What Studio's tiles are drawn in: the applied holiday while its LOOK part is applied. */
@@ -309,6 +311,8 @@ object HolidayThemes {
         if (HolidayPart.WALLPAPER in before) {
             applied(prefs)?.let { HolidayWallpaper.noteHoliday(context, it) }
         }
+        // Colors saved before their home wallpaper was noted go with the one we set
+        HolidayMonet.noteHomeWallpaper(context, prefs)
 
         // A part whose restore fails stays recorded as on, so the next evaluate tries again
         for (part in RESTORE_ORDER) {

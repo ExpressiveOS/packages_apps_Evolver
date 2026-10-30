@@ -15,11 +15,14 @@ import android.content.pm.PackageManager
 import android.os.ParcelFileDescriptor
 import android.os.UserManager
 import android.provider.Settings
+import android.system.Os
+import android.system.OsConstants
 import android.util.Log
 import androidx.annotation.WorkerThread
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 
 /**
@@ -98,6 +101,18 @@ object HolidayWallpaper {
         } catch (e: Exception) {
             Log.w(TAG, "Can't note which holiday's wallpaper is set", e)
         }
+    }
+
+    /** The home wallpaper id right after we last set the holiday wallpaper, if we did. */
+    @WorkerThread
+    fun setHomeId(context: Context): Int? = try {
+        context.createCredentialProtectedStorageContext()
+            .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getInt(KEY_SET_HOME_ID, NO_ID)
+            .takeIf { it >= 0 }
+    } catch (e: Exception) {
+        Log.w(TAG, "Can't tell which home wallpaper we set", e)
+        null
     }
 
     /** Whether the home screen shows the holiday wallpaper we set. Blocking IO. */
@@ -283,11 +298,28 @@ object HolidayWallpaper {
             edit.putString(screen.key, KIND_DEFAULT)
             return
         }
+        // Once the holiday wallpaper is set, this copy is the only one: it's on disk, under its
+        // name, before the preferences that point to it are, so a power cut can't leave it short
+        val partial = File(dir, screen.fileName + ".partial")
         ParcelFileDescriptor.AutoCloseInputStream(pfd).use { input ->
-            file.outputStream().use { input.copyTo(it) }
+            FileOutputStream(partial).use { output ->
+                input.copyTo(output)
+                output.fd.sync()
+            }
+        }
+        if (!partial.renameTo(file)) throw IOException("Can't save the ${screen.key} wallpaper")
+        val folder = Os.open(dir.path, OsConstants.O_RDONLY, 0)
+        try {
+            Os.fsync(folder)
+        } finally {
+            Os.close(folder)
         }
         edit.putString(screen.key, KIND_IMAGE)
     }
+
+    /** Whether [screen]'s saved copy is there. An empty one is no copy: it can't be shown. */
+    private fun hasCopy(dir: File, screen: Screen): Boolean =
+        File(dir, screen.fileName).let { it.isFile && it.length() > 0 }
 
     /**
      * Whether [screen]'s backup can go back: a saved copy, a live wallpaper still installed, or the
@@ -299,7 +331,7 @@ object HolidayWallpaper {
         dir: File,
         screen: Screen,
     ): Boolean = when (prefs.getString(screen.key, null)) {
-        KIND_IMAGE -> File(dir, screen.fileName).isFile
+        KIND_IMAGE -> hasCopy(dir, screen)
         KIND_LIVE -> liveComponent(context, prefs, screen) != null
         KIND_DEFAULT -> screen == Screen.LOCK
         else -> false
@@ -342,12 +374,10 @@ object HolidayWallpaper {
     ): Boolean {
         val restored = try {
             when (prefs.getString(screen.key, null)) {
-                KIND_IMAGE -> {
-                    val file = File(dir, screen.fileName)
-                    file.isFile && FileInputStream(file).use {
+                KIND_IMAGE -> hasCopy(dir, screen) &&
+                    FileInputStream(File(dir, screen.fileName)).use {
                         wm.setStream(it, null, true, which)
                     } != 0
-                }
                 KIND_LIVE -> {
                     val component = liveComponent(context, prefs, screen)
                     component != null && wm.setWallpaperComponentWithFlags(component, which)
