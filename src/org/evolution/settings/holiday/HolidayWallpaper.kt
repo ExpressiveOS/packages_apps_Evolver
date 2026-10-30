@@ -35,9 +35,10 @@ object HolidayWallpaper {
     private const val BACKUP_DIR = "holiday_wallpaper"
     private const val KEY_LOCK_GLYMPS = "lock_glymps_enabled"
 
-    // The wallpaper ids right after we set the holiday wallpaper
+    // The wallpaper ids right after we set the holiday wallpaper, and whose it is
     private const val KEY_SET_HOME_ID = "set_home_id"
     private const val KEY_SET_LOCK_ID = "set_lock_id"
+    private const val KEY_SET_HOLIDAY = "set_holiday"
     private const val NO_ID = -1
 
     // What a screen showed before the holidays, stored under the screen's key
@@ -71,6 +72,20 @@ object HolidayWallpaper {
             um?.hasUserRestriction(UserManager.DISALLOW_SET_WALLPAPER) != true
     }
 
+    /**
+     * The id of the holiday whose wallpaper we set, until the user's own goes back: one that
+     * couldn't go back yet can still show an earlier holiday's. Blocking IO.
+     */
+    @WorkerThread
+    fun setHoliday(context: Context): String? = try {
+        context.createCredentialProtectedStorageContext()
+            .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_SET_HOLIDAY, null)
+    } catch (e: Exception) {
+        Log.w(TAG, "Can't tell which holiday's wallpaper is set", e)
+        null
+    }
+
     /** Whether the home screen shows the holiday wallpaper we set. Blocking IO. */
     @WorkerThread
     fun showsHolidayHome(context: Context): Boolean = try {
@@ -98,8 +113,8 @@ object HolidayWallpaper {
             if (!homeOurs || !lockOurs) {
                 if (!dir.isDirectory && !dir.mkdirs()) throw IOException("Can't create $dir")
                 val edit = prefs.edit()
-                if (!homeOurs) backUp(wm, Screen.HOME, dir, edit)
-                if (!lockOurs) backUp(wm, Screen.LOCK, dir, edit)
+                if (!homeOurs) backUp(context, wm, Screen.HOME, dir, edit)
+                if (!lockOurs) backUp(context, wm, Screen.LOCK, dir, edit)
                 edit.commit()
             }
 
@@ -111,6 +126,7 @@ object HolidayWallpaper {
             prefs.edit()
                 .putInt(KEY_SET_HOME_ID, wm.getWallpaperId(FLAG_SYSTEM))
                 .putInt(KEY_SET_LOCK_ID, wm.getWallpaperId(FLAG_LOCK))
+                .putString(KEY_SET_HOLIDAY, holiday.id)
                 .commit()
             true
         } catch (e: Exception) {
@@ -195,6 +211,7 @@ object HolidayWallpaper {
 
     /** Records what [screen] shows now in [edit], copying a static image to the backup folder. */
     private fun backUp(
+        context: Context,
         wm: WallpaperManager,
         screen: Screen,
         dir: File,
@@ -215,6 +232,10 @@ object HolidayWallpaper {
         }
         val pfd = wm.getWallpaperFile(screen.flag)
         if (pfd == null) {
+            // In the background a user's live wallpaper isn't running, and looks the same
+            if (context.getSystemService(UserManager::class.java)?.isUserForeground != true) {
+                throw IOException("Can't tell the ${screen.key} wallpaper of a background user")
+            }
             edit.putString(screen.key, KIND_DEFAULT)
             return
         }
@@ -288,10 +309,10 @@ object HolidayWallpaper {
                     component != null && wm.setWallpaperComponentWithFlags(component, which)
                 }
                 // A lock screen of its own showing the built-in image: clearing it would show
-                // the home wallpaper there instead
+                // the home wallpaper there instead. Not the user's own, so not backed up.
                 KIND_DEFAULT -> screen == Screen.LOCK &&
                     (WallpaperManager.openDefaultWallpaper(context, FLAG_LOCK)?.use {
-                        wm.setStream(it, null, true, FLAG_LOCK)
+                        wm.setStream(it, null, false, FLAG_LOCK)
                     } ?: 0) != 0
                 else -> false
             }

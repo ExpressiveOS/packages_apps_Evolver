@@ -9,6 +9,7 @@ import android.app.WallpaperManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.UserManager
 import android.provider.Settings
 import android.util.Log
 import org.json.JSONException
@@ -92,7 +93,7 @@ internal object HolidayMonet {
         } else if (carried == null) {
             // Newly saved colors go with the home wallpaper showing now
             val wallpaper = try {
-                homeWallpaper(WallpaperManager.getInstance(context))
+                homeWallpaper(context, WallpaperManager.getInstance(context))
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't note the home wallpaper", e)
                 null
@@ -188,10 +189,7 @@ internal object HolidayMonet {
                 return false
             }
             val colors = wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
-                // None from the wallpaper the colors were saved with: still to come, and SystemUI
-                // judges them then, or it never had any, as before the holiday. Another one
-                // without colors has none to keep them by.
-                ?: return prefs.getString(KEY_HOME_WALLPAPER, null) != homeWallpaper(wm)
+                ?: return otherHomeWallpaper(context, wm, prefs)
             val seeds = HashSet<Int>()
             // Every color SystemUI could take as a seed (ColorScheme.getSeedColors)
             for (color in colors.allColors.keys) seeds += color or OPAQUE
@@ -230,9 +228,34 @@ internal object HolidayMonet {
         }
     }
 
-    /** The home wallpaper as KEY_HOME_WALLPAPER holds it: a live one's component, or empty. */
-    private fun homeWallpaper(wm: WallpaperManager): String =
-        wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)?.component?.flattenToString() ?: ""
+    /**
+     * With no home colors: whether home shows another wallpaper than the one the colors were
+     * saved with. That one's colors are still to come, and SystemUI judges them then, or it never
+     * had any, as before the holiday. Another one without colors has none to keep them by.
+     */
+    private fun otherHomeWallpaper(
+        context: Context,
+        wm: WallpaperManager,
+        prefs: SharedPreferences,
+    ): Boolean {
+        val saved = prefs.getString(KEY_HOME_WALLPAPER, null)
+        val now = homeWallpaper(context, wm)
+        if (saved != null && now != null) return saved != now
+        // Not known (saved before it was noted, or by a user in the background): by the home
+        // wallpaper the engine last left instead
+        val home = wm.getWallpaperId(WallpaperManager.FLAG_SYSTEM)
+        return home != prefs.getInt(KEY_HOME_ID, home)
+    }
+
+    /**
+     * The home wallpaper as KEY_HOME_WALLPAPER holds it: a live one's component, or empty. Null
+     * for a user in the background, whose live wallpaper isn't running and looks like none.
+     */
+    private fun homeWallpaper(context: Context, wm: WallpaperManager): String? {
+        if (context.getSystemService(UserManager::class.java)?.isUserForeground != true) return null
+        return wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)?.component?.flattenToString()
+            ?: ""
+    }
 
     /** An RRGGBB (or #RRGGBB) color as the JSON holds it, opaque; null if it isn't one. */
     private fun parseColor(value: String): Int? {

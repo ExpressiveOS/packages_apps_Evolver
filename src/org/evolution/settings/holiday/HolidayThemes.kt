@@ -212,7 +212,8 @@ object HolidayThemes {
                 Log.w(TAG, "Couldn't update the holiday theme notification", e)
             }
             try {
-                schedule(context, today)
+                // A part that didn't go on or come off is tried again the next day
+                schedule(context, today, retry = appliedParts(prefs) != plan?.parts.orEmpty())
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't schedule the next holiday theme change", e)
             }
@@ -303,7 +304,9 @@ object HolidayThemes {
         }
         if (target != null) {
             for (part in APPLY_ORDER) {
-                if (part !in wanted || (part in before && !switching)) continue
+                if (part !in wanted) continue
+                // On already, unless it still shows an earlier holiday: it couldn't come off then
+                if (part in before && !switching && !showsOther(context, part, target)) continue
                 if (applyPart(context, part, target, prefs)) {
                     now += part
                 } else if (part in before) {
@@ -378,6 +381,14 @@ object HolidayThemes {
         false
     }
 
+    /**
+     * Whether [part] shows a holiday other than [holiday]: the wallpaper, which can't come off
+     * while wallpapers can't be set, can still show the one before a switch.
+     */
+    private fun showsOther(context: Context, part: HolidayPart, holiday: Holiday): Boolean =
+        part == HolidayPart.WALLPAPER &&
+            HolidayWallpaper.setHoliday(context).let { it != null && it != holiday.id }
+
     private fun wallpaperAllowed(context: Context): Boolean = try {
         HolidayWallpaper.isAllowed(context)
     } catch (e: Exception) {
@@ -408,9 +419,9 @@ object HolidayThemes {
     // Scheduling
     // -------------------------------------------------------------------------
 
-    /** Wakes the engine at the start of the next day a theme can start or end. */
-    private fun schedule(context: Context, today: LocalDate) {
-        val next = HolidayCatalog.nextChange(today)
+    /** Wakes the engine at the start of the next day a theme can start or end, or tomorrow. */
+    private fun schedule(context: Context, today: LocalDate, retry: Boolean) {
+        val next = if (retry) today.plusDays(1) else HolidayCatalog.nextChange(today)
         setAlarm(context, next.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
     }
 
