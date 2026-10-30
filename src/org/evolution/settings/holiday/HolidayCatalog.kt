@@ -5,6 +5,7 @@
 
 package org.evolution.settings.holiday
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import com.android.settings.R
@@ -70,6 +71,8 @@ enum class Holiday(
     val id: String,
     @StringRes val title: Int,
     @RawRes val wallpaper: Int,
+    /** Its picture at the top of Quick Settings, which SystemUI finds by name (HolidayQsHeader). */
+    @DrawableRes val qsHeader: Int,
     val colors: HolidayColors,
 ) {
     /** The week of Thanksgiving, Monday to Sunday (US, the fourth Thursday of November). */
@@ -77,6 +80,7 @@ enum class Holiday(
         id = "thanksgiving",
         title = R.string.holiday_thanksgiving,
         wallpaper = R.raw.holiday_wallpaper_thanksgiving,
+        qsHeader = R.drawable.holiday_qs_header_thanksgiving,
         colors = HolidayColors(
             seed = 0xFFB5651D,
             secondarySeed = 0xFF8E2A3B,
@@ -94,6 +98,7 @@ enum class Holiday(
         id = "christmas",
         title = R.string.holiday_christmas,
         wallpaper = R.raw.holiday_wallpaper_christmas,
+        qsHeader = R.drawable.holiday_qs_header_christmas,
         colors = HolidayColors(
             seed = 0xFFC62828,
             secondarySeed = 0xFF1B7F4D,
@@ -111,6 +116,7 @@ enum class Holiday(
         id = "newyear",
         title = R.string.holiday_newyear,
         wallpaper = R.raw.holiday_wallpaper_newyear,
+        qsHeader = R.drawable.holiday_qs_header_newyear,
         colors = HolidayColors(
             seed = 0xFFC9A227,
             secondarySeed = 0xFF2A3FA8,
@@ -128,6 +134,7 @@ enum class Holiday(
         id = "valentines",
         title = R.string.holiday_valentines,
         wallpaper = R.raw.holiday_wallpaper_valentines,
+        qsHeader = R.drawable.holiday_qs_header_valentines,
         colors = HolidayColors(
             seed = 0xFFE0457B,
             secondarySeed = 0xFF7B1FA2,
@@ -145,6 +152,7 @@ enum class Holiday(
         id = "stpatricks",
         title = R.string.holiday_stpatricks,
         wallpaper = R.raw.holiday_wallpaper_stpatricks,
+        qsHeader = R.drawable.holiday_qs_header_stpatricks,
         colors = HolidayColors(
             seed = 0xFF1E9E5A,
             secondarySeed = 0xFFC99A1E,
@@ -162,6 +170,7 @@ enum class Holiday(
         id = "easter",
         title = R.string.holiday_easter,
         wallpaper = R.raw.holiday_wallpaper_easter,
+        qsHeader = R.drawable.holiday_qs_header_easter,
         colors = HolidayColors(
             seed = 0xFFA07BEA,
             secondarySeed = 0xFF5CC09C,
@@ -179,6 +188,7 @@ enum class Holiday(
         id = "july4",
         title = R.string.holiday_july4,
         wallpaper = R.raw.holiday_wallpaper_july4,
+        qsHeader = R.drawable.holiday_qs_header_july4,
         colors = HolidayColors(
             seed = 0xFF2F5BD3,
             secondarySeed = 0xFFC1121F,
@@ -196,6 +206,7 @@ enum class Holiday(
         id = "halloween",
         title = R.string.holiday_halloween,
         wallpaper = R.raw.holiday_wallpaper_halloween,
+        qsHeader = R.drawable.holiday_qs_header_halloween,
         colors = HolidayColors(
             seed = 0xFFE8650A,
             secondarySeed = 0xFF6B21A8,

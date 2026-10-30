@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- The Quick Settings picture for Easter (HolidayQsHeader), in the light or dark theme's
+     version: one frame as an animation, which SystemUI shows as it is instead of crossfading it
+     in -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+
+    <!-- A frame needs a duration; with one frame it never moves on -->
+    <item
+        android:drawable="@drawable/holiday_qs_header_easter_art"
+        android:duration="1000" />
+</animation-list>

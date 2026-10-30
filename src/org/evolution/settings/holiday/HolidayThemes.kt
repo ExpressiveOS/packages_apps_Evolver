@@ -42,6 +42,9 @@ enum class HolidayPart {
 
     /** The lock screen clock's color. Its face and font stay the user's. */
     LOCK_CLOCK,
+
+    /** The holiday's picture at the top of Quick Settings, as its header image. */
+    QS_HEADER,
 }
 
 /**
@@ -79,6 +82,7 @@ object HolidayThemes {
         HolidayPart.ICONS,
         HolidayPart.BANNER,
         HolidayPart.LOOK,
+        HolidayPart.QS_HEADER,
     )
     /**
      * Colors before the wallpaper, so SystemUI judges the user's own colors against the wallpaper
@@ -86,6 +90,7 @@ object HolidayThemes {
      * does for any wallpaper change.
      */
     private val RESTORE_ORDER = listOf(
+        HolidayPart.QS_HEADER,
         HolidayPart.LOCK_CLOCK,
         HolidayPart.LOOK,
         HolidayPart.BANNER,
@@ -116,8 +121,20 @@ object HolidayThemes {
         prefs(context)?.getBoolean(KEY_PART + part.name, true) ?: true
 
     fun setPartOn(context: Context, part: HolidayPart, on: Boolean) {
-        prefs(context)?.edit()?.putBoolean(KEY_PART + part.name, on)?.apply()
+        val editor = prefs(context)?.edit() ?: return
+        editor.putBoolean(KEY_PART + part.name, on)
+        // Switched back on, the Quick Settings picture is asked for again, though the user turned
+        // the header image off during a holiday
+        if (part == HolidayPart.QS_HEADER && on) HolidayQsHeader.askAgain(editor)
+        editor.apply()
     }
+
+    /**
+     * Whether the Quick Settings picture stays off, the user having turned the header image off
+     * during a holiday: switching its part off and on asks for it again.
+     */
+    fun isQsHeaderHeldOff(context: Context): Boolean =
+        prefs(context)?.let { HolidayQsHeader.isHeldOff(context, it) } ?: false
 
     fun trial(context: Context): Holiday? = prefs(context)?.let { trial(it) }
 
@@ -299,7 +316,8 @@ object HolidayThemes {
 
     /**
      * Whether what's showing isn't [plan] yet: another holiday or other parts, the wallpaper still
-     * an earlier holiday's, or the lock screen clock in the tone for another lock wallpaper.
+     * an earlier holiday's, the lock screen clock in the tone for another lock wallpaper, or the
+     * Quick Settings picture off though it's asked for.
      */
     private fun pending(context: Context, prefs: SharedPreferences, plan: Plan?): Boolean {
         val parts = appliedParts(prefs)
@@ -333,7 +351,8 @@ object HolidayThemes {
             for (part in APPLY_ORDER) {
                 if (part !in wanted) continue
                 // On already, unless it still shows an earlier holiday (it couldn't come off then),
-                // or the lock screen clock a tone for another lock wallpaper
+                // the lock screen clock a tone for another lock wallpaper, or the Quick Settings
+                // picture is off though it's asked for
                 val stale = part in before && !switching
                 if (stale && !showsOther(context, part, target, prefs)) continue
                 if (applyPart(context, part, target, prefs, refresh = stale)) {
@@ -387,6 +406,7 @@ object HolidayThemes {
             )
             // Studio reads studioHoliday()
             HolidayPart.LOOK -> true
+            HolidayPart.QS_HEADER -> HolidayQsHeader.apply(context, holiday, prefs)
         }.also { applied ->
             if (!applied) Log.w(TAG, "Couldn't apply ${holiday.id}'s ${part.name}")
         }
@@ -412,6 +432,7 @@ object HolidayThemes {
                 context.contentResolver, HolidayCatalog.KEY_BRAND_PALETTE, null
             )
             HolidayPart.LOOK -> true
+            HolidayPart.QS_HEADER -> HolidayQsHeader.restore(context, prefs)
         }.also { restored ->
             if (!restored) Log.w(TAG, "Couldn't restore ${part.name}")
         }
@@ -422,8 +443,9 @@ object HolidayThemes {
 
     /**
      * Whether [part] shows other than [holiday]'s: the wallpaper, which can't come off while
-     * wallpapers can't be set, can still show the one before a switch, and the lock screen clock
-     * can be in the tone for another lock wallpaper than the one up now.
+     * wallpapers can't be set, can still show the one before a switch, the lock screen clock can
+     * be in the tone for another lock wallpaper than the one up now, and the Quick Settings
+     * picture can be off, left off for the user, who has since asked for it again.
      */
     private fun showsOther(
         context: Context,
@@ -434,6 +456,7 @@ object HolidayThemes {
         HolidayPart.WALLPAPER ->
             HolidayWallpaper.setHoliday(context).let { it != null && it != holiday.id }
         HolidayPart.LOCK_CLOCK -> HolidayLockClock.needsRefresh(context, holiday, prefs)
+        HolidayPart.QS_HEADER -> HolidayQsHeader.needsRefresh(context, prefs)
         else -> false
     }
 

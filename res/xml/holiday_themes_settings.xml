@@ -53,6 +53,14 @@
             android:defaultValue="true"
             android:persistent="false" />
 
+        <!-- The page changes its summary while holidays leave the header image off -->
+        <SwitchPreferenceCompat
+            android:key="holiday_part_qs_header"
+            android:title="@string/holiday_themes_part_qs_header_title"
+            android:summary="@string/holiday_themes_part_qs_header_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
         <SwitchPreferenceCompat
             android:key="holiday_part_icons"
             android:title="@string/holiday_themes_part_icons_title"
