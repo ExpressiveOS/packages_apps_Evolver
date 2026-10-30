@@ -86,6 +86,20 @@ object HolidayWallpaper {
         null
     }
 
+    /** Notes [holiday] as the one whose wallpaper is set, if that wasn't noted then. */
+    @WorkerThread
+    fun noteHoliday(context: Context, holiday: Holiday) {
+        try {
+            val prefs = context.createCredentialProtectedStorageContext()
+                .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            if (prefs.contains(KEY_SET_HOME_ID) && !prefs.contains(KEY_SET_HOLIDAY)) {
+                prefs.edit().putString(KEY_SET_HOLIDAY, holiday.id).commit()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Can't note which holiday's wallpaper is set", e)
+        }
+    }
+
     /** Whether the home screen shows the holiday wallpaper we set. Blocking IO. */
     @WorkerThread
     fun showsHolidayHome(context: Context): Boolean = try {
@@ -133,6 +147,36 @@ object HolidayWallpaper {
             Log.w(TAG, "Failed to set the ${holiday.id} wallpaper", e)
             // Not applied: whatever of ours is still showing goes back to the user's own
             restore(context)
+            false
+        }
+    }
+
+    /**
+     * Puts [holiday]'s wallpaper on the screens still showing an earlier holiday's, which couldn't
+     * come off then: a screen the user changed since keeps what they chose. Blocking IO.
+     */
+    @WorkerThread
+    fun refresh(context: Context, holiday: Holiday): Boolean {
+        return try {
+            val prefs = context.createCredentialProtectedStorageContext()
+                .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val wm = WallpaperManager.getInstance(context)
+            val homeOurs = showsOurs(wm, prefs, Screen.HOME)
+            val lockOurs = showsOurs(wm, prefs, Screen.LOCK)
+            val which = (if (homeOurs) FLAG_SYSTEM else 0) or (if (lockOurs) FLAG_LOCK else 0)
+            if (which != 0) {
+                val id = context.resources.openRawResource(holiday.wallpaper).use {
+                    wm.setStream(it, null, false, which)
+                }
+                if (id == 0) throw IOException("The wallpaper service refused the wallpaper")
+            }
+            val edit = prefs.edit().putString(KEY_SET_HOLIDAY, holiday.id)
+            if (homeOurs) edit.putInt(KEY_SET_HOME_ID, wm.getWallpaperId(FLAG_SYSTEM))
+            if (lockOurs) edit.putInt(KEY_SET_LOCK_ID, wm.getWallpaperId(FLAG_LOCK))
+            edit.commit()
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to set the ${holiday.id} wallpaper", e)
             false
         }
     }

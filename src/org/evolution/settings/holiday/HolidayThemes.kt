@@ -212,8 +212,8 @@ object HolidayThemes {
                 Log.w(TAG, "Couldn't update the holiday theme notification", e)
             }
             try {
-                // A part that didn't go on or come off is tried again the next day
-                schedule(context, today, retry = appliedParts(prefs) != plan?.parts.orEmpty())
+                // What didn't go on or come off is tried again the next day
+                schedule(context, today, retry = pending(context, prefs, plan))
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't schedule the next holiday theme change", e)
             }
@@ -228,7 +228,7 @@ object HolidayThemes {
     /**
      * The alarm at a holiday's start or end. Themes switch while the screen is off, so nothing
      * jumps while the phone is in use: with the screen on, a change waits 15 minutes and looks
-     * again.
+     * again. A user in the background isn't on the screen, so theirs doesn't wait.
      */
     fun onAlarm(context: Context) {
         onAlarm(context, null)
@@ -236,9 +236,10 @@ object HolidayThemes {
 
     internal fun onAlarm(context: Context, onDone: (() -> Unit)?) {
         runAsync(context, onDone) { app ->
-            val interactive = app.getSystemService(PowerManager::class.java)?.isInteractive == true
+            val screenOn = app.getSystemService(PowerManager::class.java)?.isInteractive == true
+            val foreground = app.getSystemService(UserManager::class.java)?.isUserForeground == true
             val prefs = prefs(app)
-            if (interactive && prefs != null && wouldChange(app, prefs)) {
+            if (screenOn && foreground && prefs != null && wouldChange(app, prefs)) {
                 setAlarm(app, System.currentTimeMillis() + SCREEN_ON_DELAY_MS)
             } else {
                 evaluate(app)
@@ -281,9 +282,18 @@ object HolidayThemes {
         return if (parts.isEmpty()) null else Plan(holiday, dated?.second, parts)
     }
 
-    private fun wouldChange(context: Context, prefs: SharedPreferences): Boolean {
-        val plan = planFor(context, prefs, LocalDate.now())
-        return plan?.holiday != applied(prefs) || plan?.parts.orEmpty() != appliedParts(prefs)
+    private fun wouldChange(context: Context, prefs: SharedPreferences): Boolean =
+        pending(context, prefs, planFor(context, prefs, LocalDate.now()))
+
+    /**
+     * Whether what's showing isn't [plan] yet: another holiday or other parts, or the wallpaper
+     * still an earlier holiday's.
+     */
+    private fun pending(context: Context, prefs: SharedPreferences, plan: Plan?): Boolean {
+        val parts = appliedParts(prefs)
+        return plan?.holiday != applied(prefs) || plan?.parts.orEmpty() != parts ||
+            (plan != null && HolidayPart.WALLPAPER in parts &&
+                showsOther(context, HolidayPart.WALLPAPER, plan.holiday))
     }
 
     /** Applies and restores part by part, persists what's on and returns it. */
@@ -295,6 +305,10 @@ object HolidayThemes {
         // the user's own wallpaper and colors stay saved from before the first.
         val switching = target != applied(prefs)
         val now = before.toMutableSet()
+        // A wallpaper set before its holiday was noted is the one recorded as showing
+        if (HolidayPart.WALLPAPER in before) {
+            applied(prefs)?.let { HolidayWallpaper.noteHoliday(context, it) }
+        }
 
         // A part whose restore fails stays recorded as on, so the next evaluate tries again
         for (part in RESTORE_ORDER) {
@@ -306,8 +320,9 @@ object HolidayThemes {
             for (part in APPLY_ORDER) {
                 if (part !in wanted) continue
                 // On already, unless it still shows an earlier holiday: it couldn't come off then
-                if (part in before && !switching && !showsOther(context, part, target)) continue
-                if (applyPart(context, part, target, prefs)) {
+                val stale = part in before && !switching
+                if (stale && !showsOther(context, part, target)) continue
+                if (applyPart(context, part, target, prefs, refresh = stale)) {
                     now += part
                 } else if (part in before) {
                     // Don't leave the last holiday's version showing
@@ -329,17 +344,25 @@ object HolidayThemes {
         return if (target != null) now else emptySet()
     }
 
-    /** Puts [part] of [holiday] on. False (or a throw, caught here) when it didn't go on. */
+    /**
+     * Puts [part] of [holiday] on, or with [refresh] onto what still shows an earlier holiday's.
+     * False (or a throw, caught here) when it didn't go on.
+     */
     private fun applyPart(
         context: Context,
         part: HolidayPart,
         holiday: Holiday,
         prefs: SharedPreferences,
+        refresh: Boolean = false,
     ): Boolean = try {
         when (part) {
             HolidayPart.COLORS -> HolidayMonet.apply(context, holiday, prefs)
             HolidayPart.WALLPAPER -> HolidayMonet.changingWallpaper(context, prefs) {
-                HolidayWallpaper.apply(context, holiday)
+                if (refresh) {
+                    HolidayWallpaper.refresh(context, holiday)
+                } else {
+                    HolidayWallpaper.apply(context, holiday)
+                }
             }
             HolidayPart.ICONS -> HolidayOverlay.apply(context, holiday)
             HolidayPart.BANNER -> Settings.Secure.putString(
@@ -419,13 +442,21 @@ object HolidayThemes {
     // Scheduling
     // -------------------------------------------------------------------------
 
-    /** Wakes the engine at the start of the next day a theme can start or end, or tomorrow. */
+    /**
+     * Wakes the engine at the start of the next day a theme can start or end, or tomorrow to
+     * [retry]. Only a day a theme starts or ends needs to be on time.
+     */
     private fun schedule(context: Context, today: LocalDate, retry: Boolean) {
-        val next = if (retry) today.plusDays(1) else HolidayCatalog.nextChange(today)
-        setAlarm(context, next.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+        val change = HolidayCatalog.nextChange(today)
+        val next = if (retry) today.plusDays(1) else change
+        setAlarm(
+            context,
+            next.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            exact = next == change,
+        )
     }
 
-    private fun setAlarm(context: Context, atMillis: Long) {
+    private fun setAlarm(context: Context, atMillis: Long, exact: Boolean = true) {
         val alarms = context.getSystemService(AlarmManager::class.java) ?: return
         val intent = PendingIntent.getBroadcast(
             context,
@@ -434,7 +465,7 @@ object HolidayThemes {
                 .setAction(HolidayActionReceiver.ACTION_ALARM),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        if (alarms.canScheduleExactAlarms()) {
+        if (exact && alarms.canScheduleExactAlarms()) {
             alarms.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, atMillis, intent)
         } else {
             alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, atMillis, intent)

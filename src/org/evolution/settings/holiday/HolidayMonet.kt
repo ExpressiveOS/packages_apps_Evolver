@@ -249,12 +249,15 @@ internal object HolidayMonet {
 
     /**
      * The home wallpaper as KEY_HOME_WALLPAPER holds it: a live one's component, or empty. Null
-     * for a user in the background, whose live wallpaper isn't running and looks like none.
+     * when it can't be told: in the background a user's live wallpaper isn't running and looks
+     * like the built-in one, and only a static one's image shows what it is.
      */
     private fun homeWallpaper(context: Context, wm: WallpaperManager): String? {
-        if (context.getSystemService(UserManager::class.java)?.isUserForeground != true) return null
-        return wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)?.component?.flattenToString()
-            ?: ""
+        if (context.getSystemService(UserManager::class.java)?.isUserForeground == true) {
+            return wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)?.component?.flattenToString()
+                ?: ""
+        }
+        return wm.getWallpaperFile(WallpaperManager.FLAG_SYSTEM)?.use { "" }
     }
 
     /** An RRGGBB (or #RRGGBB) color as the JSON holds it, opaque; null if it isn't one. */
