@@ -66,6 +66,10 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
                 ?.let { part to it }
         }.toMap()
         parts.values.forEach { it.onPreferenceChangeListener = this }
+        // The boot animation is the whole phone's: only its owner colors it, on a build with the
+        // holiday animation
+        parts[HolidayPart.BOOT_ANIMATION]?.isVisible =
+            HolidayThemes.isBootAnimationOffered(preferenceManager.context)
 
         stopTrying.setOnPreferenceClickListener {
             change { app -> HolidayThemes.setTrial(app, null) }

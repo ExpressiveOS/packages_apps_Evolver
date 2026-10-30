@@ -276,7 +276,7 @@ enum class Holiday(
     }
 }
 
-/** Finding holidays by date, and the brand palette the other apps read. */
+/** Finding holidays by date, and the palettes the other apps read. */
 object HolidayCatalog {
 
     /**
@@ -286,6 +286,13 @@ object HolidayCatalog {
      * [brandPalette].
      */
     const val KEY_BRAND_PALETTE = "expressiveos_holiday_palette"
+
+    /**
+     * Settings.Secure key, the system user's, holding the holiday boot animation's colours while
+     * it's on, which SystemUI writes into the boot animation's colour properties in place of its
+     * Monet ones. Unset means Monet's. See [bootPalette].
+     */
+    const val KEY_BOOT_PALETTE = "expressiveos_holiday_bootanim"
 
     fun byId(id: String?): Holiday? = Holiday.entries.firstOrNull { it.id == id }
 
@@ -330,4 +337,17 @@ object HolidayCatalog {
             listOf(petals[1].deep, petals[0].deep).joinToString(",") { hex(it) },
         ).joinToString(";")
     }
+
+    /**
+     * [holiday]'s boot animation colours: its petals' mids, in petal order, as the holiday boot
+     * animation's four colour channels take them.
+     */
+    fun bootColors(holiday: Holiday): List<Int> = holiday.colors.petals.map { it.mid }
+
+    /**
+     * The [KEY_BOOT_PALETTE] value for [holiday]: [bootColors] as RRGGBB hex, split by ','. For
+     * example "FF8A1F,B26BFF,FFB347,7CE35A".
+     */
+    fun bootPalette(holiday: Holiday): String =
+        bootColors(holiday).joinToString(",") { String.format("%06X", 0xFFFFFF and it) }
 }
