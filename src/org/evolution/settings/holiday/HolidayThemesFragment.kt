@@ -66,6 +66,10 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
                 ?.let { part to it }
         }.toMap()
         parts.values.forEach { it.onPreferenceChangeListener = this }
+        // The boot animation is the whole phone's: only its owner colors it, on a build with the
+        // holiday animation
+        parts[HolidayPart.BOOT_ANIMATION]?.isVisible =
+            HolidayThemes.isBootAnimationOffered(preferenceManager.context)
 
         stopTrying.setOnPreferenceClickListener {
             change { app -> HolidayThemes.setTrial(app, null) }
@@ -137,6 +141,14 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
         skip.setTitle(if (skipped) R.string.holiday_themes_unskip else R.string.holiday_themes_skip)
 
         parts.forEach { (part, row) -> row.isChecked = HolidayThemes.isPartOn(context, part) }
+        // While holidays leave the header image off, the Quick Settings picture's row says why
+        parts[HolidayPart.QS_HEADER]?.setSummary(
+            if (HolidayThemes.isQsHeaderHeldOff(context)) {
+                R.string.holiday_themes_part_qs_header_held_off
+            } else {
+                R.string.holiday_themes_part_qs_header_summary
+            }
+        )
 
         stopTrying.isVisible = HolidayThemes.trial(context) != null
         tries.forEach { (holiday, row) ->

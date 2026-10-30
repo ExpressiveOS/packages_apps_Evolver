@@ -34,11 +34,29 @@ enum class HolidayPart {
     /** The icons on Settings' main page, in the holiday's petals. */
     ICONS,
 
-    /** Expressive Studio's tiles, in the holiday's petals. */
+    /**
+     * Expressive Studio's tiles, in the holiday's petals, and the greeting at the top of Settings
+     * (HolidayHeaderController).
+     */
     LOOK,
 
-    /** The glowing ExpressiveOS wordmark in About and the Updater. */
+    /**
+     * The colors of the glowing ExpressiveOS wordmark (in About, the Updater and the header at the
+     * top of Settings) and of the easter egg's stars.
+     */
     BANNER,
+
+    /** The lock screen clock's color. Its face and font stay the user's. */
+    LOCK_CLOCK,
+
+    /** The holiday's picture at the top of Quick Settings, as its header image. */
+    QS_HEADER,
+
+    /**
+     * The boot animation in the holiday's colors, from the next restart. Only the phone owner's
+     * engine puts it on: it's the whole phone's.
+     */
+    BOOT_ANIMATION,
 }
 
 /**
@@ -65,20 +83,32 @@ object HolidayThemes {
     /** How long a theme change waits while the screen is on, before it looks again. */
     private val SCREEN_ON_DELAY_MS = TimeUnit.MINUTES.toMillis(15)
 
-    /** Colors before the wallpaper, so the new wallpaper's colors don't win. */
+    /**
+     * The boot animation first, so SystemUI already takes the holiday's colors for it when the
+     * colors going on have it write them; colors before the wallpaper, so the new wallpaper's
+     * colors don't win, and the lock screen clock after it, so its tone is the one for the
+     * holiday's lock wallpaper.
+     */
     private val APPLY_ORDER = listOf(
+        HolidayPart.BOOT_ANIMATION,
         HolidayPart.COLORS,
         HolidayPart.WALLPAPER,
+        HolidayPart.LOCK_CLOCK,
         HolidayPart.ICONS,
         HolidayPart.BANNER,
         HolidayPart.LOOK,
+        HolidayPart.QS_HEADER,
     )
     /**
-     * Colors before the wallpaper, so SystemUI judges the user's own colors against the wallpaper
-     * put back (keeping a wallpaper color option of that wallpaper, dropping any other), as it
-     * does for any wallpaper change.
+     * The boot animation first, so the user's own colors going back have SystemUI write theirs
+     * for it, not the holiday's; colors before the wallpaper, so SystemUI judges the user's own
+     * colors against the wallpaper put back (keeping a wallpaper color option of that wallpaper,
+     * dropping any other), as it does for any wallpaper change.
      */
     private val RESTORE_ORDER = listOf(
+        HolidayPart.BOOT_ANIMATION,
+        HolidayPart.QS_HEADER,
+        HolidayPart.LOCK_CLOCK,
         HolidayPart.LOOK,
         HolidayPart.BANNER,
         HolidayPart.ICONS,
@@ -108,7 +138,30 @@ object HolidayThemes {
         prefs(context)?.getBoolean(KEY_PART + part.name, true) ?: true
 
     fun setPartOn(context: Context, part: HolidayPart, on: Boolean) {
-        prefs(context)?.edit()?.putBoolean(KEY_PART + part.name, on)?.apply()
+        val editor = prefs(context)?.edit() ?: return
+        editor.putBoolean(KEY_PART + part.name, on)
+        // Switched back on, the Quick Settings picture is asked for again, though the user turned
+        // the header image off during a holiday
+        if (part == HolidayPart.QS_HEADER && on) HolidayQsHeader.askAgain(editor)
+        editor.apply()
+    }
+
+    /**
+     * Whether the Quick Settings picture stays off, the user having turned the header image off
+     * during a holiday: switching its part off and on asks for it again.
+     */
+    fun isQsHeaderHeldOff(context: Context): Boolean =
+        prefs(context)?.let { HolidayQsHeader.isHeldOff(context, it) } ?: false
+
+    /**
+     * Whether the boot animation can take a holiday's colors for this user: the phone's owner, on
+     * a build with the holiday animation. The page leaves its part out otherwise.
+     */
+    fun isBootAnimationOffered(context: Context): Boolean = try {
+        HolidayBootAnim.isOffered(context)
+    } catch (e: Exception) {
+        Log.w(TAG, "Couldn't check for the holiday boot animation", e)
+        false
     }
 
     fun trial(context: Context): Holiday? = prefs(context)?.let { trial(it) }
@@ -174,10 +227,38 @@ object HolidayThemes {
         }
     }
 
-    /** What Studio's tiles are drawn in: the applied holiday while its LOOK part is applied. */
+    /**
+     * What Studio's tiles are drawn in, and the holiday the header at the top of Settings greets:
+     * the applied holiday while its LOOK part is applied.
+     */
     fun studioHoliday(context: Context): Holiday? {
         val prefs = prefs(context) ?: return null
         return if (HolidayPart.LOOK in appliedParts(prefs)) applied(prefs) else null
+    }
+
+    /**
+     * For [listen]: calls [onChange] on the main thread each time the theme showing changes
+     * ([applied], its parts and so [studioHoliday]), with true, or the one tried, with false.
+     */
+    fun listener(onChange: (applied: Boolean) -> Unit) =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            when (key) {
+                // Null when all of it went
+                null, KEY_APPLIED, KEY_APPLIED_PARTS -> onChange(true)
+                KEY_TRIAL -> onChange(false)
+            }
+        }
+
+    /**
+     * Has [listener] follow the engine's state until [unlisten]. The state holds it weakly, so
+     * the caller keeps it.
+     */
+    fun listen(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs(context)?.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unlisten(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs(context)?.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     // -------------------------------------------------------------------------
@@ -214,8 +295,10 @@ object HolidayThemes {
                 Log.w(TAG, "Couldn't update the holiday theme notification", e)
             }
             try {
-                // What didn't go on or come off is tried again the next day
-                schedule(context, today, retry = pending(context, prefs, plan))
+                // What didn't go on or come off is tried again the next day, and while the lock
+                // screen clock is on its tone is looked at again: the lock wallpaper can change
+                val retry = pending(context, prefs, plan) || HolidayPart.LOCK_CLOCK in applied
+                schedule(context, today, retry)
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't schedule the next holiday theme change", e)
             }
@@ -278,7 +361,8 @@ object HolidayThemes {
         val holiday = trial ?: dated?.first ?: return null
         val parts = HolidayPart.entries.filter { part ->
             prefs.getBoolean(KEY_PART + part.name, true) &&
-                (part != HolidayPart.WALLPAPER || wallpaperAllowed(context))
+                (part != HolidayPart.WALLPAPER || wallpaperAllowed(context)) &&
+                (part != HolidayPart.BOOT_ANIMATION || bootAnimationAllowed(context))
         }.toSet()
         // A theme with every part off is no theme
         return if (parts.isEmpty()) null else Plan(holiday, dated?.second, parts)
@@ -288,14 +372,15 @@ object HolidayThemes {
         pending(context, prefs, planFor(context, prefs, LocalDate.now()))
 
     /**
-     * Whether what's showing isn't [plan] yet: another holiday or other parts, or the wallpaper
-     * still an earlier holiday's.
+     * Whether what's showing isn't [plan] yet: another holiday or other parts, the wallpaper still
+     * an earlier holiday's, the lock screen clock in the tone for another lock wallpaper, the
+     * Quick Settings picture off though it's asked for, or the boot animation not ours or in an
+     * earlier holiday's colors where a change didn't finish.
      */
     private fun pending(context: Context, prefs: SharedPreferences, plan: Plan?): Boolean {
         val parts = appliedParts(prefs)
         return plan?.holiday != applied(prefs) || plan?.parts.orEmpty() != parts ||
-            (plan != null && HolidayPart.WALLPAPER in parts &&
-                showsOther(context, HolidayPart.WALLPAPER, plan.holiday))
+            (plan != null && parts.any { showsOther(context, it, plan.holiday, prefs) })
     }
 
     /** Applies and restores part by part, persists what's on and returns it. */
@@ -313,6 +398,9 @@ object HolidayThemes {
         }
         // Colors saved before their home wallpaper was noted go with the one we set
         HolidayMonet.noteHomeWallpaper(context, prefs)
+        // The holiday boot animation left on with nothing recording it (the engine's state lost,
+        // or putting it on cut short) comes off: no restore would take it off otherwise
+        HolidayBootAnim.sweep(context, prefs, applied = HolidayPart.BOOT_ANIMATION in before)
 
         // A part whose restore fails stays recorded as on, so the next evaluate tries again
         for (part in RESTORE_ORDER) {
@@ -323,9 +411,12 @@ object HolidayThemes {
         if (target != null) {
             for (part in APPLY_ORDER) {
                 if (part !in wanted) continue
-                // On already, unless it still shows an earlier holiday: it couldn't come off then
+                // On already, unless it still shows an earlier holiday (it couldn't come off then),
+                // the lock screen clock a tone for another lock wallpaper, the Quick Settings
+                // picture is off though it's asked for, or the boot animation isn't ours or is in
+                // an earlier holiday's colors where a change didn't finish
                 val stale = part in before && !switching
-                if (stale && !showsOther(context, part, target)) continue
+                if (stale && !showsOther(context, part, target, prefs)) continue
                 if (applyPart(context, part, target, prefs, refresh = stale)) {
                     now += part
                 } else if (part in before) {
@@ -368,14 +459,17 @@ object HolidayThemes {
                     HolidayWallpaper.apply(context, holiday)
                 }
             }
+            HolidayPart.LOCK_CLOCK -> HolidayLockClock.apply(context, holiday, prefs)
             HolidayPart.ICONS -> HolidayOverlay.apply(context, holiday)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver,
                 HolidayCatalog.KEY_BRAND_PALETTE,
                 HolidayCatalog.brandPalette(holiday),
             )
-            // Studio reads studioHoliday()
+            // Studio and the Settings header read studioHoliday()
             HolidayPart.LOOK -> true
+            HolidayPart.QS_HEADER -> HolidayQsHeader.apply(context, holiday, prefs)
+            HolidayPart.BOOT_ANIMATION -> HolidayBootAnim.apply(context, holiday, prefs)
         }.also { applied ->
             if (!applied) Log.w(TAG, "Couldn't apply ${holiday.id}'s ${part.name}")
         }
@@ -395,11 +489,14 @@ object HolidayThemes {
             HolidayPart.WALLPAPER -> HolidayMonet.changingWallpaper(context, prefs) {
                 HolidayWallpaper.restore(context)
             }
+            HolidayPart.LOCK_CLOCK -> HolidayLockClock.restore(context, prefs)
             HolidayPart.ICONS -> HolidayOverlay.remove(context)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver, HolidayCatalog.KEY_BRAND_PALETTE, null
             )
             HolidayPart.LOOK -> true
+            HolidayPart.QS_HEADER -> HolidayQsHeader.restore(context, prefs)
+            HolidayPart.BOOT_ANIMATION -> HolidayBootAnim.restore(context, prefs)
         }.also { restored ->
             if (!restored) Log.w(TAG, "Couldn't restore ${part.name}")
         }
@@ -409,17 +506,38 @@ object HolidayThemes {
     }
 
     /**
-     * Whether [part] shows a holiday other than [holiday]: the wallpaper, which can't come off
-     * while wallpapers can't be set, can still show the one before a switch.
+     * Whether [part] shows other than [holiday]'s: the wallpaper, which can't come off while
+     * wallpapers can't be set, can still show the one before a switch, the lock screen clock can
+     * be in the tone for another lock wallpaper than the one up now, the Quick Settings picture
+     * can be off, left off for the user, who has since asked for it again, and the boot animation
+     * can be the user's own again from a restore that didn't finish, or ours in an earlier
+     * holiday's colors from a switch that couldn't go on and then couldn't come off.
      */
-    private fun showsOther(context: Context, part: HolidayPart, holiday: Holiday): Boolean =
-        part == HolidayPart.WALLPAPER &&
+    private fun showsOther(
+        context: Context,
+        part: HolidayPart,
+        holiday: Holiday,
+        prefs: SharedPreferences,
+    ): Boolean = when (part) {
+        HolidayPart.WALLPAPER ->
             HolidayWallpaper.setHoliday(context).let { it != null && it != holiday.id }
+        HolidayPart.LOCK_CLOCK -> HolidayLockClock.needsRefresh(context, holiday, prefs)
+        HolidayPart.QS_HEADER -> HolidayQsHeader.needsRefresh(context, prefs)
+        HolidayPart.BOOT_ANIMATION -> HolidayBootAnim.needsRefresh(context, holiday, prefs)
+        else -> false
+    }
 
     private fun wallpaperAllowed(context: Context): Boolean = try {
         HolidayWallpaper.isAllowed(context)
     } catch (e: Exception) {
         Log.w(TAG, "Couldn't check whether the wallpaper can be set", e)
+        false
+    }
+
+    private fun bootAnimationAllowed(context: Context): Boolean = try {
+        HolidayBootAnim.isAllowed(context)
+    } catch (e: Exception) {
+        Log.w(TAG, "Couldn't check whether the boot animation can be colored", e)
         false
     }
 

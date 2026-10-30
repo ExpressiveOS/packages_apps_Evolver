@@ -47,6 +47,29 @@
             android:persistent="false" />
 
         <SwitchPreferenceCompat
+            android:key="holiday_part_lock_clock"
+            android:title="@string/holiday_themes_part_lock_clock_title"
+            android:summary="@string/holiday_themes_part_lock_clock_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <!-- The page changes its summary while holidays leave the header image off -->
+        <SwitchPreferenceCompat
+            android:key="holiday_part_qs_header"
+            android:title="@string/holiday_themes_part_qs_header_title"
+            android:summary="@string/holiday_themes_part_qs_header_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <!-- The page shows it only to the phone's owner, on a build with the holiday animation -->
+        <SwitchPreferenceCompat
+            android:key="holiday_part_boot_animation"
+            android:title="@string/holiday_themes_part_boot_animation_title"
+            android:summary="@string/holiday_themes_part_boot_animation_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
             android:key="holiday_part_icons"
             android:title="@string/holiday_themes_part_icons_title"
             android:summary="@string/holiday_themes_part_icons_summary"
