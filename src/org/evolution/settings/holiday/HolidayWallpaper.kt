@@ -65,6 +65,17 @@ object HolidayWallpaper {
         false
     }
 
+    /** Whether the home screen shows the holiday wallpaper we set. Blocking IO. */
+    @WorkerThread
+    fun showsHolidayHome(context: Context): Boolean = try {
+        val prefs = context.createCredentialProtectedStorageContext()
+            .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        showsOurs(WallpaperManager.getInstance(context), prefs, Screen.HOME)
+    } catch (e: Exception) {
+        Log.w(TAG, "Can't tell whether the holiday wallpaper is showing", e)
+        false
+    }
+
     /** Shows [holiday]'s wallpaper on home and lock, saving the user's own first. Blocking IO. */
     @WorkerThread
     fun apply(context: Context, holiday: Holiday): Boolean {
@@ -126,9 +137,17 @@ object HolidayWallpaper {
                     // which the lock backup then replaces
                     if (homeOurs) putBack(wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
                     if (lockOurs) {
-                        // The lock screen showed the home wallpaper before, so it does again
-                        if (lockShared) wm.clear(FLAG_LOCK)
-                        else putBack(wm, prefs, dir, Screen.LOCK, FLAG_LOCK)
+                        if (lockShared) {
+                            // The lock screen showed the home wallpaper before, so it does again
+                            wm.clear(FLAG_LOCK)
+                        } else if (
+                            !putBack(wm, prefs, dir, Screen.LOCK, FLAG_LOCK, clear = !homeOurs)
+                        ) {
+                            // No lock backup to use: the home one goes there too. Clearing the
+                            // lock screen would announce the home wallpaper just put back before
+                            // its colors are known, and SystemUI would drop a color option of it
+                            putBack(wm, prefs, dir, Screen.HOME, FLAG_LOCK)
+                        }
                     }
                 }
             }
@@ -191,8 +210,9 @@ object HolidayWallpaper {
 
     /**
      * Puts [screen]'s backup on [which]. When there's no usable backup (the built-in wallpaper, a
-     * missing copy, an uninstalled live wallpaper), the screens go back to the built-in one: this
-     * is only called for screens that still show the holiday wallpaper.
+     * missing copy, an uninstalled live wallpaper), the screens go back to the built-in one unless
+     * not to [clear] them: this is only called for screens that still show the holiday wallpaper.
+     * False when the backup didn't go back.
      */
     private fun putBack(
         wm: WallpaperManager,
@@ -200,7 +220,8 @@ object HolidayWallpaper {
         dir: File,
         screen: Screen,
         which: Int,
-    ) {
+        clear: Boolean = true,
+    ): Boolean {
         val restored = try {
             when (prefs.getString(screen.key, null)) {
                 KIND_IMAGE -> {
@@ -220,6 +241,7 @@ object HolidayWallpaper {
             Log.w(TAG, "Failed to put back the ${screen.key} wallpaper", e)
             false
         }
-        if (!restored) wm.clear(which)
+        if (!restored && clear) wm.clear(which)
+        return restored
     }
 }

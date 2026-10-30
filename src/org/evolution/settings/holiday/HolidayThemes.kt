@@ -73,7 +73,18 @@ object HolidayThemes {
         HolidayPart.BANNER,
         HolidayPart.LOOK,
     )
-    private val RESTORE_ORDER = APPLY_ORDER.reversed()
+    /**
+     * Colors before the wallpaper, so SystemUI judges the user's own colors against the wallpaper
+     * put back (keeping a wallpaper color option of that wallpaper, dropping any other), as it
+     * does for any wallpaper change.
+     */
+    private val RESTORE_ORDER = listOf(
+        HolidayPart.LOOK,
+        HolidayPart.BANNER,
+        HolidayPart.ICONS,
+        HolidayPart.COLORS,
+        HolidayPart.WALLPAPER,
+    )
 
     private val executor = Executors.newSingleThreadExecutor { runnable -> Thread(runnable, TAG) }
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -324,7 +335,9 @@ object HolidayThemes {
     ): Boolean = try {
         when (part) {
             HolidayPart.COLORS -> HolidayMonet.apply(context, holiday, prefs)
-            HolidayPart.WALLPAPER -> HolidayWallpaper.apply(context, holiday)
+            HolidayPart.WALLPAPER -> HolidayMonet.changingWallpaper(context, prefs) {
+                HolidayWallpaper.apply(context, holiday)
+            }
             HolidayPart.ICONS -> HolidayOverlay.apply(context, holiday)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver,
@@ -349,7 +362,9 @@ object HolidayThemes {
     ): Boolean = try {
         when (part) {
             HolidayPart.COLORS -> HolidayMonet.restore(context, prefs)
-            HolidayPart.WALLPAPER -> HolidayWallpaper.restore(context)
+            HolidayPart.WALLPAPER -> HolidayMonet.changingWallpaper(context, prefs) {
+                HolidayWallpaper.restore(context)
+            }
             HolidayPart.ICONS -> HolidayOverlay.remove(context)
             HolidayPart.BANNER -> Settings.Secure.putString(
                 context.contentResolver, HolidayCatalog.KEY_BRAND_PALETTE, null
