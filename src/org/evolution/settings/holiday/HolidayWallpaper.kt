@@ -1,0 +1,225 @@
+/*
+ * SPDX-FileCopyrightText: ExpressiveOS
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.evolution.settings.holiday
+
+import android.app.WallpaperManager
+import android.app.WallpaperManager.FLAG_LOCK
+import android.app.WallpaperManager.FLAG_SYSTEM
+import android.content.ComponentName
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.ParcelFileDescriptor
+import android.os.UserManager
+import android.provider.Settings
+import android.util.Log
+import androidx.annotation.WorkerThread
+
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+
+/**
+ * The holiday wallpaper on the home and lock screens. The user's own wallpaper is saved before the
+ * first holiday sets one (a copy of a static image, or a live wallpaper's component) and put back
+ * when the holidays end. The wallpaper ids from right after our set tell whether a screen still
+ * shows the holiday wallpaper: a screen the user changed since keeps what they chose.
+ */
+object HolidayWallpaper {
+    private const val TAG = "HolidayWallpaper"
+
+    private const val PREFS = "holiday_wallpaper"
+    private const val BACKUP_DIR = "holiday_wallpaper"
+    private const val KEY_LOCK_GLYMPS = "lock_glymps_enabled"
+
+    // The wallpaper ids right after we set the holiday wallpaper
+    private const val KEY_SET_HOME_ID = "set_home_id"
+    private const val KEY_SET_LOCK_ID = "set_lock_id"
+    private const val NO_ID = -1
+
+    // What a screen showed before the holidays, stored under the screen's key
+    private const val KIND_IMAGE = "image" // a static image, copied to the screen's file
+    private const val KIND_LIVE = "live" // a live wallpaper, its component under componentKey
+    private const val KIND_DEFAULT = "default" // no image to copy: the built-in wallpaper
+    private const val KIND_SHARED = "shared" // lock screen only: it showed the home wallpaper
+
+    private enum class Screen(val flag: Int, val key: String, val fileName: String) {
+        HOME(FLAG_SYSTEM, "home", "home.img"),
+        LOCK(FLAG_LOCK, "lock", "lock.img");
+
+        val componentKey: String get() = "${key}_component"
+    }
+
+    /** Wallpapers can be set for this user and Wallpaper Glymps is off. */
+    fun isAllowed(context: Context): Boolean = try {
+        val wm = WallpaperManager.getInstance(context)
+        val um = context.getSystemService(UserManager::class.java)
+        wm != null && wm.isWallpaperSupported && wm.isSetWallpaperAllowed &&
+            um?.hasUserRestriction(UserManager.DISALLOW_SET_WALLPAPER) != true &&
+            // Glymps keeps changing the wallpaper itself
+            Settings.System.getInt(context.contentResolver, KEY_LOCK_GLYMPS, 0) == 0
+    } catch (e: Exception) {
+        Log.w(TAG, "Can't tell whether the wallpaper may be set", e)
+        false
+    }
+
+    /** Shows [holiday]'s wallpaper on home and lock, saving the user's own first. Blocking IO. */
+    @WorkerThread
+    fun apply(context: Context, holiday: Holiday): Boolean {
+        return try {
+            val storage = context.createCredentialProtectedStorageContext()
+            val prefs = storage.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val dir = File(storage.filesDir, BACKUP_DIR)
+            val wm = WallpaperManager.getInstance(context)
+            // Going straight from one holiday to the next keeps the backup from before the first;
+            // a screen the user changed in between is backed up again, as their new choice
+            val held = prefs.contains(Screen.HOME.key)
+            val homeOurs = held && showsOurs(wm, prefs, Screen.HOME)
+            val lockOurs = held && showsOurs(wm, prefs, Screen.LOCK)
+            if (!homeOurs || !lockOurs) {
+                if (!dir.isDirectory && !dir.mkdirs()) throw IOException("Can't create $dir")
+                val edit = prefs.edit()
+                if (!homeOurs) backUp(wm, Screen.HOME, dir, edit)
+                if (!lockOurs) backUp(wm, Screen.LOCK, dir, edit)
+                edit.commit()
+            }
+
+            // allowBackup false: the holiday art must never be backed up as the user's wallpaper
+            val id = context.resources.openRawResource(holiday.wallpaper).use {
+                wm.setStream(it, null, false, FLAG_SYSTEM or FLAG_LOCK)
+            }
+            if (id == 0) throw IOException("The wallpaper service refused the wallpaper")
+            prefs.edit()
+                .putInt(KEY_SET_HOME_ID, wm.getWallpaperId(FLAG_SYSTEM))
+                .putInt(KEY_SET_LOCK_ID, wm.getWallpaperId(FLAG_LOCK))
+                .commit()
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to set the ${holiday.id} wallpaper", e)
+            // Not applied: whatever of ours is still showing goes back to the user's own
+            restore(context)
+            false
+        }
+    }
+
+    /**
+     * Puts the user's own wallpaper back unless they changed it since. Blocking IO. False when the
+     * wallpaper service failed: the backup stays for the next try.
+     */
+    @WorkerThread
+    fun restore(context: Context): Boolean {
+        return try {
+            val storage = context.createCredentialProtectedStorageContext()
+            val prefs = storage.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val dir = File(storage.filesDir, BACKUP_DIR)
+            if (prefs.contains(KEY_SET_HOME_ID)) {
+                val wm = WallpaperManager.getInstance(context)
+                val homeOurs = showsOurs(wm, prefs, Screen.HOME)
+                val lockOurs = showsOurs(wm, prefs, Screen.LOCK)
+                val lockShared = prefs.getString(Screen.LOCK.key, null) == KIND_SHARED
+                if (homeOurs && lockOurs && lockShared) {
+                    putBack(wm, prefs, dir, Screen.HOME, FLAG_SYSTEM or FLAG_LOCK)
+                } else {
+                    // Home first: setting home alone moves a shared wallpaper to the lock screen,
+                    // which the lock backup then replaces
+                    if (homeOurs) putBack(wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
+                    if (lockOurs) {
+                        // The lock screen showed the home wallpaper before, so it does again
+                        if (lockShared) wm.clear(FLAG_LOCK)
+                        else putBack(wm, prefs, dir, Screen.LOCK, FLAG_LOCK)
+                    }
+                }
+            }
+            // Done with the backup, whether it went back or the user had changed the wallpaper
+            prefs.edit().clear().commit()
+            dir.deleteRecursively()
+            true
+        } catch (e: Exception) {
+            // The backup stays: the next apply or restore can still use it
+            Log.w(TAG, "Failed to put the wallpaper back", e)
+            false
+        }
+    }
+
+    /**
+     * Whether [screen] still shows the wallpaper we set, by the ids stored right after setting it.
+     * A lock screen without a wallpaper of its own shows the home one. One that got its own when
+     * only the home wallpaper was changed carries over our wallpaper's id.
+     */
+    private fun showsOurs(wm: WallpaperManager, prefs: SharedPreferences, screen: Screen): Boolean {
+        val setHome = prefs.getInt(KEY_SET_HOME_ID, NO_ID)
+        if (setHome < 0) return false
+        val homeOurs = wm.getWallpaperId(FLAG_SYSTEM) == setHome
+        if (screen == Screen.HOME) return homeOurs
+        val lock = wm.getWallpaperId(FLAG_LOCK)
+        return if (lock < 0) homeOurs
+        else lock == setHome || lock == prefs.getInt(KEY_SET_LOCK_ID, NO_ID)
+    }
+
+    /** Records what [screen] shows now in [edit], copying a static image to the backup folder. */
+    private fun backUp(
+        wm: WallpaperManager,
+        screen: Screen,
+        dir: File,
+        edit: SharedPreferences.Editor,
+    ) {
+        val file = File(dir, screen.fileName)
+        file.delete()
+        edit.remove(screen.componentKey)
+        if (screen == Screen.LOCK && wm.getWallpaperId(FLAG_LOCK) < 0) {
+            edit.putString(screen.key, KIND_SHARED)
+            return
+        }
+        val live = wm.getWallpaperInfo(screen.flag)
+        if (live != null) {
+            edit.putString(screen.key, KIND_LIVE)
+                .putString(screen.componentKey, live.component.flattenToString())
+            return
+        }
+        val pfd = wm.getWallpaperFile(screen.flag)
+        if (pfd == null) {
+            edit.putString(screen.key, KIND_DEFAULT)
+            return
+        }
+        ParcelFileDescriptor.AutoCloseInputStream(pfd).use { input ->
+            file.outputStream().use { input.copyTo(it) }
+        }
+        edit.putString(screen.key, KIND_IMAGE)
+    }
+
+    /**
+     * Puts [screen]'s backup on [which]. When there's no usable backup (the built-in wallpaper, a
+     * missing copy, an uninstalled live wallpaper), the screens go back to the built-in one: this
+     * is only called for screens that still show the holiday wallpaper.
+     */
+    private fun putBack(
+        wm: WallpaperManager,
+        prefs: SharedPreferences,
+        dir: File,
+        screen: Screen,
+        which: Int,
+    ) {
+        val restored = try {
+            when (prefs.getString(screen.key, null)) {
+                KIND_IMAGE -> {
+                    val file = File(dir, screen.fileName)
+                    file.isFile && FileInputStream(file).use {
+                        wm.setStream(it, null, true, which)
+                    } != 0
+                }
+                KIND_LIVE -> {
+                    val component = prefs.getString(screen.componentKey, null)
+                        ?.let { ComponentName.unflattenFromString(it) }
+                    component != null && wm.setWallpaperComponentWithFlags(component, which)
+                }
+                else -> false
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to put back the ${screen.key} wallpaper", e)
+            false
+        }
+        if (!restored) wm.clear(which)
+    }
+}

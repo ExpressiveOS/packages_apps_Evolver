@@ -32,6 +32,7 @@ import com.android.settings.R
 import com.android.settingslib.widget.LayoutPreference
 import org.evolution.settings.fragments.miscellaneous.ExpressiveTheme
 import org.evolution.settings.fragments.miscellaneous.insetFocusRing
+import org.evolution.settings.holiday.HolidayThemes
 
 /**
  * The top of Expressive Studio's lock screen page: the lock screen as it is now, with its clock
@@ -47,6 +48,7 @@ object StudioLockHeader {
     fun bind(fragment: PreferenceFragmentCompat, preference: LayoutPreference?) {
         val view = preference?.findViewById<ComposeView>(R.id.studio_compose) ?: return
         val actions = StudioActions(fragment)
+        StudioPalette.holiday = HolidayThemes.studioHoliday(fragment.requireContext())
         view.setContent {
             ExpressiveTheme {
                 LockHeader(actions)
@@ -60,6 +62,7 @@ private fun LockHeader(actions: StudioActions) {
     val resumes = rememberResumeCount()
     val style = rememberClockStyle(resumes)
     val hasPicker = remember { actions.hasWallpaperPicker }
+    FollowStudioPalette()
     Row(
         modifier = Modifier
             .fillMaxWidth()

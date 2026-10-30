@@ -14,11 +14,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -29,21 +34,26 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.settings.R
 import org.evolution.settings.fragments.miscellaneous.insetFocusRing
+import org.evolution.settings.holiday.Holiday
+import org.evolution.settings.holiday.HolidayPetal
+import org.evolution.settings.holiday.HolidayThemes
 
 /**
  * The four petals of ExpressiveOS's Bloom mark, the colours Expressive Studio is drawn in.
  * [light], [mid] and [deep] are the petal's own colours. [ink] (text and icons) and [tile]
  * (the squircle behind an icon) follow the theme: light ink on a deep tile in dark mode, deep ink
- * on a pale tile in light mode, each pair at 4.8:1 contrast or more.
+ * on a pale tile in light mode, each pair at 4.8:1 contrast or more. While a holiday theme has
+ * Studio in its colours ([StudioPalette]), each petal takes those of the holiday's petal in its
+ * place.
  */
 enum class Petal(
-    val light: Color,
-    val mid: Color,
-    val deep: Color,
-    private val darkInk: Color,
-    private val darkTile: Color,
-    private val lightInk: Color,
-    private val lightTile: Color,
+    private val bloomLight: Color,
+    private val bloomMid: Color,
+    private val bloomDeep: Color,
+    private val bloomDarkInk: Color,
+    private val bloomDarkTile: Color,
+    private val bloomLightInk: Color,
+    private val bloomLightTile: Color,
 ) {
     /** Look and feel: themes, colours, fonts, wallpapers. */
     Violet(
@@ -69,6 +79,31 @@ enum class Petal(
         Color(0xFF7FE0B7), Color(0xFF10322A), Color(0xFF0A6B53), Color(0xFFC4F1DA),
     );
 
+    /** The holiday's petal standing in for this one, in the same place. */
+    private val holiday: HolidayPetal?
+        get() = StudioPalette.holiday?.colors?.petals?.getOrNull(ordinal)
+
+    val light: Color
+        get() = holiday?.let { Color(it.light) } ?: bloomLight
+
+    val mid: Color
+        get() = holiday?.let { Color(it.mid) } ?: bloomMid
+
+    val deep: Color
+        get() = holiday?.let { Color(it.deep) } ?: bloomDeep
+
+    private val darkInk: Color
+        get() = holiday?.let { Color(it.darkInk) } ?: bloomDarkInk
+
+    private val darkTile: Color
+        get() = holiday?.let { Color(it.darkTile) } ?: bloomDarkTile
+
+    private val lightInk: Color
+        get() = holiday?.let { Color(it.lightInk) } ?: bloomLightInk
+
+    private val lightTile: Color
+        get() = holiday?.let { Color(it.lightTile) } ?: bloomLightTile
+
     val ink: Color
         @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) darkInk else lightInk
 
@@ -89,6 +124,28 @@ enum class Petal(
         /** The mark's mids in a sweep, for rings and highlights. */
         val sweep: Brush
             get() = Brush.linearGradient(listOf(Violet.mid, Blue.mid, Green.mid, Coral.mid))
+    }
+}
+
+/**
+ * The holiday Expressive Studio is drawn in ([HolidayThemes.studioHoliday]), or null for Bloom's
+ * own colours. Studio's screens set it as they're drawn and again each time they resume
+ * ([FollowStudioPalette]). It's Compose state, so the tiles redraw when it changes.
+ */
+object StudioPalette {
+    var holiday: Holiday? by mutableStateOf<Holiday?>(null)
+}
+
+/**
+ * Reads [StudioPalette.holiday] again each time the screen resumes, e.g. back from Holiday themes
+ * with Studio's part switched off.
+ */
+@Composable
+fun FollowStudioPalette() {
+    val context = LocalContext.current
+    val resumes = rememberResumeCount()
+    LaunchedEffect(resumes) {
+        StudioPalette.holiday = HolidayThemes.studioHoliday(context)
     }
 }
 

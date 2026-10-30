@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- Holiday themes (org.evolution.settings.holiday.HolidayThemesFragment). The engine keeps the
+     state, so nothing here is persisted: the page reads it on each resume. -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+    android:title="@string/holiday_themes_title">
+
+    <SwitchPreferenceCompat
+        android:key="holiday_auto"
+        android:title="@string/holiday_themes_auto_title"
+        android:defaultValue="true"
+        android:persistent="false" />
+
+    <!-- What's showing now, filled in by the page -->
+    <Preference
+        android:key="holiday_status"
+        android:selectable="false"
+        android:persistent="false" />
+
+    <!-- "Skip this year", or "Turn back on this year" once skipped -->
+    <Preference
+        android:key="holiday_skip"
+        android:title="@string/holiday_themes_skip"
+        android:persistent="false" />
+
+    <PreferenceCategory
+        android:key="holiday_parts"
+        android:title="@string/holiday_themes_parts_category">
+
+        <SwitchPreferenceCompat
+            android:key="holiday_part_wallpaper"
+            android:title="@string/holiday_themes_part_wallpaper_title"
+            android:summary="@string/holiday_themes_part_wallpaper_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
+            android:key="holiday_part_colors"
+            android:title="@string/holiday_themes_part_colors_title"
+            android:summary="@string/holiday_themes_part_colors_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
+            android:key="holiday_part_icons"
+            android:title="@string/holiday_themes_part_icons_title"
+            android:summary="@string/holiday_themes_part_icons_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
+            android:key="holiday_part_look"
+            android:title="@string/holiday_themes_part_look_title"
+            android:summary="@string/holiday_themes_part_look_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+
+        <SwitchPreferenceCompat
+            android:key="holiday_part_banner"
+            android:title="@string/holiday_themes_part_banner_title"
+            android:summary="@string/holiday_themes_part_banner_summary"
+            android:defaultValue="true"
+            android:persistent="false" />
+    </PreferenceCategory>
+
+    <!-- The page adds a row for each holiday after "Stop trying" -->
+    <PreferenceCategory
+        android:key="holiday_try"
+        android:title="@string/holiday_themes_try_category">
+
+        <Preference
+            android:key="holiday_stop_trying"
+            android:title="@string/holiday_themes_stop_trying"
+            android:persistent="false" />
+    </PreferenceCategory>
+
+    <com.android.settingslib.widget.FooterPreference
+        android:key="holiday_footer"
+        android:title="@string/holiday_themes_footer"
+        android:selectable="false"
+        settings:searchable="false" />
+</PreferenceScreen>

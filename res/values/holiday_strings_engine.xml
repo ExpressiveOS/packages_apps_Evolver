@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Holiday themes (org.evolution.settings.holiday): the notification posted when a theme switches on by date -->
+    <!-- Name of the notification channel, shown in the app's notification settings -->
+    <string name="holiday_notification_channel">Holiday themes</string>
+    <!-- Notification title: %1$s is the holiday's name, e.g. "Halloween" -->
+    <string name="holiday_notification_on_title"><xliff:g id="holiday" example="Halloween">%1$s</xliff:g> theme is on</string>
+    <!-- Notification text: %1$s is the theme's last day, e.g. "Oct 31" -->
+    <string name="holiday_notification_on_text">Until <xliff:g id="date" example="Oct 31">%1$s</xliff:g>. Your own wallpaper and colors come back after.</string>
+    <!-- Notification button: turns the theme off until the holiday comes round next year -->
+    <string name="holiday_notification_skip">Skip this year</string>
+</resources>

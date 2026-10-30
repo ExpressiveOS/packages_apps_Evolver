@@ -59,11 +59,14 @@ import androidx.preference.PreferenceFragmentCompat
 import com.android.settings.R
 import com.android.settingslib.widget.LayoutPreference
 import org.evolution.settings.fragments.miscellaneous.ExpressiveTheme
+import org.evolution.settings.holiday.HolidayStatus
+import org.evolution.settings.holiday.HolidayThemes
 
 /**
  * Expressive Studio's home, the Bento Bloom layout: a live lock screen beside the look-and-feel
- * tiles, the clock and what's-new cards, then a grid of the other sections. Each tile opens the
- * page of one of the screen's rows, which the home replaces on screen but keeps for search.
+ * tiles, the holiday themes, clock and what's-new cards, then a grid of the other sections. Each
+ * tile opens the page of one of the screen's rows, which the home replaces on screen but keeps for
+ * search. While a holiday theme has Studio in its colours, the tiles are drawn in them.
  */
 object StudioHome {
 
@@ -74,6 +77,7 @@ object StudioHome {
     fun bind(fragment: PreferenceFragmentCompat, preference: LayoutPreference?) {
         val view = preference?.findViewById<ComposeView>(R.id.studio_compose) ?: return
         val actions = StudioActions(fragment)
+        StudioPalette.holiday = HolidayThemes.studioHoliday(fragment.requireContext())
         view.setContent {
             ExpressiveTheme {
                 HomeScreen(actions)
@@ -86,6 +90,7 @@ object StudioHome {
 private const val KEY_LOCK_SCREEN = "lock_screen"
 private const val KEY_THEMES = "themes"
 private const val KEY_COLORS = "studio_colors"
+private const val KEY_HOLIDAY_THEMES = "studio_holiday_themes"
 private const val KEY_WALLPAPER_STYLES = "studio_wallpaper_styles"
 private const val KEY_CLOCK_STYLES = "studio_clock_styles"
 private const val KEY_CHANGELOG = "studio_changelog"
@@ -114,6 +119,7 @@ private fun HomeScreen(actions: StudioActions) {
     // The bento's fixed heights grow with the font size, up to half again
     val grow = LocalDensity.current.fontScale.coerceIn(1f, 1.5f)
     val hasPicker = remember { actions.hasWallpaperPicker }
+    FollowStudioPalette()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -169,6 +175,7 @@ private fun HomeScreen(actions: StudioActions) {
             ColorsTile(onClick = { actions.open(KEY_COLORS) }, modifier = tile)
             FontsTile(onClick = { actions.open(KEY_THEMES) }, modifier = tile)
         }
+        HolidayThemesCard(onClick = { actions.open(KEY_HOLIDAY_THEMES) })
         ClockStylesCard(onClick = { actions.open(KEY_CLOCK_STYLES) })
         WhatsNewCard(onClick = { actions.open(KEY_CHANGELOG) })
         sections.chunked(3).forEach { row ->
@@ -507,6 +514,29 @@ private fun ClockStylesCard(onClick: () -> Unit) {
                 textAlign = TextAlign.Center,
                 // The card's summary names the face; the time here is only its picture
                 modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
+    }
+}
+
+@Composable
+private fun HolidayThemesCard(onClick: () -> Unit) {
+    val context = LocalContext.current
+    val resumes = rememberResumeCount()
+    val status = remember(resumes) { HolidayStatus.read(context) }
+    WideCard(
+        title = stringResource(R.string.holiday_themes_title),
+        summary = status.text,
+        petal = Petal.Coral,
+        onClick = onClick,
+    ) {
+        // The colours of the theme that's on, or of the next one
+        status.holiday?.let { holiday ->
+            Dots(
+                colors = holiday.colors.petals.map { Color(it.mid) },
+                size = 28.dp,
+                step = 20.dp,
+                ring = MaterialTheme.colorScheme.surfaceBright,
             )
         }
     }

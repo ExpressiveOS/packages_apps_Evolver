@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Holiday themes (org.evolution.settings.holiday): the page, and its card in Expressive Studio -->
+    <string name="holiday_themes_title">Holiday themes</string>
+    <string name="holiday_themes_auto_title">Switch on by date</string>
+
+    <!-- What the themes are doing now: the page's status line and the card's summary. %1$s is the holiday's name, %2$s the theme's last day -->
+    <string name="holiday_themes_status_on"><xliff:g id="holiday" example="Halloween">%1$s</xliff:g> theme is on until <xliff:g id="date" example="Oct 31">%2$s</xliff:g></string>
+    <!-- As holiday_themes_status_on, for the moment between a holiday's last day and its theme going off -->
+    <string name="holiday_themes_status_on_now"><xliff:g id="holiday" example="Halloween">%1$s</xliff:g> theme is on</string>
+    <string name="holiday_themes_status_trying">Trying <xliff:g id="holiday" example="Christmas">%1$s</xliff:g></string>
+    <!-- %1$s is the next holiday's name, %2$s its theme's first day -->
+    <string name="holiday_themes_status_next">Next: <xliff:g id="holiday" example="Thanksgiving">%1$s</xliff:g>, <xliff:g id="date" example="Nov 23">%2$s</xliff:g></string>
+    <string name="holiday_themes_status_off">Off</string>
+
+    <!-- Turns the theme on by date off until the holiday comes round next year, and undoes that -->
+    <string name="holiday_themes_skip">Skip this year</string>
+    <string name="holiday_themes_unskip">Turn back on this year</string>
+
+    <!-- The parts of a theme, each switched on and off on its own -->
+    <string name="holiday_themes_parts_category">What a theme changes</string>
+    <string name="holiday_themes_part_wallpaper_title">Wallpaper</string>
+    <string name="holiday_themes_part_wallpaper_summary">Home and lock screen. Left alone while Wallpaper Glymps is on</string>
+    <string name="holiday_themes_part_colors_title">System colors</string>
+    <string name="holiday_themes_part_colors_summary">Material You colors across the phone</string>
+    <string name="holiday_themes_part_icons_title">Settings icons</string>
+    <string name="holiday_themes_part_icons_summary">The icons on Settings\' main page</string>
+    <string name="holiday_themes_part_look_title">Expressive Studio</string>
+    <string name="holiday_themes_part_look_summary">Studio\'s tiles in the holiday\'s colors</string>
+    <string name="holiday_themes_part_banner_title">ExpressiveOS banner</string>
+    <string name="holiday_themes_part_banner_summary">The glowing wordmark in About and the Updater</string>
+
+    <!-- Shows a holiday's theme now, whatever the date; each holiday's row follows "Stop trying" -->
+    <string name="holiday_themes_try_category">Try a theme</string>
+    <string name="holiday_themes_stop_trying">Stop trying</string>
+
+    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper and colors are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
+</resources>
