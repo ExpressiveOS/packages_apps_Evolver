@@ -11,6 +11,7 @@ import android.app.WallpaperManager.FLAG_SYSTEM
 import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.ParcelFileDescriptor
 import android.os.UserManager
 import android.provider.Settings
@@ -130,23 +131,31 @@ object HolidayWallpaper {
                 val homeOurs = showsOurs(wm, prefs, Screen.HOME)
                 val lockOurs = showsOurs(wm, prefs, Screen.LOCK)
                 val lockShared = prefs.getString(Screen.LOCK.key, null) == KIND_SHARED
-                if (homeOurs && lockOurs && lockShared) {
-                    putBack(wm, prefs, dir, Screen.HOME, FLAG_SYSTEM or FLAG_LOCK)
+                if (homeOurs && lockOurs &&
+                    (lockShared || !usable(context, prefs, dir, Screen.LOCK))
+                ) {
+                    // The lock screen showed the home wallpaper before, or its own can't come
+                    // back: both get the home one at once. Clearing the lock screen after putting
+                    // home back would announce the home wallpaper before its colors are known,
+                    // and SystemUI would drop a color option of it.
+                    putBack(context, wm, prefs, dir, Screen.HOME, FLAG_SYSTEM or FLAG_LOCK)
                 } else {
                     // Home first: setting home alone moves a shared wallpaper to the lock screen,
                     // which the lock backup then replaces
-                    if (homeOurs) putBack(wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
+                    val homeBack =
+                        homeOurs && putBack(context, wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
                     if (lockOurs) {
                         if (lockShared) {
                             // The lock screen showed the home wallpaper before, so it does again
                             wm.clear(FLAG_LOCK)
                         } else if (
-                            !putBack(wm, prefs, dir, Screen.LOCK, FLAG_LOCK, clear = !homeOurs)
+                            !putBack(
+                                context, wm, prefs, dir, Screen.LOCK, FLAG_LOCK, clear = !homeBack
+                            ) && homeBack
                         ) {
-                            // No lock backup to use: the home one goes there too. Clearing the
-                            // lock screen would announce the home wallpaper just put back before
-                            // its colors are known, and SystemUI would drop a color option of it
-                            putBack(wm, prefs, dir, Screen.HOME, FLAG_LOCK)
+                            // The lock backup failed after all: the home one just put back goes
+                            // there too, for the same reason as above
+                            putBack(context, wm, prefs, dir, Screen.HOME, FLAG_LOCK)
                         }
                     }
                 }
@@ -208,6 +217,38 @@ object HolidayWallpaper {
         edit.putString(screen.key, KIND_IMAGE)
     }
 
+    /** Whether [screen]'s backup can go back: a saved copy, or a live wallpaper still installed. */
+    private fun usable(
+        context: Context,
+        prefs: SharedPreferences,
+        dir: File,
+        screen: Screen,
+    ): Boolean = when (prefs.getString(screen.key, null)) {
+        KIND_IMAGE -> File(dir, screen.fileName).isFile
+        KIND_LIVE -> liveComponent(context, prefs, screen) != null
+        else -> false
+    }
+
+    /**
+     * [screen]'s saved live wallpaper, while it's still installed and enabled. The wallpaper
+     * service reports one that isn't as set, and leaves the screen as it was.
+     */
+    private fun liveComponent(
+        context: Context,
+        prefs: SharedPreferences,
+        screen: Screen,
+    ): ComponentName? {
+        val component = prefs.getString(screen.componentKey, null)
+            ?.let { ComponentName.unflattenFromString(it) } ?: return null
+        return try {
+            context.packageManager.getServiceInfo(component, 0)
+            component
+        } catch (_: PackageManager.NameNotFoundException) {
+            Log.w(TAG, "The ${screen.key} live wallpaper $component is gone")
+            null
+        }
+    }
+
     /**
      * Puts [screen]'s backup on [which]. When there's no usable backup (the built-in wallpaper, a
      * missing copy, an uninstalled live wallpaper), the screens go back to the built-in one unless
@@ -215,6 +256,7 @@ object HolidayWallpaper {
      * False when the backup didn't go back.
      */
     private fun putBack(
+        context: Context,
         wm: WallpaperManager,
         prefs: SharedPreferences,
         dir: File,
@@ -231,8 +273,7 @@ object HolidayWallpaper {
                     } != 0
                 }
                 KIND_LIVE -> {
-                    val component = prefs.getString(screen.componentKey, null)
-                        ?.let { ComponentName.unflattenFromString(it) }
+                    val component = liveComponent(context, prefs, screen)
                     component != null && wm.setWallpaperComponentWithFlags(component, which)
                 }
                 else -> false

@@ -175,7 +175,11 @@ internal object HolidayMonet {
             if (source == SOURCE_LOCK && wm.getWallpaperId(WallpaperManager.FLAG_LOCK) >= 0) {
                 return false
             }
-            val colors = wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM) ?: return true
+            val home = wm.getWallpaperId(WallpaperManager.FLAG_SYSTEM)
+            val colors = wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
+                // None yet from the one the engine just put back: SystemUI judges the colors
+                // when they come. One the user set without colors has none to keep them by.
+                ?: return home != prefs.getInt(KEY_HOME_ID, home)
             val seeds = HashSet<Int>()
             // Every color SystemUI could take as a seed (ColorScheme.getSeedColors)
             for (color in colors.allColors.keys) seeds += color or OPAQUE
