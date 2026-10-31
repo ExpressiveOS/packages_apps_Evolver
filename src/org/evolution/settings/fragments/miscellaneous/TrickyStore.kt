@@ -122,7 +122,7 @@ class TrickyStore : SettingsPreferenceFragment() {
         private const val REVOCATION_URL     =
             "https://android.googleapis.com/attestation/status?encrypted=0"
         private const val OFFICIAL_KEYBOX_URL =
-            "https://gitea.com/Evolution-X/keybox/raw/branch/main/keybox.xml"
+            "https://ota-mirror.daryldenson-apps.workers.dev/expressiveos/keybox.xml"
 
         /** Warn user when the leaf cert expires within this window. */
         private val EXPIRY_WARN_MS = TimeUnit.DAYS.toMillis(14)
@@ -876,6 +876,8 @@ class TrickyStore : SettingsPreferenceFragment() {
                 runCatching {
                     val conn = URL(OFFICIAL_KEYBOX_URL).openConnection() as HttpURLConnection
                     try {
+                        conn.useCaches = false
+                        conn.setRequestProperty("Cache-Control", "no-cache")
                         conn.connectTimeout = 10_000
                         conn.readTimeout = 10_000
                         check(conn.responseCode == HttpURLConnection.HTTP_OK) {
