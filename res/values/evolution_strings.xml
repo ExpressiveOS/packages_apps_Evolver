@@ -980,6 +980,24 @@
     <string name="spoofing_title">Spoofing hub</string>
     <string name="spoofing_summary">Play Integrity Fix, device identity, and feature spoofing</string>
     <string name="spoofing_integrity_category">Play Integrity Fix</string>
+    <!-- Payments status: what the ROM sets up for Google Wallet. Google decides the verdict. -->
+    <string name="payments_status_title">Set up for payments</string>
+    <string name="payments_status_yes">Yes</string>
+    <string name="payments_status_no">No</string>
+    <string name="payments_status_check">Check</string>
+    <string name="payments_reason_ready">The ROM\'s side is set up. Google decides the final verdict, so run an integrity check to confirm.</string>
+    <string name="payments_reason_trickystore_off">TrickyStore is off, so Google Wallet can\'t pass device integrity.</string>
+    <string name="payments_reason_pif_off">Play Integrity Fix is off.</string>
+    <string name="payments_reason_no_keybox">No keybox yet. Tap to fetch one.</string>
+    <string name="payments_reason_keybox_bad">The keybox is revoked or invalid. Tap to replace it.</string>
+    <string name="payments_reason_unchecked">The keybox hasn\'t been checked in the last day. Tap to check it.</string>
+    <string name="payments_reason_not_targeted">Google Play services or the Play Store isn\'t a TrickyStore target.</string>
+    <string name="payments_reason_no_fingerprint">No valid Play Integrity fingerprint yet.</string>
+    <string name="payments_reason_provider">Spoof keystore provider is on, which bypasses the keybox.</string>
+    <string name="payments_reason_expired">The Play Integrity fingerprint has expired.</string>
+    <string name="payments_reason_no_lock">Google Wallet needs a screen lock.</string>
+    <string name="payments_reason_nfc_off">NFC is off. Tap to pay needs it.</string>
+    <string name="payments_reason_props_hidden">A root module is hiding the ROM\'s properties, which can break payments.</string>
     <string name="spoofing_identity_category">Device identity</string>
     <string name="spoofing_features_category">Hardware features</string>
     <string name="spoofing_pixel_props_title">Pixel props</string>
