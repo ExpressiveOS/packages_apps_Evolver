@@ -990,6 +990,7 @@
     <string name="payments_reason_pif_off">Play Integrity Fix is off.</string>
     <string name="payments_reason_no_keybox">No keybox yet. Tap to fetch one.</string>
     <string name="payments_reason_keybox_bad">The keybox is revoked or invalid. Tap to replace it.</string>
+    <string name="payments_reason_untrusted_root">The keybox\'s root isn\'t one Google lists. It may still pass. Tap to review.</string>
     <string name="payments_reason_unchecked">The keybox hasn\'t been checked in the last day. Tap to check it.</string>
     <string name="payments_reason_not_targeted">Google Play services or the Play Store isn\'t a TrickyStore target.</string>
     <string name="payments_reason_no_fingerprint">No valid Play Integrity fingerprint yet.</string>

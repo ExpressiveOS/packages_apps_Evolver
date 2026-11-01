@@ -380,7 +380,13 @@ class TrickyStore : SettingsPreferenceFragment() {
         val lastChecked = Settings.Secure.getLong(
             requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
         val overADay = System.currentTimeMillis() - lastChecked > TimeUnit.HOURS.toMillis(24)
-        if (overADay && !isCheckInProgress) {
+        // A keybox with no stored result (one the framework swapped in) is checked now: the
+        // Spoofing payments row says "Check" and sends the user here.
+        val unchecked = !Settings.Secure.getString(
+                requireContext().contentResolver, KEYBOX_KEY).isNullOrBlank() &&
+            Settings.Secure.getString(
+                requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY).isNullOrEmpty()
+        if ((overADay || unchecked) && !isCheckInProgress) {
             checkKeyboxRevocation()
         } else {
             autoFetchIfNoKeybox()
