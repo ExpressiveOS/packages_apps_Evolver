@@ -117,7 +117,7 @@ public final class NetworkUtils {
             conn = openConnection(imageUrl, null);
             conn.setInstanceFollowRedirects(true);
             conn.setRequestProperty("User-Agent",
-                    "Mozilla/5.0 (Linux; Android 14) EvolutionX/HardwareInfo");
+                    "Mozilla/5.0 (Linux; Android 14) ExpressiveOS/HardwareInfo");
             conn.connect();
             int status = conn.getResponseCode();
 
@@ -130,7 +130,7 @@ public final class NetworkUtils {
                 if (location == null) return null;
                 conn = openConnection(location, null);
                 conn.setRequestProperty("User-Agent",
-                        "Mozilla/5.0 (Linux; Android 14) EvolutionX/HardwareInfo");
+                        "Mozilla/5.0 (Linux; Android 14) ExpressiveOS/HardwareInfo");
                 conn.connect();
                 status = conn.getResponseCode();
             }
