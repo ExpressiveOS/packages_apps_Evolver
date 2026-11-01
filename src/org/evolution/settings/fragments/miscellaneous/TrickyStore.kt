@@ -103,16 +103,16 @@ class TrickyStore : SettingsPreferenceFragment() {
         private val ROOTS_CACHE_TTL_MS = TimeUnit.DAYS.toMillis(30)
 
         // Keys & setting names
-        private const val KEYBOX_KEY                 = "spoof_trickystore_keybox"
+        internal const val KEYBOX_KEY                 = "spoof_trickystore_keybox"
         private const val KEYBOX_SOURCE_KEY          = "spoof_trickystore_keybox_source"
         private const val KEYBOX_SOURCE_OFFICIAL     = "official"
         private const val KEYBOX_SOURCE_USER         = "user"
         private const val TARGET_KEY                 = TrickyStoreAppSettings.TARGET_KEY
         internal const val PATCH_KEY                 = "spoof_trickystore_patch"
         private const val LAST_FETCHED_KEY           = "spoof_trickystore_last_fetched"
-        private const val LAST_REVOCATION_CHECK_KEY  = "spoof_trickystore_last_revocation_check"
+        internal const val LAST_REVOCATION_CHECK_KEY  = "spoof_trickystore_last_revocation_check"
         private const val LAST_NO_VALID_KEY          = "spoof_trickystore_last_no_valid"
-        private const val LAST_REVOCATION_STATUS_KEY = "spoof_trickystore_last_revocation_status"
+        internal const val LAST_REVOCATION_STATUS_KEY = "spoof_trickystore_last_revocation_status"
         private const val LAST_REVOCATION_REASON_KEY = "spoof_trickystore_last_revocation_reason"
 
         private const val CACHED_REVOKED_SERIALS_KEY = "spoof_trickystore_cached_revoked_serials"
@@ -380,7 +380,13 @@ class TrickyStore : SettingsPreferenceFragment() {
         val lastChecked = Settings.Secure.getLong(
             requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
         val overADay = System.currentTimeMillis() - lastChecked > TimeUnit.HOURS.toMillis(24)
-        if (overADay && !isCheckInProgress) {
+        // A keybox with no stored result (one the framework swapped in) is checked now: the
+        // Spoofing payments row says "Check" and sends the user here.
+        val unchecked = !Settings.Secure.getString(
+                requireContext().contentResolver, KEYBOX_KEY).isNullOrBlank() &&
+            Settings.Secure.getString(
+                requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY).isNullOrEmpty()
+        if ((overADay || unchecked) && !isCheckInProgress) {
             checkKeyboxRevocation()
         } else {
             autoFetchIfNoKeybox()

@@ -190,6 +190,26 @@ class Spoofing : SettingsPreferenceFragment() {
             ExpressiveScreen {
                 ExpressiveGroup(title = stringResource(R.string.spoofing_integrity_category)) {
                     item {
+                        // Opens the page that fixes the reason shown; TrickyStore's runs the
+                        // keybox check, which settles "Check".
+                        val readiness = remember(refreshKey, tsEnabled, pifEnabled) {
+                            paymentsReadiness(context)
+                        }
+                        ExpressiveNavRow(
+                            title = stringResource(R.string.payments_status_title),
+                            summary = readiness.reason,
+                            chip = stringResource(readiness.chip),
+                            chipTone = readiness.tone,
+                            onClick = {
+                                if (readiness.opensPif) {
+                                    onOpen(PlayIntegrityFix::class.java, R.string.play_integrity_fix_title)
+                                } else {
+                                    onOpen(TrickyStore::class.java, R.string.tricky_store_title)
+                                }
+                            },
+                        )
+                    }
+                    item {
                         ExpressiveSwitchNavRow(
                             title = stringResource(R.string.tricky_store_title),
                             summary = stringResource(R.string.tricky_store_summary),
