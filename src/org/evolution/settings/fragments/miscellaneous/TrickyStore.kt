@@ -126,6 +126,7 @@ class TrickyStore : SettingsPreferenceFragment() {
         private const val GMS_PACKAGE                = "com.google.android.gms"
         private const val GMS_PERSISTENT_PACKAGE     = "com.google.android.gms.persistent"
         private const val RKPD_PACKAGE               = "com.google.android.rkpdapp"
+        private const val RKPD_AOSP_PACKAGE          = "com.android.rkpdapp"
         private const val GSF_PACKAGE                = "com.google.android.gsf"
         private const val CONTACT_KEYS_PACKAGE       = "com.google.android.contactkeys"
         private const val SAFETY_CORE_PACKAGE        = "com.google.android.safetycore"
@@ -1234,7 +1235,7 @@ class TrickyStore : SettingsPreferenceFragment() {
                 requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             listOf(
                 VENDING_PACKAGE, DROIDGUARD_PACKAGE, GMS_PACKAGE,
-                GMS_PERSISTENT_PACKAGE, RKPD_PACKAGE, GSF_PACKAGE,
+                GMS_PERSISTENT_PACKAGE, RKPD_PACKAGE, RKPD_AOSP_PACKAGE, GSF_PACKAGE,
                 CONTACT_KEYS_PACKAGE, SAFETY_CORE_PACKAGE, VELVET_PACKAGE
             ).forEach { am.forceStopPackage(it) }
             // Force-stop only, like AxSpoofManager.killGmsFamily(). Clearing Play Store data

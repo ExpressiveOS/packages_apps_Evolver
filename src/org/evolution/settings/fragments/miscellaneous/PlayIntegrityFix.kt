@@ -444,6 +444,7 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
             am.forceStopPackage(GMS_PACKAGE)
             am.forceStopPackage(GMS_PERSISTENT_PACKAGE)
             am.forceStopPackage(RKPD_PACKAGE)
+            am.forceStopPackage(RKPD_AOSP_PACKAGE)
             am.forceStopPackage(GSF_PACKAGE)
             am.forceStopPackage(CONTACT_KEYS_PACKAGE)
             am.forceStopPackage(SAFETY_CORE_PACKAGE)
@@ -485,6 +486,7 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         private const val GMS_PACKAGE               = "com.google.android.gms"
         private const val GMS_PERSISTENT_PACKAGE    = "com.google.android.gms.persistent"
         private const val RKPD_PACKAGE              = "com.google.android.rkpdapp"
+        private const val RKPD_AOSP_PACKAGE         = "com.android.rkpdapp"
         private const val GSF_PACKAGE               = "com.google.android.gsf"
         private const val CONTACT_KEYS_PACKAGE      = "com.google.android.contactkeys"
         private const val SAFETY_CORE_PACKAGE       = "com.google.android.safetycore"
