@@ -45,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
+import org.json.JSONArray
 import org.json.JSONObject
 
 class TrickyStore : SettingsPreferenceFragment() {
@@ -65,10 +66,21 @@ class TrickyStore : SettingsPreferenceFragment() {
     private var isCheckInProgress = false
     private var isKeyboxPickerOpen = false
 
+    // Set by a manual keybox import; consumed once the revocation check that follows it
+    // finishes, so the Play Store wipe prompt never competes with a keep/replace dialog.
+    private var offerWipeAfterCheck = false
+
     // ---- Trust anchors (SHA-256 of DER-encoded cert) ------------------------
 
     companion object {
         private const val TAG = "TrickyStore"
+
+        private val PACKAGE_REGEX = Regex("""[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*""")
+        private val TARGET_LINE_REGEX = Regex("""[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*\s*[?!-]?""")
+
+        // Mode strings TrickyStoreService.parseTargetsJson accepts; anything else there
+        // falls back to AUTO, so the UI refuses it rather than let it degrade silently.
+        private val VALID_TARGET_MODES = setOf("AUTO", "LEAF_HACK", "GENERATE", "SKIP")
 
         // Fallback trust anchors, used only if the live roots fetch fails and
         // no cached copy exists yet. Google may add/rotate roots at any time;
@@ -190,6 +202,7 @@ class TrickyStore : SettingsPreferenceFragment() {
                 Settings.Secure.putString(
                     requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY, "")
                 refreshStatus()
+                offerWipeAfterCheck = true
                 checkKeyboxRevocation()
             } catch (e: Exception) {
                 toast(getString(R.string.ts_failed, e.message ?: ""))
@@ -205,14 +218,50 @@ class TrickyStore : SettingsPreferenceFragment() {
             try {
                 val text = requireContext().contentResolver.openInputStream(uri)
                     ?.use { it.readBytes().toString(StandardCharsets.UTF_8) } ?: ""
-                Settings.Secure.putString(
-                    requireContext().contentResolver, TARGET_KEY, text)
-                toast(getString(R.string.ts_target_list_imported))
-                refreshStatus()
+                importTargets(text)
             } catch (e: Exception) {
                 toast(getString(R.string.ts_failed, e.message ?: ""))
             }
         }
+    }
+
+    /**
+     * Accepts the framework's two target formats: one package per line with an optional
+     * mode suffix (`?` leaf, `!` cert, `-` skip, `#` comments), or a JSON array of
+     * {"package", "mode"} objects. Anything else is refused instead of being stored.
+     */
+    private fun importTargets(raw: String) {
+        val text = raw.removePrefix("\uFEFF").trim()
+        if (text.isEmpty()) {
+            toast(getString(R.string.ts_target_list_invalid, "-"))
+            return
+        }
+        if (text.startsWith("[")) {
+            try {
+                val array = JSONArray(text)
+                for (i in 0 until array.length()) {
+                    val obj = array.get(i) as JSONObject
+                    val pkg = obj.getString("package")
+                    require(PACKAGE_REGEX.matches(pkg)) { pkg }
+                    obj.optString("mode").takeIf { it.isNotEmpty() }?.let { mode ->
+                        require(mode.uppercase() in VALID_TARGET_MODES) { "mode: $mode" }
+                    }
+                }
+            } catch (e: Exception) {
+                toast(getString(R.string.ts_target_list_invalid, e.message ?: "JSON"))
+                return
+            }
+        } else {
+            val bad = text.lines().map { it.trim() }
+                .firstOrNull { it.isNotEmpty() && !it.startsWith("#") && !TARGET_LINE_REGEX.matches(it) }
+            if (bad != null) {
+                toast(getString(R.string.ts_target_list_invalid, bad))
+                return
+            }
+        }
+        Settings.Secure.putString(requireContext().contentResolver, TARGET_KEY, text)
+        toast(getString(R.string.ts_target_list_imported))
+        refreshStatus()
     }
 
     // ---- Lifecycle ----------------------------------------------------------
@@ -270,6 +319,13 @@ class TrickyStore : SettingsPreferenceFragment() {
             Settings.Secure.putString(requireContext().contentResolver, PATCH_KEY, value)
             refreshStatus()
             return null
+        }
+
+        override fun onWipePlayStore(wipe: Boolean) {
+            if (!wipe) return
+            try {
+                requireContext().packageManager.clearApplicationUserData(VENDING_PACKAGE, null)
+            } catch (_: Exception) {}
         }
 
         override fun onDeletePatch() {
@@ -337,10 +393,15 @@ class TrickyStore : SettingsPreferenceFragment() {
         val resolver = requireContext().contentResolver
         val keyboxExists = !Settings.Secure.getString(resolver, KEYBOX_KEY).isNullOrEmpty()
 
-        val targetContent = Settings.Secure.getString(resolver, TARGET_KEY)
+        // Count only installed targets: uninstalled defaults stay in the stored list so they
+        // apply once installed, but they aren't "configured" from the user's view.
+        val targets = TrickyStoreAppSettings.installedTargets(
+            requireContext().packageManager,
+            TrickyStoreAppSettings.parseTargetList(Settings.Secure.getString(resolver, TARGET_KEY)),
+        )
         ui.enabled = isTrickyStoreEnabled
         ui.keyboxExists = keyboxExists
-        ui.targetCount = targetContent?.lines()?.count { it.isNotBlank() } ?: 0
+        ui.targetCount = targets.size
 
         val patchDate = Settings.Secure.getString(resolver, PATCH_KEY)
         ui.patchStale = !patchDate.isNullOrEmpty() && isPatchDateStale(patchDate)
@@ -352,7 +413,7 @@ class TrickyStore : SettingsPreferenceFragment() {
                 getString(R.string.ts_no_patch)
             }
 
-        ui.verificationSummary = buildVerificationSummary()
+        ui.verificationSummary = buildVerificationSummary(targets)
 
         applyRevocationUi(currentRevocationStatus, currentRevocationReason)
         updateFetchButtonState(keyboxExists)
@@ -470,10 +531,12 @@ class TrickyStore : SettingsPreferenceFragment() {
                     refreshStatus()  // update keybox-info row too
 
                     handleActionableStatus(status)
+                    offerWipeIfPending(status)
                 },
                 onFailure = { e ->
                     ui.revocationChecking = false
                     ui.revocationSummary = getString(R.string.ts_revocation_error, e.message)
+                    offerWipeIfPending(null)
                 }
             )
         }
@@ -1040,28 +1103,14 @@ class TrickyStore : SettingsPreferenceFragment() {
 
     // ---- Verification-mode summary ------------------------------------------
 
-    private fun buildVerificationSummary(): String {
-        val content = Settings.Secure.getString(
-            requireContext().contentResolver, TARGET_KEY)
-            ?: return getString(R.string.ts_verification_mode_auto)
-
-        var auto = 0; var cert = 0; var leaf = 0
-        content.lines().forEach { line ->
-            val t = line.trim()
-            if (t.isNotBlank()) when {
-                t.endsWith("!") -> cert++
-                t.endsWith("?") -> leaf++
-                else            -> auto++
-            }
-        }
-
-        if (auto == 0 && cert == 0 && leaf == 0)
-            return getString(R.string.ts_verification_mode_auto)
-
+    private fun buildVerificationSummary(targets: Map<String, TargetMode>): String {
+        if (targets.isEmpty()) return getString(R.string.ts_verification_mode_auto)
+        val counts = targets.values.groupingBy { it }.eachCount()
         return buildList {
-            if (auto > 0) add(getString(R.string.ts_verification_auto_count, auto))
-            if (cert > 0) add(getString(R.string.ts_verification_cert_count, cert))
-            if (leaf > 0) add(getString(R.string.ts_verification_leaf_count, leaf))
+            counts[TargetMode.AUTO]?.let { add(getString(R.string.ts_verification_auto_count, it)) }
+            counts[TargetMode.CERT_GEN]?.let { add(getString(R.string.ts_verification_cert_count, it)) }
+            counts[TargetMode.LEAF_HACK]?.let { add(getString(R.string.ts_verification_leaf_count, it)) }
+            counts[TargetMode.SKIP]?.let { add(getString(R.string.ts_verification_skip_count, it)) }
         }.joinToString(" · ")
     }
 
@@ -1093,6 +1142,19 @@ class TrickyStore : SettingsPreferenceFragment() {
         } catch (e: Exception) {
             toast(getString(R.string.ts_failed, e.message ?: ""))
         }
+    }
+
+    /**
+     * Offers to clear Play Store data once per manual keybox import, after its revocation check.
+     * Skipped when the check raised its own dialog, or flagged the keybox revoked/suspended (it is
+     * about to be replaced), and never for the silent auto-fetch, which only force-stops.
+     */
+    private fun offerWipeIfPending(status: RevocationStatus?) {
+        if (!offerWipeAfterCheck) return
+        offerWipeAfterCheck = false
+        if (!isAdded || ui.dialog != null) return
+        if (status == RevocationStatus.REVOKED || status == RevocationStatus.SUSPENDED) return
+        ui.dialog = TsDialog.WipePlayStore
     }
 
     // The three prompts below are raised from the async revocation check. They never replace a
