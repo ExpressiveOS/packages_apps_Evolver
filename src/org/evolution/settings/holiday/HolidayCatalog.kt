@@ -5,6 +5,7 @@
 
 package org.evolution.settings.holiday
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import com.android.settings.R
@@ -69,14 +70,20 @@ enum class Holiday(
     /** Stable id: stored in settings and in the brand palette string. */
     val id: String,
     @StringRes val title: Int,
+    /** What the holiday header at the top of Settings says ("Happy Halloween"). */
+    @StringRes val greeting: Int,
     @RawRes val wallpaper: Int,
+    /** Its picture at the top of Quick Settings, which SystemUI finds by name (HolidayQsHeader). */
+    @DrawableRes val qsHeader: Int,
     val colors: HolidayColors,
 ) {
     /** The week of Thanksgiving, Monday to Sunday (US, the fourth Thursday of November). */
     THANKSGIVING(
         id = "thanksgiving",
         title = R.string.holiday_thanksgiving,
+        greeting = R.string.holiday_greeting_thanksgiving,
         wallpaper = R.raw.holiday_wallpaper_thanksgiving,
+        qsHeader = R.drawable.holiday_qs_header_thanksgiving,
         colors = HolidayColors(
             seed = 0xFFB5651D,
             secondarySeed = 0xFF8E2A3B,
@@ -93,7 +100,9 @@ enum class Holiday(
     CHRISTMAS(
         id = "christmas",
         title = R.string.holiday_christmas,
+        greeting = R.string.holiday_greeting_christmas,
         wallpaper = R.raw.holiday_wallpaper_christmas,
+        qsHeader = R.drawable.holiday_qs_header_christmas,
         colors = HolidayColors(
             seed = 0xFFC62828,
             secondarySeed = 0xFF1B7F4D,
@@ -110,7 +119,9 @@ enum class Holiday(
     NEW_YEAR(
         id = "newyear",
         title = R.string.holiday_newyear,
+        greeting = R.string.holiday_greeting_newyear,
         wallpaper = R.raw.holiday_wallpaper_newyear,
+        qsHeader = R.drawable.holiday_qs_header_newyear,
         colors = HolidayColors(
             seed = 0xFFC9A227,
             secondarySeed = 0xFF2A3FA8,
@@ -127,7 +138,9 @@ enum class Holiday(
     VALENTINES(
         id = "valentines",
         title = R.string.holiday_valentines,
+        greeting = R.string.holiday_greeting_valentines,
         wallpaper = R.raw.holiday_wallpaper_valentines,
+        qsHeader = R.drawable.holiday_qs_header_valentines,
         colors = HolidayColors(
             seed = 0xFFE0457B,
             secondarySeed = 0xFF7B1FA2,
@@ -144,7 +157,9 @@ enum class Holiday(
     ST_PATRICKS(
         id = "stpatricks",
         title = R.string.holiday_stpatricks,
+        greeting = R.string.holiday_greeting_stpatricks,
         wallpaper = R.raw.holiday_wallpaper_stpatricks,
+        qsHeader = R.drawable.holiday_qs_header_stpatricks,
         colors = HolidayColors(
             seed = 0xFF1E9E5A,
             secondarySeed = 0xFFC99A1E,
@@ -161,7 +176,9 @@ enum class Holiday(
     EASTER(
         id = "easter",
         title = R.string.holiday_easter,
+        greeting = R.string.holiday_greeting_easter,
         wallpaper = R.raw.holiday_wallpaper_easter,
+        qsHeader = R.drawable.holiday_qs_header_easter,
         colors = HolidayColors(
             seed = 0xFFA07BEA,
             secondarySeed = 0xFF5CC09C,
@@ -178,7 +195,9 @@ enum class Holiday(
     JULY_4(
         id = "july4",
         title = R.string.holiday_july4,
+        greeting = R.string.holiday_greeting_july4,
         wallpaper = R.raw.holiday_wallpaper_july4,
+        qsHeader = R.drawable.holiday_qs_header_july4,
         colors = HolidayColors(
             seed = 0xFF2F5BD3,
             secondarySeed = 0xFFC1121F,
@@ -195,7 +214,9 @@ enum class Holiday(
     HALLOWEEN(
         id = "halloween",
         title = R.string.holiday_halloween,
+        greeting = R.string.holiday_greeting_halloween,
         wallpaper = R.raw.holiday_wallpaper_halloween,
+        qsHeader = R.drawable.holiday_qs_header_halloween,
         colors = HolidayColors(
             seed = 0xFFE8650A,
             secondarySeed = 0xFF6B21A8,
@@ -255,14 +276,23 @@ enum class Holiday(
     }
 }
 
-/** Finding holidays by date, and the brand palette the other apps read. */
+/** Finding holidays by date, and the palettes the other apps read. */
 object HolidayCatalog {
 
     /**
      * Settings.Secure key holding the active theme's banner colours, read by Settings' GlowView
-     * and the Updater's wordmark. Empty or unset means the Bloom colours. See [brandPalette].
+     * (the wordmark in About and in the holiday header at the top of Settings), the Updater's
+     * wordmark and the easter egg's stars. Empty or unset means the Bloom colours. See
+     * [brandPalette].
      */
     const val KEY_BRAND_PALETTE = "expressiveos_holiday_palette"
+
+    /**
+     * Settings.Secure key, the system user's, holding the holiday boot animation's colours while
+     * it's on, which SystemUI writes into the boot animation's colour properties in place of its
+     * Monet ones. Unset means Monet's. See [bootPalette].
+     */
+    const val KEY_BOOT_PALETTE = "expressiveos_holiday_bootanim"
 
     fun byId(id: String?): Holiday? = Holiday.entries.firstOrNull { it.id == id }
 
@@ -307,4 +337,17 @@ object HolidayCatalog {
             listOf(petals[1].deep, petals[0].deep).joinToString(",") { hex(it) },
         ).joinToString(";")
     }
+
+    /**
+     * [holiday]'s boot animation colours: its petals' mids, in petal order, as the holiday boot
+     * animation's four colour channels take them.
+     */
+    fun bootColors(holiday: Holiday): List<Int> = holiday.colors.petals.map { it.mid }
+
+    /**
+     * The [KEY_BOOT_PALETTE] value for [holiday]: [bootColors] as RRGGBB hex, split by ','. For
+     * example "FF8A1F,B26BFF,FFB347,7CE35A".
+     */
+    fun bootPalette(holiday: Holiday): String =
+        bootColors(holiday).joinToString(",") { String.format("%06X", 0xFFFFFF and it) }
 }

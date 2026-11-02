@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: ExpressiveOS
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- The holiday header at the top of Settings' main page (HolidayHeaderController): the wordmark,
+     with the greeting and what the theme is doing under it, read out together. The controller
+     fills in the text, keeps the wordmark itself out of what's read out and gives the card its
+     click for accessibility services -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/holiday_header_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="16dp"
+    android:screenReaderFocusable="true">
+
+    <include layout="@layout/evolution_logo" />
+
+    <TextView
+        android:id="@+id/holiday_header_greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.SettingsLib.TitleLarge" />
+
+    <TextView
+        android:id="@+id/holiday_header_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.SettingsLib.BodyMedium"
+        android:textColor="?android:attr/textColorSecondary" />
+</LinearLayout>

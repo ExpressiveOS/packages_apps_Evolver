@@ -27,16 +27,24 @@
     <string name="holiday_themes_part_wallpaper_summary">Home and lock screen. Left alone while Wallpaper Glymps is on</string>
     <string name="holiday_themes_part_colors_title">System colors</string>
     <string name="holiday_themes_part_colors_summary">Material You colors across the phone</string>
+    <string name="holiday_themes_part_lock_clock_title">Lock screen clock</string>
+    <string name="holiday_themes_part_lock_clock_summary">The clock\'s color. Your clock face stays</string>
+    <string name="holiday_themes_part_qs_header_title">Quick Settings picture</string>
+    <string name="holiday_themes_part_qs_header_summary">A holiday picture at the top of Quick Settings</string>
+    <!-- In place of holiday_themes_part_qs_header_summary while holidays leave Quick settings > Header image off, as the user turned it off during one -->
+    <string name="holiday_themes_part_qs_header_held_off">Left off since you turned off Header image during a holiday. Turn this off and on to bring it back</string>
+    <string name="holiday_themes_part_boot_animation_title">Boot animation</string>
+    <string name="holiday_themes_part_boot_animation_summary">The ExpressiveOS logo in the holiday\'s colors as the phone starts. Shows from the next restart</string>
     <string name="holiday_themes_part_icons_title">Settings icons</string>
     <string name="holiday_themes_part_icons_summary">The icons on Settings\' main page</string>
     <string name="holiday_themes_part_look_title">Expressive Studio</string>
-    <string name="holiday_themes_part_look_summary">Studio\'s tiles in the holiday\'s colors</string>
+    <string name="holiday_themes_part_look_summary">Studio\'s tiles in the holiday\'s colors, and a greeting at the top of Settings</string>
     <string name="holiday_themes_part_banner_title">ExpressiveOS banner</string>
-    <string name="holiday_themes_part_banner_summary">The glowing wordmark in About and the Updater</string>
+    <string name="holiday_themes_part_banner_summary">The glowing wordmark in About, the Updater and the top of Settings, and the easter egg\'s stars</string>
 
     <!-- Shows a holiday's theme now, whatever the date; each holiday's row follows "Stop trying" -->
     <string name="holiday_themes_try_category">Try a theme</string>
     <string name="holiday_themes_stop_trying">Stop trying</string>
 
-    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper and colors are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
+    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper, colors, lock screen clock color, Quick Settings picture and boot animation are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
 </resources>

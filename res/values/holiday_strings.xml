@@ -13,4 +13,14 @@
     <string name="holiday_easter">Easter</string>
     <string name="holiday_july4">Fourth of July</string>
     <string name="holiday_halloween">Halloween</string>
+
+    <!-- What the holiday header at the top of Settings' main page says while each holiday's theme is on -->
+    <string name="holiday_greeting_thanksgiving">Happy Thanksgiving</string>
+    <string name="holiday_greeting_christmas">Merry Christmas</string>
+    <string name="holiday_greeting_newyear">Happy New Year</string>
+    <string name="holiday_greeting_valentines">Happy Valentine\'s Day</string>
+    <string name="holiday_greeting_stpatricks">Happy St. Patrick\'s Day</string>
+    <string name="holiday_greeting_easter">Happy Easter</string>
+    <string name="holiday_greeting_july4">Happy Fourth of July</string>
+    <string name="holiday_greeting_halloween">Happy Halloween</string>
 </resources>
