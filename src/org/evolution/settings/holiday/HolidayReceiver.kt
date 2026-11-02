@@ -48,7 +48,7 @@ class HolidayActionReceiver : BroadcastReceiver() {
          * the page is swiped away: a wallpaper set cut short would look like the user's own
          * change, and their saved wallpaper could be lost.
          */
-        fun evaluate(context: Context, onDone: () -> Unit) {
+        fun evaluate(context: Context, onDone: () -> Unit = {}) {
             val intent = Intent(ACTION_EVALUATE)
                 .setClass(context, HolidayActionReceiver::class.java)
             val done = object : BroadcastReceiver() {

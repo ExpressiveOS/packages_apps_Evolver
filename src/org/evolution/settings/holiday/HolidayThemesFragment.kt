@@ -94,7 +94,19 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
 
     override fun onResume() {
         super.onResume()
-        refresh()
+        val app = context?.applicationContext
+        if (app != null) {
+            val today = LocalDate.now()
+            val applied = HolidayThemes.applied(app)
+            val expired = applied != null && applied.windowContaining(today) == null && HolidayThemes.trial(app) == null
+            if (expired) {
+                HolidayActionReceiver.evaluate(app) { if (isAdded) refresh() }
+            } else {
+                refresh()
+            }
+        } else {
+            refresh()
+        }
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
@@ -164,6 +176,9 @@ class HolidayStatus private constructor(val text: String, val holiday: Holiday?)
                 val name = context.getString(applied.title)
                 // Null for the moment a theme stays on past its last day, until the engine runs
                 val end = applied.windowContaining(today)?.end
+                if (end == null && HolidayThemes.trial(context) == null) {
+                    HolidayActionReceiver.evaluate(context) {}
+                }
                 val text = if (end != null) {
                     context.getString(
                         R.string.holiday_themes_status_on, name, formatDate(context, end)
