@@ -7,8 +7,10 @@ package org.evolution.settings.holiday
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
@@ -219,12 +221,51 @@ object HolidayThemes {
             } catch (e: Exception) {
                 Log.w(TAG, "Couldn't schedule the next holiday theme change", e)
             }
+            unregisterScreenOffReceiver(context)
         }
     }
 
     /** Runs [evaluate] on the engine's thread, then [onDone] on the main thread. */
     fun evaluateAsync(context: Context, onDone: (() -> Unit)? = null) {
         runAsync(context, onDone) { evaluate(it) }
+    }
+
+    @Volatile
+    private var screenOffReceiverRegistered = false
+
+    private val screenOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (Intent.ACTION_SCREEN_OFF == intent.action) {
+                unregisterScreenOffReceiver(context)
+                evaluateAsync(context)
+            }
+        }
+    }
+
+    private fun registerScreenOffReceiver(app: Context) {
+        synchronized(screenOffReceiver) {
+            if (!screenOffReceiverRegistered) {
+                try {
+                    app.registerReceiver(screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+                    screenOffReceiverRegistered = true
+                } catch (e: Exception) {
+                    Log.w(TAG, "Couldn't register screen off receiver", e)
+                }
+            }
+        }
+    }
+
+    private fun unregisterScreenOffReceiver(context: Context) {
+        synchronized(screenOffReceiver) {
+            if (screenOffReceiverRegistered) {
+                try {
+                    (context.applicationContext ?: context).unregisterReceiver(screenOffReceiver)
+                } catch (ignored: Exception) {
+                } finally {
+                    screenOffReceiverRegistered = false
+                }
+            }
+        }
     }
 
     /**
@@ -242,8 +283,10 @@ object HolidayThemes {
             val foreground = app.getSystemService(UserManager::class.java)?.isUserForeground == true
             val prefs = prefs(app)
             if (screenOn && foreground && prefs != null && wouldChange(app, prefs)) {
+                registerScreenOffReceiver(app)
                 setAlarm(app, System.currentTimeMillis() + SCREEN_ON_DELAY_MS)
             } else {
+                unregisterScreenOffReceiver(app)
                 evaluate(app)
             }
         }

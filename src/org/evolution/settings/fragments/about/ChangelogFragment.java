@@ -140,10 +140,32 @@ public class ChangelogFragment extends SettingsPreferenceFragment {
     private String fetchChangelog(String urlString) {
         try {
             String data = NetworkUtils.fetchString(urlString, null);
-            return data.isEmpty() ? null : data;
-        } catch (IOException e) {
-            return null;
+            if (data != null && !data.isEmpty()) {
+                return data;
+            }
+        } catch (IOException ignored) {
         }
+        return readLocalChangelog();
+    }
+
+    @Nullable
+    private String readLocalChangelog() {
+        String[] paths = {
+            "/system/etc/Changelog.txt",
+            "/product/etc/Changelog.txt",
+            "/system_ext/etc/Changelog.txt"
+        };
+        for (String path : paths) {
+            java.io.File file = new java.io.File(path);
+            if (file.exists() && file.isFile() && file.length() > 0) {
+                try {
+                    return new String(java.nio.file.Files.readAllBytes(file.toPath()),
+                            java.nio.charset.StandardCharsets.UTF_8);
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return null;
     }
 
     @Override
