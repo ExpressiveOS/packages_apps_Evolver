@@ -111,7 +111,7 @@ import com.android.settingslib.spa.widget.dialog.getDialogWidth
 import com.android.settingslib.spa.widget.ui.CategoryTitle
 
 // ---------------------------------------------------------------------------
-// Shared Material 3 Expressive building blocks for every Evolver screen.
+// Shared Material 3 Expressive building blocks for every Expressive Studio screen.
 //
 // Everything here is layered on SettingsLib SPA tokens (SettingsSpace,
 // SettingsShape, SettingsDimension) and widgets (CategoryTitle,
