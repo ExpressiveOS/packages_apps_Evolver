@@ -40,7 +40,7 @@
             android:icon="@drawable/ic_about_telegram">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://t.me/ExpressiveGroup" />
+                android:data="https://t.me/ExpressiveLauncherFeedback" />
         </Preference>
 
         <!-- Github -->
