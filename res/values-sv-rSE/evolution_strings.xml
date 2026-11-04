@@ -848,8 +848,6 @@
     <string name="notification_bubble_apps_summary">Öppna appar i en flytande bubbla när du trycker på deras aviseringar</string>
     <string name="media_squiggle_animation_title">Slingeranimering</string>
     <string name="media_squiggle_animation_summary">Visa en vågformad animering i mediepanelens förloppsreglage under uppspelning</string>
-    <string name="essential_notifications">Viktiga aviseringar</string>
-    <string name="essential_notifications_summary">Välj appar som alltid visas på aviseringspanelen</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Kantbelysning</string>
     <string name="edge_light_summary">Lys upp skärmens kanter vid aviseringspuls</string>
@@ -978,9 +976,6 @@
     <string name="pp_spoof_as">Maskera som</string>
     <string name="pp_empty_description">Valda appar rapporterar den valda Pixel-enhetsidentiteten för att låsa upp Pixel-exklusiva funktioner</string>
     <string name="pp_mainline_unsupported">Den här enheten är redan en Pixel. Maskering är inte tillgänglig på ordinarie Pixel-enheter.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Sensorblockering per app</string>
-    <string name="sensor_block_summary">Blockera valda appars åtkomst till vissa sensorer för att spara batteri</string>
     <!-- Miscellaneous/Idle Manager -->
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity Fix</string>
@@ -1149,8 +1144,6 @@
     <string name="lock_glymps_home_preview_desc">Förhandsvisning av startskärmens bakgrundsbild</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Anpassning av bakgrundsbild</string>
-    <string name="video_wallpaper_category_title">Videobakgrund</string>
-    <string name="video_wallpaper_category_summary">Ange animerade bakgrundsbilder (MP4, GIF, WebP)</string>
     <!-- Haptics settings -->
     <!-- Volume panel styles -->
     <!-- Gradient styles -->
@@ -1275,9 +1268,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Inställningsstil</string>
-    <string name="settings_icon_summary">Anpassa gränssnittsstilen i appen Inställningar</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Reglageläge</string>
     <string name="qs_show_volume_slider_hide">Endast ljusstyrkereglage</string>

@@ -794,8 +794,6 @@
     <string name="notification_bubble_apps_summary">فتح التطبيقات في فقاعة عائمة عند الضغط على إشعاراتها</string>
     <string name="media_squiggle_animation_title">حركة متعرجة</string>
     <string name="media_squiggle_animation_summary">إظهار حركة متعرجة لشريط التقدم في لوحة الوسائط أثناء التشغيل</string>
-    <string name="essential_notifications">الإشعارات الأساسية</string>
-    <string name="essential_notifications_summary">اختر التطبيقات التي تظهر دائمًا في لوحة الإشعارات</string>
     <string name="edge_light_title">إضاءة الحواف</string>
     <string name="edge_light_summary">إضاءة حواف الشاشة عند نبض الإشعار</string>
     <string name="edge_light_color_mode_title">وضع اللون</string>
@@ -919,8 +917,6 @@
     <string name="pp_spoof_as">الانتحال كـ</string>
     <string name="pp_empty_description">ستبلغ التطبيقات المحددة عن هوية جهاز Pixel المختارة لفتح ميزات Pixel الحصرية</string>
     <string name="pp_mainline_unsupported">هذا الجهاز Pixel بالفعل. الانتحال غير متاح على أجهزة Pixel الرئيسية.</string>
-    <string name="sensor_block_title">حظر المستشعرات لكل تطبيق</string>
-    <string name="sensor_block_summary">حظر الوصول إلى مستشعرات معينة لتطبيقات محددة لتوفير البطارية</string>
     <string name="play_integrity_fix_title">إصلاح Play Integrity</string>
     <string name="play_integrity_fix_summary">إدارة إعداد PIF وبصمات الأجهزة لتحقيق Basic Integrity</string>
     <string name="pif_status">الحالة</string>
@@ -1081,8 +1077,6 @@
     <string name="lock_glymps_lock_preview_desc">معاينة خلفية شاشة القفل</string>
     <string name="lock_glymps_home_preview_desc">معاينة خلفية الشاشة الرئيسية</string>
     <string name="video_wallpaper_category">تخصيص الخلفية</string>
-    <string name="video_wallpaper_category_title">خلفية فيديو</string>
-    <string name="video_wallpaper_category_summary">تعيين خلفيات متحركة (MP4 وGIF وWebP)</string>
     <string name="gradient_settings_title">تخصيص التدرج</string>
     <string name="gradient_settings_summary">تطبيق ألوان متدرجة على عناصر النظام</string>
     <string name="gradient_elements_category">عناصر النظام</string>
@@ -1191,8 +1185,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <string name="settings_icon_title">نمط الإعدادات</string>
-    <string name="settings_icon_summary">تخصيص نمط واجهة تطبيق الإعدادات</string>
     <string name="qs_show_volume_slider_title">وضع شريط التمرير</string>
     <string name="qs_show_volume_slider_hide">شريط السطوع فقط</string>
     <string name="qs_show_volume_slider_both">شريطا السطوع والصوت</string>

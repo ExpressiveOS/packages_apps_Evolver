@@ -850,8 +850,6 @@
     <string name="notification_bubble_apps_summary">Buka aplikasi dalam gelembung mengambang saat mengetuk notifikasinya</string>
     <string name="media_squiggle_animation_title">Animasi bergelombang</string>
     <string name="media_squiggle_animation_summary">Tampilkan animasi garis bergelombang di panel media selama pemutaran</string>
-    <string name="essential_notifications">Notifikasi penting</string>
-    <string name="essential_notifications_summary">Pilih aplikasi yang selalu muncul di bilah notifikasi</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Cahaya Tepi</string>
     <string name="edge_light_summary">Menerangi tepi layar saat ada notifikasi baru</string>
@@ -975,9 +973,6 @@
     <string name="pp_spoof_as">Palsukan sebagai</string>
     <string name="pp_empty_description">Aplikasi terpilih akan melaporkan identitas perangkat Pixel yang dipilih untuk membuka fitur eksklusif Pixel</string>
     <string name="pp_mainline_unsupported">Perangkat ini sudah merupakan Pixel. Pemalsuan identitas tidak tersedia pada perangkat Pixel utama.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Blok sensor per aplikasi</string>
-    <string name="sensor_block_summary">Blokir akses ke sensor tertentu untuk aplikasi terpilih guna menghemat baterai</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Perbaikan Integritas Play</string>
     <string name="play_integrity_fix_summary">Kelola konfigurasi PIF dan sidik jari perangkat untuk integritas dasar</string>
@@ -1167,8 +1162,6 @@
     <string name="lock_glymps_home_preview_desc">Pratinjau wallpaper layar beranda</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Kustomisasi wallpaper</string>
-    <string name="video_wallpaper_category_title">Wallpaper Video</string>
-    <string name="video_wallpaper_category_summary">Atur wallpaper animasi (MP4, GIF, WebP)</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Kustomisasi gradasi</string>
     <string name="gradient_settings_summary">Terapkan warna gradasi pada elemen sistem</string>
@@ -1318,9 +1311,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Gaya setelan</string>
-    <string name="settings_icon_summary">Sesuaikan gaya UI aplikasi Setelan</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Mode penggeser</string>
     <string name="qs_show_volume_slider_hide">Hanya penggeser kecerahan</string>

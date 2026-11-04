@@ -60,12 +60,6 @@
                 android:targetClass="com.android.axion.axthemestore.MainActivity" />
         </Preference>
 
-        <!--<Preference
-            android:key="settings_icon"
-            android:title="@string/settings_icon_title"
-            android:summary="@string/settings_icon_summary"
-            android:fragment="org.evolution.settings.fragments.themes.SettingsIcon" />-->
-
         <!-- Icon shape -->
         <Preference
             android:key="android.theme.customization.adaptive_icon_shape"
@@ -132,12 +126,6 @@
             android:summary="@string/lock_glymps_enable_summary"
             android:fragment="org.evolution.settings.fragments.themes.LockGlympsSettings"
             android:defaultValue="false" />
-
-        <!--<Preference
-            android:key="video_wallpaper"
-            android:title="@string/video_wallpaper_category_title"
-            android:summary="@string/video_wallpaper_category_summary"
-            android:fragment="org.evolution.settings.fragments.themes.VideoWallpaperFragment" />-->
 
         <Preference
             android:key="wallpaper_settings"

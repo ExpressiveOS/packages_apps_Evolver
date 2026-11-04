@@ -691,8 +691,6 @@
     <string name="notification_bubble_apps_summary">알림을 탭하면 앱이 플로팅 버블 형태로 열립니다.</string>
     <string name="media_squiggle_animation_title">물결 모양 애니메이션</string>
     <string name="media_squiggle_animation_summary">재생 중 미디어 패널에 탐색 막대 물결선 애니메이션을 표시합니다.</string>
-    <string name="essential_notifications">필수 알림</string>
-    <string name="essential_notifications_summary">알림 표시줄에 항상 나타나는 앱을 선택하세요.</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">엣지 라이트 알림</string>
     <string name="edge_light_summary">알림이 깜빡일 때 화면 가장자리를 밝게 표시합니다.</string>
@@ -805,9 +803,6 @@
     <string name="pp_spoof_as">…로 가장하다</string>
     <string name="pp_empty_description">선택한 앱들은 픽셀 전용 기능을 열기 위해 선택한 픽셀 기기 정보를 보고할 거예요</string>
     <string name="pp_mainline_unsupported">이 기기는 이미 픽셀이에요. 메인라인 픽셀 기기에서는 스푸핑이 불가능해요.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">앱별 센서 차단</string>
-    <string name="sensor_block_summary">배터리를 절약하려고 일부 앱의 특정 센서 접근을 막기</string>
     <!-- Miscellaneous/Idle Manager -->
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity 수정</string>
@@ -969,8 +964,6 @@
     <string name="lock_glymps_home_preview_desc">홈 화면 배경화면 미리보기</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">배경화면 맞춤 설정</string>
-    <string name="video_wallpaper_category_title">비디오 배경화면</string>
-    <string name="video_wallpaper_category_summary">애니메이션 배경화면 설정 (MP4, GIF, WebP)</string>
     <!-- Haptics settings -->
     <!-- Volume panel styles -->
     <!-- Gradient styles -->
@@ -1094,9 +1087,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">페이스북</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">설정 스타일</string>
-    <string name="settings_icon_summary">설정 앱 UI 스타일 사용자 지정</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">슬라이더 모드</string>
     <string name="qs_show_volume_slider_hide">밝기 조절 슬라이더 표시</string>

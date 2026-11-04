@@ -853,8 +853,6 @@
     <string name="notification_bubble_apps_summary">Відкривати застосунки у плаваючій бульбашці при натисканні на їх сповіщення</string>
     <string name="media_squiggle_animation_title">Анімація хвилястих ліній</string>
     <string name="media_squiggle_animation_summary">Показувати анімацію перемотки екрану у медіа-панелі під час відтворення</string>
-    <string name="essential_notifications">Істотні сповіщення</string>
-    <string name="essential_notifications_summary">Виберіть додатки, які завжди показуються в заголовку сповіщень</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Яскравість підсвітки екрана</string>
     <string name="edge_light_summary">Підсвічувати краї екрана під час імпульсного сповіщення</string>
@@ -978,9 +976,6 @@
     <string name="pp_spoof_as">Підробити як</string>
     <string name="pp_empty_description">Обрані додатки повідомлять про особливість вибраного пристрою Pixel, щоб розблокувати функції ексклюзивні функції Pixel</string>
     <string name="pp_mainline_unsupported">Цей пристрій уже є Pixel. Spoofing недоступний на континентальних пристроях Pixel.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Блок датчиків для кожного додатка</string>
-    <string name="sensor_block_summary">Блокування доступу до певних датчиків для вибраних програм для економії заряду батареї</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity Fix</string>
     <string name="play_integrity_fix_summary">Керуйте налаштуваннями PIF і відбитками пристроїв для основної цілісності</string>
@@ -1170,8 +1165,6 @@
     <string name="lock_glymps_home_preview_desc">Попередній перегляд шпалер головного екрана</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Налаштування шпалер</string>
-    <string name="video_wallpaper_category_title">Відеошпалери</string>
-    <string name="video_wallpaper_category_summary">Встановити анімовані шпалери (MP4, GIF, WebP)</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Градієнтна кастомізація</string>
     <string name="gradient_settings_summary">Застосувати градієнт кольорів до системних елементів</string>
@@ -1321,9 +1314,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Стиль налаштувань</string>
-    <string name="settings_icon_summary">Налаштувати стиль інтерфейсу програми «Налаштування»</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Режим слайдера</string>
     <string name="qs_show_volume_slider_hide">Тільки повзунок яскравості</string>

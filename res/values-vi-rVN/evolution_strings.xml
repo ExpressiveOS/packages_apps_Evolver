@@ -589,9 +589,6 @@
     <string name="statusbar_extra_padding_start_title">Khoảng cách đầu</string>
     <string name="statusbar_extra_padding_top_title">Khoảng cách bên trên</string>
     <string name="statusbar_extra_padding_end_title">Khoảng cách cuối</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Chặn cảm biến trên mỗi gói</string>
-    <string name="sensor_block_summary">Chặn quyền truy cập vào một số cảm biến nhất định đối với một số ứng dụng để tiết kiệm pin</string>
     <!-- %1$d = number of apps currently blocked -->
     <!-- Blink flashlight for incoming calls -->
     <string name="flashlight_on_call_title">Nháy đèn pin khi có cuộc gọi đến</string>
@@ -945,8 +942,6 @@
     <string name="lock_glymps_home_preview_desc">Xem trước hình nền màn hình chính</string>
     <!-- Category -->
     <string name="video_wallpaper_category">Tùy chỉnh hình nền</string>
-    <string name="video_wallpaper_category_title">Hình nền video</string>
-    <string name="video_wallpaper_category_summary">Đặt hình nền động (MP4, GIF, WebP)</string>
     <!-- Preferences -->
     <!-- Info section -->
     <!-- Video Wallpaper Strings -->
@@ -1032,8 +1027,6 @@
     <string name="depthwall_wallpaper_enabled_summary">Bật hiệu ứng depth lấy cảm hứng từ iOS. Yêu cầu ảnh đối tượng.</string>
     <string name="depthwall_wallpaper_opacity_title">Độ mờ hình nền Depth</string>
     <!-- Essential Notifications -->
-    <string name="essential_notifications">Thông báo thiết yếu</string>
-    <string name="essential_notifications_summary">Chọn ứng dụng luôn hiển thị trong thông báo</string>
     <string name="remove">Xóa</string>
     <string name="add">Thêm</string>
 </resources>

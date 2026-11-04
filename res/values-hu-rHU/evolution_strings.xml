@@ -857,8 +857,6 @@ Beállítás:
     <string name="notification_bubble_apps_summary">Alkalmazások megnyitása lebegő buborékban az értesítésük megérintésekor</string>
     <string name="media_squiggle_animation_title">Kacskaringó animáció</string>
     <string name="media_squiggle_animation_summary">Hullámzó keresősáv-animáció megjelenítése a médiapanelen lejátszás közben</string>
-    <string name="essential_notifications">Alapvető értesítések</string>
-    <string name="essential_notifications_summary">A mindig az értesítési felületen megjelenő alkalmazások kiválasztása</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Oldalfény</string>
     <string name="edge_light_summary">A képernyő széleinek megvilágítása értesítési pulzáláskor</string>
@@ -987,9 +985,6 @@ Beállítás:
     <string name="pp_spoof_as">Álcázás mint </string>
     <string name="pp_empty_description">A különleges Pixel-funkciók eléréséhez a kiválasztott alkalmazások Pixel készülékként kezelik ezt a készüléket</string>
     <string name="pp_mainline_unsupported">Ez a készülék Pixel modell. Valódi Pixel-készülékeken a hamisítás nem érhető el.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Alkalmazásonkénti érzékelőblokkolás</string>
-    <string name="sensor_block_summary">Energiatakarékosság érdekében bizonyos érzékelők elérésének blokkolása a kiválasztott alkalmazásoknál</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity javítás</string>
     <string name="play_integrity_fix_summary">A PIF-konfiguráció és az ujjlenyomatok kezelése az alapvető összhang érdekében</string>
@@ -1169,8 +1164,6 @@ Beállítás:
     <string name="lock_glymps_home_preview_desc">Kezdőképernyő háttérképének előnézete</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Háttérkép testreszabása</string>
-    <string name="video_wallpaper_category_title">Videós háttérkép</string>
-    <string name="video_wallpaper_category_summary">Animált háttérképek beállítása (MP4, GIF, WebP)</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Színátmenet testreszabása</string>
     <string name="gradient_settings_summary">Színátmenetek alkalmazása a rendszerelemeken</string>
@@ -1294,9 +1287,6 @@ Beállítás:
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">a Beállítások stílusa</string>
-    <string name="settings_icon_summary">Személyre szabhatja a Beállítások alkalmazás rendszerfelületi stílusát</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">A csúszka lehetőségei</string>
     <string name="qs_show_volume_slider_hide">Csak a Fényerőcsúszka</string>

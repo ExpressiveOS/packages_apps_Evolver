@@ -849,8 +849,6 @@
     <string name="notification_bubble_apps_summary">Bildirimlerine dokunurken uygulamaları yüzen bir balon içinde açın</string>
     <string name="media_squiggle_animation_title">Dalgalı animasyon</string>
     <string name="media_squiggle_animation_summary">Oynatma sırasında medya panelinde ilerleme çubuğu dalgalı animasyonunu göster</string>
-    <string name="essential_notifications">Önemli bildirimler</string>
-    <string name="essential_notifications_summary">Her zaman bildirim renginde görünen uygulamaları seçin</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Kenar aydınlatması</string>
     <string name="edge_light_summary">Bildirimler için ortam ekranı kenarlarını aydınlat</string>
@@ -973,9 +971,6 @@
     <string name="pp_spoof_as">Olarak taklit et</string>
     <string name="pp_empty_description">Seçilen uygulamalar, Pixel özellikleri açmak için seçilen Pixel cihaz kimliğini bildirir</string>
     <string name="pp_mainline_unsupported">Bu cihaz zaten bir Pixel. Pixel cihazlarında sahtecilik yok.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Uygulama başına sensör engelleme</string>
-    <string name="sensor_block_summary">Pil tasarrufu için bazı uygulamaların belirli sensörlere erişimini engelle</string>
     <!-- Miscellaneous/Idle Manager -->
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity Düzeltmesi</string>
@@ -1143,8 +1138,6 @@
     <string name="lock_glymps_home_preview_desc">Ana ekran duvar kağıdı önizlemesi</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Duvar kağıdı özelleştirmesi</string>
-    <string name="video_wallpaper_category_title">Video duvar kağıdı</string>
-    <string name="video_wallpaper_category_summary">Animasyonlu duvar kağıtları ayarlayın(MP4, GIF, WebP)</string>
     <!-- Haptics settings -->
     <!-- Volume panel styles -->
     <!-- Gradient styles -->
@@ -1269,9 +1262,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Ayarlar stili</string>
-    <string name="settings_icon_summary">Ayarlar uygulamasının kullanıcı arayüzü stilini kişiselleştir</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Kaydırıcı modu</string>
     <string name="qs_show_volume_slider_hide">Sadece parlaklık kaydırıcısı</string>
