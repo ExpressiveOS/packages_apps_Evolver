@@ -6,7 +6,7 @@
 package org.evolution.settings.utils;
 
 /**
- * Immutable value object representing a single entry from the Evolution-X OTA JSON.
+ * Immutable value object representing a single entry from the OTA JSON.
  *
  * Replaces the private {@code AggregatedMaintainer} inner class in About and the
  * private {@code OtaData} inner class in HardwareInfoPreferenceController, which

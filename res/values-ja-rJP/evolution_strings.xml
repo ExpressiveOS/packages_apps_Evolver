@@ -849,8 +849,6 @@
     <string name="notification_bubble_apps_summary">通知をタップしたときにフローティングバブルでアプリを開く</string>
     <string name="media_squiggle_animation_title">波状アニメーション</string>
     <string name="media_squiggle_animation_summary">再生中のメディアパネルのシークバーに波状のアニメーションを表示する</string>
-    <string name="essential_notifications">重要な通知</string>
-    <string name="essential_notifications_summary">通知シェードに常に表示するアプリを選択する</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">エッジライト</string>
     <string name="edge_light_summary">通知を受信したときに画面の端をライトアップします</string>
@@ -974,9 +972,6 @@
     <string name="pp_spoof_as">偽装先</string>
     <string name="pp_empty_description">選択したアプリは選択した Pixel デバイスの識別情報を報告し、Pixel 限定機能をアンロックします</string>
     <string name="pp_mainline_unsupported">このデバイスはPixel です。純正のPixel デバイスでは偽装は利用できません。</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">アプリごとのセンサーブロック</string>
-    <string name="sensor_block_summary">バッテリーを節約するために、選択したアプリによる特定のセンサーへのアクセスをブロックする</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrityの修正</string>
     <string name="play_integrity_fix_summary">基本的な整合性のために PIF 設定とデバイスのフィンガープリントを管理します</string>
@@ -1166,8 +1161,6 @@
     <string name="lock_glymps_home_preview_desc">ホーム画面の壁紙プレビュー</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">壁紙のカスタマイズ</string>
-    <string name="video_wallpaper_category_title">アニメーション壁紙</string>
-    <string name="video_wallpaper_category_summary">アニメーション壁紙 (MP4, GIF, WebP) を設定する</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">グラデーションのカスタマイズ</string>
     <string name="gradient_settings_summary">システム要素にグラデーションカラーを適用する</string>
@@ -1317,9 +1310,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">設定のスタイル</string>
-    <string name="settings_icon_summary">設定アプリの UI スタイルをカスタマイズしよう</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">スライダーモード</string>
     <string name="qs_show_volume_slider_hide">明るさスライダーを表示</string>

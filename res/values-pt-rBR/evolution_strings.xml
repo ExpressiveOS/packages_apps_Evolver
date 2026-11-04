@@ -850,8 +850,6 @@
     <string name="notification_bubble_apps_summary">Abra aplicativos em um balão flutuante ao tocar em suas notificações</string>
     <string name="media_squiggle_animation_title">Animação de rabisco</string>
     <string name="media_squiggle_animation_summary">Exibir animação de rabisco da barra de busca no painel de mídia durante a reprodução</string>
-    <string name="essential_notifications">Notificações essenciais</string>
-    <string name="essential_notifications_summary">Escolha aplicativos que sempre aparecem na aba de notificações</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Iluminação nas bordas da tela</string>
     <string name="edge_light_summary">Ilumine as bordas da tela no pulso de notificação</string>
@@ -975,9 +973,6 @@
     <string name="pp_spoof_as">Mascarar como</string>
     <string name="pp_empty_description">Os aplicativos selecionados irão reportar a identidade do dispositivo Pixel escolhido para desbloquear recursos exclusivos do Pixel</string>
     <string name="pp_mainline_unsupported">Este dispositivo já é um Pixel. O mascaramento de identidade não está disponível em dispositivos Pixel convencionais.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Bloqueio de sensor por aplicativo</string>
-    <string name="sensor_block_summary">Bloqueie o acesso a determinados sensores para aplicativos selecionados para economizar bateria</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Correção de Integridade do Google Play</string>
     <string name="play_integrity_fix_summary">Gerencie a configuração do PIF e as impressões digitais do dispositivo para obter integridade básica</string>
@@ -1167,8 +1162,6 @@
     <string name="lock_glymps_home_preview_desc">Visualização do papel de parede da tela inicial</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Personalização do papel de parede</string>
-    <string name="video_wallpaper_category_title">Papel de parede de vídeo</string>
-    <string name="video_wallpaper_category_summary">Defina papéis de parede animados (MP4, GIF, WebP)</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Personalização de gradiente</string>
     <string name="gradient_settings_summary">Aplicar cores gradientes aos elementos do sistema</string>
@@ -1318,9 +1311,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Estilo das configurações</string>
-    <string name="settings_icon_summary">Personalizar o estilo da interface do usuário do aplicativo Configurações</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Modo deslizante</string>
     <string name="qs_show_volume_slider_hide">Apenas o controle deslizante de brilho</string>

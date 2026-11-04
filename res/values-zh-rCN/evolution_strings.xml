@@ -851,8 +851,6 @@
     <string name="notification_bubble_apps_summary">点击通知弹窗时在悬浮窗中打开应用</string>
     <string name="media_squiggle_animation_title">扭曲动画</string>
     <string name="media_squiggle_animation_summary">播放媒体时在媒体面板中显示搜索栏方形动画</string>
-    <string name="essential_notifications">重要通知</string>
-    <string name="essential_notifications_summary">选择始终显示在通知栏中的应用</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">边缘灯效</string>
     <string name="edge_light_summary">当收到通知时在屏幕边缘显示光效</string>
@@ -981,9 +979,6 @@
     <string name="pp_spoof_as">伪装为</string>
     <string name="pp_empty_description">将对所选应用回报选定的 Pixel 设备身份以解锁 Pixel 专属功能</string>
     <string name="pp_mainline_unsupported">该设备就是 Pixel 设备。伪装在真实 Pixel 设备上不可用。</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">按应用屏蔽传感器</string>
-    <string name="sensor_block_summary">阻止部分应用访问传感器以节省电量</string>
     <!-- Miscellaneous/Idle Manager -->
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play 完整性修复</string>
@@ -1152,8 +1147,6 @@
     <string name="lock_glymps_home_preview_desc">主屏幕壁纸预览</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">自定义壁纸</string>
-    <string name="video_wallpaper_category_title">视频壁纸</string>
-    <string name="video_wallpaper_category_summary">设置动画壁纸（MP4, GIF, WebP）</string>
     <!-- Haptics settings -->
     <!-- Volume panel styles -->
     <!-- Gradient styles -->
@@ -1278,9 +1271,6 @@
     <string name="emoji_style_samsung">三星</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">脸书</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">设置样式</string>
-    <string name="settings_icon_summary">自定义设置应用界面样式</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">滑块模式</string>
     <string name="qs_show_volume_slider_hide">仅亮度滑块</string>

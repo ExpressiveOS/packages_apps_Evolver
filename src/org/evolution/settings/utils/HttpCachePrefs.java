@@ -18,7 +18,7 @@ import android.content.SharedPreferences;
  *
  * Usage example:
  * <pre>
- *   HttpCachePrefs cache = new HttpCachePrefs(prefs, "avatar_joeyhuab");
+ *   HttpCachePrefs cache = new HttpCachePrefs(prefs, "avatar_example");
  *   if (!cache.isStale()) return; // still fresh, skip network
  *
  *   Map&lt;String,String&gt; headers = cache.buildHeaders("application/vnd.github+json");
@@ -50,7 +50,7 @@ public final class HttpCachePrefs {
 
     /**
      * @param prefs    the SharedPreferences store to read/write
-     * @param prefix   a unique key prefix for this cache entry (e.g. "avatar_joeyhuab")
+     * @param prefix   a unique key prefix for this cache entry (e.g. "avatar_example")
      * @param maxAgeMs how long (ms) a cached entry is considered fresh
      */
     public HttpCachePrefs(SharedPreferences prefs, String prefix, long maxAgeMs) {

@@ -683,8 +683,6 @@
     <string name="notification_bubble_apps_summary">کردنەوەی بەرنامەکان لەناو بڵقێکی سەرئاوکەوتوو کاتێک دەست لە ئاگادارکردنەوەکەیان دەدرێت</string>
     <string name="media_squiggle_animation_title">ئەنیمەیشنی مارپێچی (Squiggle)</string>
     <string name="media_squiggle_animation_summary">پیشاندانی ئەنیمەیشنی مارپێچی بۆ شریتی گەڕان لە پانێڵی میدیا لە کاتی لێداندا</string>
-    <string name="essential_notifications">ئاگادارییە بنەڕەتییەکان</string>
-    <string name="essential_notifications_summary">هەڵبژاردنی ئەو بەرنامانەی کە هەمیشە لە سێبەری ئاگادارکردنەوەکاندا دەردەکەون</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">ڕووناکی لێوارەکان</string>
     <string name="edge_light_summary">درەوشانەوەی لێوارەکانی ڕوونما لە کاتی هاتنی ئاگاداری</string>
@@ -793,9 +791,6 @@
     <string name="custom_spoof_profile_model">مۆدێل</string>
     <string name="custom_spoof_profile_fingerprint">پەنجەمۆر (ئارەزوومەندانە)</string>
     <string name="custom_spoof_profile_product">بەرهەم (ئارەزوومەندانە)</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">بلۆککردنی هەستەوەر بۆ هەر بەرنامەیەک</string>
-    <string name="sensor_block_summary">بلۆککردنی دەستگەیشتن بە هەندێک هەستەوەر بۆ بەرنامە دەستنیشانکراوەکان بۆ پاشەکەوتکردنی باتری</string>
     <!-- Miscellaneous/Idle Manager -->
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity Fix</string>
@@ -930,8 +925,6 @@
     <string name="lock_glymps_home_preview_desc">پێشبینینی وێنەی ڕوونمای سەرەکی</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">تایبەتمەندکردنی وێنەی پشتێنە</string>
-    <string name="video_wallpaper_category_title">وێنەی پشتێنەی ڤیدیۆیی</string>
-    <string name="video_wallpaper_category_summary">دانانی وێنەی جوڵاو (MP4, GIF, WebP)</string>
     <!-- Haptics settings -->
     <!-- Volume panel styles -->
     <!-- Gradient styles -->
@@ -1051,7 +1044,4 @@
     <string name="emoji_style_samsung">سامسۆنگ</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">فەیسبووک</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">شێوازی ڕێکخستنەکان</string>
-    <string name="settings_icon_summary">تایبەتکردنی شێوازی ڕووکاری بەرنامەی ڕێکخستنەکان</string>
 </resources>

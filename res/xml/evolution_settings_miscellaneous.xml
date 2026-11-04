@@ -87,12 +87,6 @@
         android:key="miscellaneous_general_category"
         android:title="@string/general_category_title">
 
-        <!--<Preference
-            android:key="sensor_block_settings"
-            android:title="@string/sensor_block_title"
-            android:summary="@string/sensor_block_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.SensorBlock" />-->
-
         <org.evolution.settings.preferences.SecureSettingSwitchPreference
             android:key="show_rotation_suggestions"
             android:title="@string/floating_rotation_button_title"

@@ -4,7 +4,7 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Evolver -->
+    <!-- Expressive Studio -->
     <string name="evolver_dashboard_title">Expressive Studio</string>
     <string name="evolver_dashboard_summary">Make your device yours</string>
 
@@ -904,8 +904,6 @@
     <string name="notification_bubble_apps_summary">Open apps in a floating bubble when tapping their notifications</string>
     <string name="media_squiggle_animation_title">Squiggle animation</string>
     <string name="media_squiggle_animation_summary">Show seekbar squiggle animation in the media panel during playback</string>
-    <string name="essential_notifications">Essential notifications</string>
-    <string name="essential_notifications_summary">Choose apps that always appear in the notification shade</string>
 
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Edge light</string>
@@ -1053,10 +1051,6 @@
     <string name="pp_spoof_as">Spoof as</string>
     <string name="pp_empty_description">Selected apps will report the chosen Pixel device identity to unlock Pixel-exclusive features</string>
     <string name="pp_mainline_unsupported">This device is already a Pixel. Spoofing is not available on mainline Pixel devices.</string>
-
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Per-app sensor block</string>
-    <string name="sensor_block_summary">Block access to certain sensors for selected apps to save battery</string>
 
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Play Integrity Fix</string>
@@ -1258,8 +1252,6 @@
 
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Wallpaper customization</string>
-    <string name="video_wallpaper_category_title">Video wallpaper</string>
-    <string name="video_wallpaper_category_summary">Set animated wallpapers (MP4, GIF, WebP)</string>
 
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Gradient customization</string>
@@ -1436,10 +1428,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Settings style</string>
-    <string name="settings_icon_summary">Customize Settings app UI style</string>
 
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Slider mode</string>

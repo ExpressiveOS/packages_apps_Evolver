@@ -849,8 +849,6 @@
     <string name="notification_bubble_apps_summary">Otwieraj aplikacje w pływającym dymku po naciśnięciu ich powiadomień</string>
     <string name="media_squiggle_animation_title">Animacja falowania</string>
     <string name="media_squiggle_animation_summary">Pokaż animację falowania paska w panelu multimediów podczas odtwarzania</string>
-    <string name="essential_notifications">Ważne powiadomienia</string>
-    <string name="essential_notifications_summary">Wybierz aplikacje, które zawsze pojawiają się w panelu powiadomień</string>
     <!-- Notifications/Edge light -->
     <string name="edge_light_title">Podświetlenie krawędzi</string>
     <string name="edge_light_summary">Podświetl krawędzie ekranu podczas impulsu powiadomienia</string>
@@ -974,9 +972,6 @@
     <string name="pp_spoof_as">Sfałszuj jako</string>
     <string name="pp_empty_description">Wybrane aplikacje będą zgłaszać tożsamość wybranego urządzenia Pixel, aby odblokować funkcje dostępne wyłącznie dla urządzeń Pixel</string>
     <string name="pp_mainline_unsupported">To urządzenie jest już Pixelem. Funkcja podszywania się nie jest dostępna na popularnych urządzeniach Pixel.</string>
-    <!-- Miscellaneous/Sensor block -->
-    <string name="sensor_block_title">Blokada czujników dla aplikacji</string>
-    <string name="sensor_block_summary">Zablokuj dostęp do niektórych czujników dla wybranych aplikacji, aby oszczędzać baterię</string>
     <!-- Miscellaneous/Play Integrity & TrickyStore -->
     <string name="play_integrity_fix_title">Poprawka integralności Google Play</string>
     <string name="play_integrity_fix_summary">Zarządzaj konfiguracją poprawki integralności Google Play i odciskami palców urządzenia</string>
@@ -1166,8 +1161,6 @@
     <string name="lock_glymps_home_preview_desc">Podgląd tapety ekranu głównego</string>
     <!-- Video wallpaper -->
     <string name="video_wallpaper_category">Personalizacja tapety</string>
-    <string name="video_wallpaper_category_title">Tapeta wideo</string>
-    <string name="video_wallpaper_category_summary">Ustaw animowane tapety (MP4, GIF, WebP)</string>
     <!-- Gradient styles -->
     <string name="gradient_settings_title">Personalizacja gradientu</string>
     <string name="gradient_settings_summary">Zastosuj kolory gradientowe do elementów systemowych</string>
@@ -1317,9 +1310,6 @@
     <string name="emoji_style_samsung">Samsung</string>
     <string name="emoji_style_swiftui">SwiftUI</string>
     <string name="emoji_style_facebook">Facebook</string>
-    <!-- Settings UI -->
-    <string name="settings_icon_title">Styl ustawień</string>
-    <string name="settings_icon_summary">Dostosuj styl interfejsu aplikacji ustawienia</string>
     <!-- Volume slider -->
     <string name="qs_show_volume_slider_title">Tryb suwaka</string>
     <string name="qs_show_volume_slider_hide">Tylko suwak jasności</string>

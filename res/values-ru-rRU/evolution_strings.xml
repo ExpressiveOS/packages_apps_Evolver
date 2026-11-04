@@ -547,7 +547,4 @@
     <string name="statusbar_extra_padding_start_title">Начало отступа</string>
     <string name="statusbar_extra_padding_top_title">Верхний отступ</string>
     <string name="statusbar_extra_padding_end_title">Конец отступа</string>
-    <!-- Sensor block per-package -->
-    <string name="sensor_block_title">Блокировка сенсоров по-пакетно</string>
-    <string name="sensor_block_summary">Заблокировать доступ к датчикам для некоторых приложений для экономии заряда батареи</string>
 </resources>

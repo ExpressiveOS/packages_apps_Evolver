@@ -18,10 +18,11 @@ import org.json.JSONObject
 /**
  * The lock screen clock in a holiday's color: its first petal, in the tone that reads on the lock
  * wallpaper. The clock's face, font and size stay the user's. The system clocks take the color as
- * the seed in the clock face setting, Evolver's custom clock styles as their custom color; both
- * pick it up live. The user's own values are kept from before the first holiday and put back after
- * the last, unless the user changed the color in between: then their change stays. An Apply in
- * Wallpaper & style writes their own clock color back at once, and that counts as their change.
+ * the seed in the clock face setting, Expressive Studio's custom clock styles as their custom
+ * color; both pick it up live. The user's own values are kept from before the first holiday and put
+ * back after the last, unless the user changed the color in between: then their change stays. An
+ * Apply in Wallpaper & style writes their own clock color back at once, and that counts as their
+ * change.
  */
 internal object HolidayLockClock {
     private const val TAG = "HolidayThemes"
@@ -52,7 +53,7 @@ internal object HolidayLockClock {
         /** Clock style 0, the system clocks: the seed in the clock face JSON. */
         FACE(listOf(CLOCK_FACE)),
 
-        /** One of Evolver's custom clock styles: its color mode and custom color. */
+        /** One of Expressive Studio's custom clock styles: its color mode and custom color. */
         STYLE(listOf(COLOR_MODE, CUSTOM_COLOR)),
     }
 
@@ -262,7 +263,7 @@ internal object HolidayLockClock {
     private fun values(target: Target, current: JSONObject, color: Int): JSONObject =
         when (target) {
             Target.FACE -> JSONObject().put(CLOCK_FACE, withSeed(current.value(CLOCK_FACE), color))
-            // As Evolver's clock color picker stores it, the ARGB int
+            // As Expressive Studio's clock color picker stores it, the ARGB int
             Target.STYLE -> JSONObject()
                 .put(COLOR_MODE, MODE_CUSTOM)
                 .put(CUSTOM_COLOR, color.toString())
