@@ -589,7 +589,6 @@
     <string name="statusbar_extra_padding_start_title">Khoảng cách đầu</string>
     <string name="statusbar_extra_padding_top_title">Khoảng cách bên trên</string>
     <string name="statusbar_extra_padding_end_title">Khoảng cách cuối</string>
-    <!-- %1$d = number of apps currently blocked -->
     <!-- Blink flashlight for incoming calls -->
     <string name="flashlight_on_call_title">Nháy đèn pin khi có cuộc gọi đến</string>
     <string name="flashlight_on_call_disabled">Vô hiệu hóa</string>
@@ -1026,7 +1025,6 @@
     <string name="depthwall_wallpaper_enabled_title">Hình nền Depth</string>
     <string name="depthwall_wallpaper_enabled_summary">Bật hiệu ứng depth lấy cảm hứng từ iOS. Yêu cầu ảnh đối tượng.</string>
     <string name="depthwall_wallpaper_opacity_title">Độ mờ hình nền Depth</string>
-    <!-- Essential Notifications -->
     <string name="remove">Xóa</string>
     <string name="add">Thêm</string>
 </resources>
