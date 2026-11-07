@@ -48,7 +48,7 @@ public class Wallpaper extends SettingsPreferenceFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.wallpaper_settings);
+        addPreferencesFromResource(R.xml.studio_wallpaper_styles);
         
         mBlurWpPref = findPreference("persist.sys.wallpaper.blur_enabled");
         mBlurWpPref.setOnPreferenceChangeListener(this);
@@ -109,12 +109,13 @@ public class Wallpaper extends SettingsPreferenceFragment
                 android.os.SystemProperties.set("persist.sys.wallpaper.posterize_levels", newValue.toString());
             }
             
+            // The property is written after this listener returns, so use the new value.
             if (preference == mEffectTypePref) {
-                updateEffectDependencies();
+                updateEffectDependencies(Integer.parseInt(newValue.toString()));
             } else if (preference == mBlurWpPref) {
-                updateBlurDependencies();
+                updateBlurDependencies(Integer.parseInt(newValue.toString()));
             } else if (preference == mDimPref) {
-                updateDimDependencies();
+                updateDimDependencies(Integer.parseInt(newValue.toString()));
             }
             
             SystemUtils.showSystemUiRestartDialog(getContext());
@@ -124,7 +125,11 @@ public class Wallpaper extends SettingsPreferenceFragment
     }
     
     private void updateEffectDependencies() {
-        int effectType = android.os.SystemProperties.getInt("persist.sys.wallpaper.effect_type", 0);
+        updateEffectDependencies(
+                android.os.SystemProperties.getInt("persist.sys.wallpaper.effect_type", 0));
+    }
+
+    private void updateEffectDependencies(int effectType) {
         mEffectTargetPref.setVisible(effectType > 0);
         mVignettePref.setVisible(effectType == 3);
         mPixelationPref.setVisible(effectType == 4);
@@ -133,12 +138,20 @@ public class Wallpaper extends SettingsPreferenceFragment
     }
     
     private void updateBlurDependencies() {
-        int blurEnabled = android.os.SystemProperties.getInt("persist.sys.wallpaper.blur_enabled", 0);
+        updateBlurDependencies(
+                android.os.SystemProperties.getInt("persist.sys.wallpaper.blur_enabled", 0));
+    }
+
+    private void updateBlurDependencies(int blurEnabled) {
         mBlurWpStylePref.setVisible(blurEnabled > 0);
     }
     
     private void updateDimDependencies() {
-        int dimEnabled = android.os.SystemProperties.getInt("persist.sys.wallpaper.dim_enabled", 0);
+        updateDimDependencies(
+                android.os.SystemProperties.getInt("persist.sys.wallpaper.dim_enabled", 0));
+    }
+
+    private void updateDimDependencies(int dimEnabled) {
         mDimLvlPref.setVisible(dimEnabled > 0);
     }
     
@@ -151,5 +164,5 @@ public class Wallpaper extends SettingsPreferenceFragment
      * For search
      */
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
-            new BaseSearchIndexProvider(R.xml.wallpaper_settings);
+            new BaseSearchIndexProvider(R.xml.studio_wallpaper_styles);
 }
