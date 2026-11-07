@@ -16,6 +16,7 @@
 
 package org.evolution.settings.fragments.themes;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -83,11 +84,27 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
 
         mThemeUtils = ThemeUtils.getInstance(getActivity());
 
-        mLauncherPackage = Utils.isPackageInstalled(getContext(), "com.google.android.apps.nexuslauncher", false)
-                ? "com.google.android.apps.nexuslauncher"
-                : "com.android.launcher3";
+        mLauncherPackage = getNavBarPackage();
 
         mPkgs = mThemeUtils.getOverlayPackagesForCategory(mCategory, mLauncherPackage);
+    }
+
+    /**
+     * The 3-button bar on phones is drawn by the Recents app's taskbar (Expressive Launcher,
+     * or Pixel Launcher in Pixel mode), so the style overlays must target that package.
+     */
+    private String getNavBarPackage() {
+        final String recents = getResources().getString(
+                com.android.internal.R.string.config_recentsComponentName);
+        final ComponentName component = TextUtils.isEmpty(recents)
+                ? null : ComponentName.unflattenFromString(recents);
+        if (component != null
+                && Utils.isPackageInstalled(getContext(), component.getPackageName(), false)) {
+            return component.getPackageName();
+        }
+        return Utils.isPackageInstalled(getContext(), "com.google.android.apps.nexuslauncher", false)
+                ? "com.google.android.apps.nexuslauncher"
+                : "com.android.launcher3";
     }
 
     @Override
@@ -212,7 +229,7 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
     }
 
     public Drawable getDrawable(Context context, String pkg, String drawableName) {
-        if (pkg.equals("com.android.launcher3") || pkg.equals("com.google.android.apps.nexuslauncher"))
+        if (pkg.equals(mLauncherPackage))
             pkg = "com.android.settings";
         try {
             PackageManager pm = context.getPackageManager();
