@@ -8,6 +8,21 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/themes_title">
 
+    <!-- Launcher switch (ExpressiveOS) -->
+    <PreferenceCategory
+        android:key="themes_launcher_category"
+        android:title="@string/launcher_switch_category">
+
+        <org.evolution.settings.preferences.SystemPropertyListPreference
+            android:key="persist.sys.expressiveos.launcher"
+            android:title="@string/launcher_switch_title"
+            android:entries="@array/launcher_switch_entries"
+            android:entryValues="@array/launcher_switch_values"
+            android:summary="%s"
+            android:defaultValue="expressive" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory
         android:key="themes_fonts_category"
         android:title="@string/themes_fonts_category">

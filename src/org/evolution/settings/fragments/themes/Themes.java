@@ -43,6 +43,7 @@ public class Themes extends SettingsPreferenceFragment {
     private static final String KEY_BOOT_ANIMATION = "boot_animation";
     private static final String KEY_ICON_SHAPE = "android.theme.customization.adaptive_icon_shape";
     private static final String KEY_ICONS_CATEGORY = "themes_icons_category";
+    private static final String KEY_LAUNCHER_CATEGORY = "themes_launcher_category";
     private static final String KEY_LOCK_SOUND = "lock_sound";
     private static final String KEY_NAVBAR_ICONS = "android.theme.customization.navbar";
     private static final String KEY_UDFPS_ANIMATION = "udfps_animation";
@@ -111,8 +112,26 @@ public class Themes extends SettingsPreferenceFragment {
             mIconsCategory.removePreference(mNavbarIcons);
         }
 
+        setUpLauncherSwitch(context);
+
         updateBootAnimationSummary();
         updateIconShapeSummary();
+    }
+
+    private void setUpLauncherSwitch(Context context) {
+        PreferenceCategory category = findPreference(KEY_LAUNCHER_CATEGORY);
+        if (category == null) return;
+        if (!LauncherSwitch.isAvailable(context)) {
+            getPreferenceScreen().removePreference(category);
+            return;
+        }
+        Preference pref = findPreference(LauncherSwitch.KEY);
+        if (pref == null) return;
+        pref.setOnPreferenceChangeListener((p, newValue) -> {
+            // Nothing changes until the user agrees to restart; the restart shows the new value.
+            LauncherSwitch.confirmAndSwitch(getActivity(), (String) newValue);
+            return false;
+        });
     }
 
     private void updateBootAnimationSummary() {
@@ -169,6 +188,10 @@ public class Themes extends SettingsPreferenceFragment {
 
                     if (isGestureNavigationEnabled(context)) {
                         keys.add(KEY_NAVBAR_ICONS);
+                    }
+
+                    if (!LauncherSwitch.isAvailable(context)) {
+                        keys.add(LauncherSwitch.KEY);
                     }
 
                     return keys;

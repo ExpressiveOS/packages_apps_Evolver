@@ -20,4 +20,21 @@
     <!-- Expressive Studio's lock screen page -->
     <string name="studio_lock_clock_face">Clock face</string>
     <string name="studio_lock_browse_clocks">Browse clocks</string>
+
+    <!-- Expressive Studio's launcher switch (look & feel page) -->
+    <string name="launcher_switch_category">Home screen</string>
+    <string name="launcher_switch_title">Launcher</string>
+    <string name="launcher_switch_dialog_title">Switch launcher?</string>
+    <string name="launcher_switch_dialog_pixel">Pixel Launcher becomes your Home screen and Recents. Your phone restarts to switch. Your Expressive Launcher layout is kept for when you switch back.</string>
+    <string name="launcher_switch_dialog_expressive">Expressive Launcher becomes your Home screen and Recents again. Your phone restarts to switch.</string>
+    <string name="launcher_switch_restart">Restart</string>
+    <string name="launcher_switch_failed">Couldn\'t switch the launcher. Nothing was changed.</string>
+    <string-array name="launcher_switch_entries" translatable="false">
+        <item>Expressive Launcher</item>
+        <item>Pixel Launcher</item>
+    </string-array>
+    <string-array name="launcher_switch_values" translatable="false">
+        <item>expressive</item>
+        <item>pixel</item>
+    </string-array>
 </resources>
