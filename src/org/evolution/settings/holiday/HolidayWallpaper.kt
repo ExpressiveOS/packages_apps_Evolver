@@ -213,7 +213,7 @@ object HolidayWallpaper {
                 val homeOurs = showsOurs(wm, prefs, Screen.HOME)
                 val lockOurs = showsOurs(wm, prefs, Screen.LOCK)
                 val lockShared = prefs.getString(Screen.LOCK.key, null) == KIND_SHARED
-                if (homeOurs && lockOurs &&
+                val restoredOk = if (homeOurs && lockOurs &&
                     (lockShared || !usable(context, prefs, dir, Screen.LOCK))
                 ) {
                     // The lock screen showed the home wallpaper before, or its own can't come
@@ -224,25 +224,39 @@ object HolidayWallpaper {
                 } else {
                     // Home first: setting home alone moves a shared wallpaper to the lock screen,
                     // which the lock backup then replaces
-                    val homeBack =
-                        homeOurs && putBack(context, wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
-                    if (lockOurs) {
+                    val homeBack = !homeOurs || putBack(context, wm, prefs, dir, Screen.HOME, FLAG_SYSTEM)
+                    val lockBack = if (lockOurs) {
                         if (lockShared) {
-                            // The lock screen showed the home wallpaper before, so it does again
-                            wm.clear(FLAG_LOCK)
-                        } else if (
-                            !putBack(
+                            try {
+                                // The lock screen showed the home wallpaper before, so it does again
+                                wm.clear(FLAG_LOCK)
+                                true
+                            } catch (e: Exception) {
+                                Log.w(TAG, "Failed to clear lock wallpaper", e)
+                                false
+                            }
+                        } else {
+                            val lockPut = putBack(
                                 context, wm, prefs, dir, Screen.LOCK, FLAG_LOCK, clear = !homeBack
-                            ) && homeBack
-                        ) {
-                            // The lock backup failed after all: the home one just put back goes
-                            // there too, for the same reason as above
-                            putBack(context, wm, prefs, dir, Screen.HOME, FLAG_LOCK)
+                            )
+                            if (!lockPut && homeBack) {
+                                // The lock backup failed after all: the home one just put back goes
+                                // there too, for the same reason as above
+                                putBack(context, wm, prefs, dir, Screen.HOME, FLAG_LOCK)
+                            } else {
+                                lockPut
+                            }
                         }
+                    } else {
+                        true
                     }
+                    homeBack && lockBack
+                }
+                if (!restoredOk) {
+                    throw IOException("Wallpaper restoration failed; preserving backup on disk")
                 }
             }
-            // Done with the backup, whether it went back or the user had changed the wallpaper
+            // Done with the backup only after successful restoration (or user already replaced it)
             prefs.edit().clear().commit()
             dir.deleteRecursively()
             true
@@ -333,7 +347,7 @@ object HolidayWallpaper {
     ): Boolean = when (prefs.getString(screen.key, null)) {
         KIND_IMAGE -> hasCopy(dir, screen)
         KIND_LIVE -> liveComponent(context, prefs, screen) != null
-        KIND_DEFAULT -> screen == Screen.LOCK
+        KIND_DEFAULT -> true
         else -> false
     }
 
@@ -372,8 +386,9 @@ object HolidayWallpaper {
         which: Int,
         clear: Boolean = true,
     ): Boolean {
+        val kind = prefs.getString(screen.key, null)
         val restored = try {
-            when (prefs.getString(screen.key, null)) {
+            when (kind) {
                 KIND_IMAGE -> hasCopy(dir, screen) &&
                     FileInputStream(File(dir, screen.fileName)).use {
                         wm.setStream(it, null, true, which)
@@ -382,19 +397,34 @@ object HolidayWallpaper {
                     val component = liveComponent(context, prefs, screen)
                     component != null && wm.setWallpaperComponentWithFlags(component, which)
                 }
-                // A lock screen of its own showing the built-in image: clearing it would show
-                // the home wallpaper there instead. Not the user's own, so not backed up.
-                KIND_DEFAULT -> screen == Screen.LOCK &&
-                    (WallpaperManager.openDefaultWallpaper(context, FLAG_LOCK)?.use {
-                        wm.setStream(it, null, false, FLAG_LOCK)
-                    } ?: 0) != 0
+                // Default wallpaper: on lock-only attempt to open default lock image; otherwise
+                // clearing to default IS the restoration action.
+                KIND_DEFAULT -> {
+                    if (screen == Screen.LOCK && which == FLAG_LOCK) {
+                        (WallpaperManager.openDefaultWallpaper(context, FLAG_LOCK)?.use {
+                            wm.setStream(it, null, false, FLAG_LOCK)
+                        } ?: 0) != 0
+                    } else {
+                        wm.clear(which)
+                        true
+                    }
+                }
                 else -> false
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to put back the ${screen.key} wallpaper", e)
             false
         }
-        if (!restored && clear) wm.clear(which)
+        // Only clear to default if there is genuinely no usable backup to restore.
+        // NEVER clear if an image copy exists on disk but setStream encountered a transient error.
+        val shouldClear = !restored && clear && (kind == null || kind == KIND_DEFAULT || (kind == KIND_IMAGE && !hasCopy(dir, screen)))
+        if (shouldClear) {
+            try {
+                wm.clear(which)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to clear wallpaper for $which", e)
+            }
+        }
         return restored
     }
 }
