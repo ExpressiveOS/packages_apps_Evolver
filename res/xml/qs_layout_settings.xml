@@ -20,7 +20,7 @@
     android:title="@string/quick_settings_layout_columns_rows_title">
 
     <!-- Columns (portrait) -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qs_tiles_columns"
         android:title="@string/quick_settings_columns_portrait_title"
         android:max="6"
@@ -29,7 +29,7 @@
         android:defaultValue="4" />
 
     <!-- Columns (landscape) -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qs_tiles_columns_landscape"
         android:title="@string/quick_settings_columns_landscape_title"
         android:max="6"
@@ -38,7 +38,7 @@
         android:defaultValue="4" />
 
     <!-- Rows (portrait) -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qs_tiles_rows"
         android:title="@string/quick_settings_rows_portrait_title"
         android:max="5"
@@ -47,7 +47,7 @@
         android:defaultValue="4" />
 
     <!-- Rows (landscape) -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qs_tiles_rows_landscape"
         android:title="@string/quick_settings_rows_landscape_title"
         android:max="3"
@@ -56,7 +56,7 @@
         android:defaultValue="2" />
 
     <!-- Quick QS rows (portrait) -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qqs_tiles_rows"
         android:title="@string/quick_settings_qqs_rows_portrait_title"
         android:max="3"
@@ -65,7 +65,7 @@
         android:defaultValue="2" />
 
     <!-- Quick QS rows (landscape) -->
-    <!--<org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <!--<org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="qqs_tiles_rows_landscape"
         android:title="@string/quick_settings_qqs_rows_landscape_title"
         android:max="3"

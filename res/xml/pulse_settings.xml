@@ -27,21 +27,21 @@
         android:summary="@string/pulse_settings_summary"
         android:defaultValue="false" />
 
-    <org.evolution.settings.preferences.SecureSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
         android:key="media_player_pulse_enabled"
         android:title="@string/pulse_show_on_media_player_title"
         android:summary="@string/pulse_show_on_media_player_summary"
         android:defaultValue="false"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
         android:key="pulse_show_on_ambient"
         android:title="@string/pulse_show_on_ambient_title"
         android:summary="@string/pulse_show_on_ambient_summary"
         android:defaultValue="true"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="pulse_bass_haptics"
         android:title="@string/pulse_bass_haptics_title"
         android:summary="%s"
@@ -51,7 +51,7 @@
         android:defaultValue="0"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="pulse_renderer"
         android:title="@string/pulse_renderer"
         android:summary="%s"
@@ -61,7 +61,7 @@
         android:defaultValue="solid"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="pulse_capture_mode"
         android:title="@string/pulse_capture_mode_title"
         android:summary="%s"
@@ -71,14 +71,14 @@
         android:defaultValue="0"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
         android:key="pulse_rounded_bars"
         android:title="@string/pulse_rounded_bars_title"
         android:summary="@string/pulse_rounded_bars_summary"
         android:defaultValue="false"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="pulse_color"
         android:title="@string/pulse_color"
         android:summary="%s"
@@ -88,13 +88,13 @@
         android:defaultValue="lavalamp"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
         android:key="pulse_custom_color"
         android:title="@string/custom_color"
         android:defaultValue="0xFFFFFFFF"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="pulse_bar_count"
         android:title="@string/pulse_bar_count_title"
         android:summary="@string/pulse_bar_count_summary"
@@ -105,7 +105,7 @@
         android:max="64"
         android:dependency="lockscreen_pulse_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="pulse_height_multiplier"
         android:title="@string/pulse_height_multiplier_title"
         android:summary="@string/pulse_height_multiplier_summary"

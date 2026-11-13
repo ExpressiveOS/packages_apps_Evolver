@@ -26,7 +26,7 @@
         android:summary="@string/cutout_progress_summary"
         android:defaultValue="false" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="cutout_progress_ring_color_mode"
         android:title="@string/cutout_progress_ring_color_mode_title"
         android:summary="%s"
@@ -35,25 +35,25 @@
         android:defaultValue="0"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
         android:key="cutout_progress_ring_color"
         android:title="@string/cutout_progress_ring_color_title"
         android:defaultValue="0xFF2196F3"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
         android:key="cutout_progress_error_color"
         android:title="@string/cutout_progress_error_color_title"
         android:defaultValue="0xFFF44336"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
         android:key="cutout_progress_finish_flash_color"
         android:title="@string/cutout_progress_finish_flash_color_title"
         android:defaultValue="0xFFFFFFFF"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="cutout_progress_opacity"
         android:title="@string/cutout_progress_opacity_title"
         android:max="100"
@@ -63,7 +63,7 @@
         android:defaultValue="90"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="cutout_progress_stroke_width_dp10"
         android:title="@string/cutout_progress_stroke_width_title"
         android:max="80"
@@ -73,7 +73,7 @@
         android:defaultValue="20"
         android:dependency="cutout_progress_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="cutout_progress_ring_gap_x1000"
         android:title="@string/cutout_progress_ring_gap_title"
         android:max="2000"
@@ -88,19 +88,19 @@
         android:title="@string/cutout_progress_cat_battery"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_battery_indicator_enabled"
             android:title="@string/cutout_progress_battery_indicator_title"
             android:summary="@string/cutout_progress_battery_indicator_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_charging_ring_enabled"
             android:title="@string/cutout_progress_charging_ring_title"
             android:summary="@string/cutout_progress_charging_ring_summary"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_charging_pulse_enabled"
             android:title="@string/cutout_progress_charging_pulse_title"
             android:summary="@string/cutout_progress_charging_pulse_summary"
@@ -114,13 +114,13 @@
         android:title="@string/cutout_progress_cat_music"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_music_enabled"
             android:title="@string/cutout_progress_music_title"
             android:summary="@string/cutout_progress_music_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_music_color_mode"
             android:title="@string/cutout_progress_music_color_mode_title"
             android:summary="%s"
@@ -129,13 +129,13 @@
             android:defaultValue="0"
             android:dependency="cutout_progress_music_enabled" />
 
-        <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+        <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
             android:key="cutout_progress_music_custom_color"
             android:title="@string/cutout_progress_music_custom_color_title"
             android:defaultValue="0xFF9C27B0"
             android:dependency="cutout_progress_music_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_music_opacity"
             android:title="@string/cutout_progress_music_opacity_title"
             android:max="100"
@@ -145,7 +145,7 @@
             android:defaultValue="85"
             android:dependency="cutout_progress_music_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_music_stroke_dp10"
             android:title="@string/cutout_progress_music_stroke_title"
             android:max="80"
@@ -155,7 +155,7 @@
             android:defaultValue="20"
             android:dependency="cutout_progress_music_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_music_clockwise"
             android:title="@string/cutout_progress_music_clockwise_title"
             android:defaultValue="true"
@@ -168,19 +168,19 @@
         android:title="@string/cutout_progress_cat_behaviour"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_clockwise"
             android:title="@string/cutout_progress_clockwise_title"
             android:summary="@string/cutout_progress_clockwise_summary"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_min_vis_enabled"
             android:title="@string/cutout_progress_min_vis_title"
             android:summary="@string/cutout_progress_min_vis_summary"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_min_vis_ms"
             android:title="@string/cutout_progress_min_vis_ms_title"
             android:max="3000"
@@ -190,7 +190,7 @@
             android:defaultValue="500"
             android:dependency="cutout_progress_min_vis_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_easing"
             android:title="@string/cutout_progress_easing_title"
             android:summary="%s"
@@ -205,19 +205,19 @@
         android:title="@string/cutout_progress_cat_bg_ring"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_bg_ring_enabled"
             android:title="@string/cutout_progress_bg_ring_enabled_title"
             android:summary="@string/cutout_progress_bg_ring_enabled_summary"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+        <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
             android:key="cutout_progress_bg_ring_color"
             android:title="@string/cutout_progress_bg_ring_color_title"
             android:defaultValue="0xFF808080"
             android:dependency="cutout_progress_bg_ring_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_bg_ring_opacity"
             android:title="@string/cutout_progress_bg_ring_opacity_title"
             android:max="100"
@@ -234,13 +234,13 @@
         android:title="@string/cutout_progress_cat_glow"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_glow_enabled"
             android:title="@string/cutout_progress_glow_enabled_title"
             android:summary="@string/cutout_progress_glow_enabled_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_glow_radius_dp10"
             android:title="@string/cutout_progress_glow_radius_title"
             android:max="150"
@@ -257,7 +257,7 @@
         android:title="@string/cutout_progress_cat_finish"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_finish_style"
             android:title="@string/cutout_progress_finish_style_title"
             android:summary="%s"
@@ -265,7 +265,7 @@
             android:entryValues="@array/cutout_progress_finish_style_values"
             android:defaultValue="0" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_finish_hold_ms"
             android:title="@string/cutout_progress_finish_hold_title"
             android:max="2000"
@@ -274,7 +274,7 @@
             settings:units="ms"
             android:defaultValue="500" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_finish_exit_ms"
             android:title="@string/cutout_progress_finish_exit_title"
             android:max="2000"
@@ -283,13 +283,13 @@
             settings:units="ms"
             android:defaultValue="500" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_finish_use_flash"
             android:title="@string/cutout_progress_finish_flash_title"
             android:summary="@string/cutout_progress_finish_flash_summary"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_completion_pulse"
             android:title="@string/cutout_progress_pulse_title"
             android:summary="@string/cutout_progress_pulse_summary"
@@ -302,13 +302,13 @@
         android:title="@string/cutout_progress_cat_geometry"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_path_mode"
             android:title="@string/cutout_progress_path_mode_title"
             android:summary="@string/cutout_progress_path_mode_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_ring_scale_x_x1000"
             android:title="@string/cutout_progress_scale_x_title"
             android:max="3000"
@@ -317,7 +317,7 @@
             settings:units=" (×0.001)"
             android:defaultValue="1000" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_ring_scale_y_x1000"
             android:title="@string/cutout_progress_scale_y_title"
             android:max="3000"
@@ -326,7 +326,7 @@
             settings:units=" (×0.001)"
             android:defaultValue="1000" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_ring_offset_x_dp10"
             android:title="@string/cutout_progress_offset_x_title"
             android:max="200"
@@ -335,7 +335,7 @@
             settings:units=" (×0.1 dp)"
             android:defaultValue="0" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_ring_offset_y_dp10"
             android:title="@string/cutout_progress_offset_y_title"
             android:max="200"
@@ -351,13 +351,13 @@
         android:title="@string/cutout_progress_cat_labels"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_percent_enabled"
             android:title="@string/cutout_progress_percent_enabled_title"
             android:summary="@string/cutout_progress_percent_enabled_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_percent_size_sp10"
             android:title="@string/cutout_progress_percent_size_title"
             android:max="200"
@@ -367,13 +367,13 @@
             android:defaultValue="80"
             android:dependency="cutout_progress_percent_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_percent_bold"
             android:title="@string/cutout_progress_percent_bold_title"
             android:defaultValue="true"
             android:dependency="cutout_progress_percent_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_percent_position"
             android:title="@string/cutout_progress_percent_position_title"
             android:summary="%s"
@@ -382,13 +382,13 @@
             android:defaultValue="0"
             android:dependency="cutout_progress_percent_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_filename_enabled"
             android:title="@string/cutout_progress_filename_enabled_title"
             android:summary="@string/cutout_progress_filename_enabled_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_filename_size_sp10"
             android:title="@string/cutout_progress_filename_size_title"
             android:max="180"
@@ -398,13 +398,13 @@
             android:defaultValue="70"
             android:dependency="cutout_progress_filename_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_filename_bold"
             android:title="@string/cutout_progress_filename_bold_title"
             android:defaultValue="false"
             android:dependency="cutout_progress_filename_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_filename_position"
             android:title="@string/cutout_progress_filename_position_title"
             android:summary="%s"
@@ -413,7 +413,7 @@
             android:defaultValue="4"
             android:dependency="cutout_progress_filename_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_filename_max_chars"
             android:title="@string/cutout_progress_filename_max_chars_title"
             android:max="60"
@@ -422,7 +422,7 @@
             android:defaultValue="20"
             android:dependency="cutout_progress_filename_enabled" />
 
-        <org.evolution.settings.preferences.SecureSettingListPreference
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
             android:key="cutout_progress_filename_truncate"
             android:title="@string/cutout_progress_filename_truncate_title"
             android:summary="%s"
@@ -438,13 +438,13 @@
         android:title="@string/cutout_progress_cat_badge"
         android:dependency="cutout_progress_enabled">
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="cutout_progress_show_count_badge"
             android:title="@string/cutout_progress_badge_title"
             android:summary="@string/cutout_progress_badge_summary"
             android:defaultValue="false" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_badge_text_size_sp10"
             android:title="@string/cutout_progress_badge_size_title"
             android:max="180"
@@ -454,7 +454,7 @@
             android:defaultValue="100"
             android:dependency="cutout_progress_show_count_badge" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_badge_offset_x_dp10"
             android:title="@string/cutout_progress_badge_offset_x_title"
             android:max="100"
@@ -464,7 +464,7 @@
             android:defaultValue="0"
             android:dependency="cutout_progress_show_count_badge" />
 
-        <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
             android:key="cutout_progress_badge_offset_y_dp10"
             android:title="@string/cutout_progress_badge_offset_y_title"
             android:max="100"

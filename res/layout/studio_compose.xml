@@ -3,7 +3,7 @@
      SPDX-FileCopyrightText: ExpressiveOS
      SPDX-License-Identifier: Apache-2.0
 -->
-<!-- Expressive Studio's Compose headers (org.evolution.settings.studio) -->
+<!-- Expressive Studio's Compose headers (org.expressiveos.settings.studio) -->
 <androidx.compose.ui.platform.ComposeView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/studio_compose"

@@ -25,7 +25,7 @@
         android:summary="@string/quick_settings_header_image_summary"
         android:defaultValue="false" />
 
-    <org.evolution.settings.preferences.PickerListPreference
+    <org.expressiveos.settings.preferences.PickerListPreference
         android:key="qs_header_provider"
         android:title="@string/quick_settings_header_provider_title"
         android:persistent="false"
@@ -33,7 +33,7 @@
         android:entryValues="@array/qs_header_provider_values"
         android:dependency="status_bar_custom_header" />
 
-    <org.evolution.settings.preferences.PickerListPreference
+    <org.expressiveos.settings.preferences.PickerListPreference
         android:key="daylight_header_pack"
         android:title="@string/quick_settings_header_daylight_pack_title"
         android:persistent="false"
@@ -58,7 +58,7 @@
         android:dependency="status_bar_custom_header" >
     </Preference>
 
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="status_bar_custom_header_height"
         android:title="@string/quick_settings_header_offset_title"
         android:summary="@string/quick_settings_header_offset_summary"
@@ -67,7 +67,7 @@
         android:defaultValue="142"
         android:dependency="status_bar_custom_header" />
 
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="status_bar_custom_header_shadow"
         android:title="@string/quick_settings_header_shadow_title"
         android:summary="@string/quick_settings_header_shadow_summary"

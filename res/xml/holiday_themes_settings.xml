@@ -3,7 +3,7 @@
      SPDX-FileCopyrightText: ExpressiveOS
      SPDX-License-Identifier: Apache-2.0
 -->
-<!-- Holiday themes (org.evolution.settings.holiday.HolidayThemesFragment). The engine keeps the
+<!-- Holiday themes (org.expressiveos.settings.holiday.HolidayThemesFragment). The engine keeps the
      state, so nothing here is persisted: the page reads it on each resume. -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"

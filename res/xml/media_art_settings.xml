@@ -27,7 +27,7 @@
         android:defaultValue="false" />
 
     <!-- AOD Toggle -->
-    <org.evolution.settings.preferences.SystemSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
         android:key="ls_media_art_aod_enabled"
         android:title="@string/show_on_aod_title"
         android:summary="@string/show_on_aod_summary"
@@ -35,7 +35,7 @@
         android:dependency="ls_media_art_enabled" />
 
     <!-- AOD Dim Level -->
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="ls_media_art_aod_dim_level"
         android:title="@string/aod_brightness_title"
         android:max="100"
@@ -43,14 +43,14 @@
         android:defaultValue="35"
         android:dependency="ls_media_art_aod_enabled" />
 
-    <org.evolution.settings.preferences.SystemSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
         android:key="ls_media_art_status_bar_above"
         android:title="@string/ls_media_art_status_bar_above_title"
         android:summary="@string/ls_media_art_status_bar_above_summary"
         android:defaultValue="false"
         android:dependency="ls_media_art_enabled" />
 
-    <org.evolution.settings.preferences.SystemSettingListPreference
+    <org.expressiveos.settings.preferences.SystemSettingListPreference
         android:key="ls_media_art_filter"
         android:title="@string/ls_media_art_filter_title"
         android:summary="%s"
@@ -59,7 +59,7 @@
         android:defaultValue="1"
         android:dependency="ls_media_art_enabled" />
 
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="ls_media_art_pixel_size"
         android:title="@string/ls_media_art_pixel_size_title"
         android:summary="@string/ls_media_art_pixel_size_summary"
@@ -68,7 +68,7 @@
         android:defaultValue="20"
         android:dependency="ls_media_art_enabled" />
 
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="ls_media_art_fade_level"
         android:title="@string/ls_media_art_fade_level_title"
         android:summary="@string/ls_media_art_fade_level_summary"
@@ -77,7 +77,7 @@
         android:defaultValue="40"
         android:dependency="ls_media_art_enabled" />
 
-    <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="ls_media_art_blur_level"
         android:title="@string/ls_media_art_blur_level_title"
         android:summary="@string/ls_media_art_blur_level_summary"

@@ -17,7 +17,7 @@
     android:paddingVertical="16dp"
     android:screenReaderFocusable="true">
 
-    <include layout="@layout/evolution_logo" />
+    <include layout="@layout/expressiveos_logo" />
 
     <TextView
         android:id="@+id/holiday_header_greeting"

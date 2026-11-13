@@ -25,7 +25,7 @@
         android:summary="@string/smart_pixels_summary"
         android:defaultValue="false" />
 
-    <org.evolution.settings.preferences.SecureSettingSeekBarPreference
+    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
         android:key="smart_pixel_filter_percent"
         android:title="@string/smart_pixels_percent"
         android:defaultValue="25"

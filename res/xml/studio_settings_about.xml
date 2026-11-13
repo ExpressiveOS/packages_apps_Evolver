@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Evolution X
+     SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+    android:title="@string/about_title">
+
+    <!-- ExpressiveOS logo -->
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="expressiveos_logo"
+        android:layout="@layout/expressiveos_logo"
+        android:clickable="true"/>
+
+    <!-- Info -->
+    <com.android.settingslib.widget.TopIntroPreference
+        android:title="@string/about_info" />
+
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        android:key="about_links_category">
+
+        <!-- Changelog -->
+        <Preference
+            android:key="about_changelog"
+            android:icon="@drawable/ic_about_changelog"
+            android:title="@string/changelog_title"
+            android:summary="@string/changelog_summary">
+            <intent android:action="android.intent.action.MAIN"
+                 android:targetPackage="com.android.settings"
+                 android:targetClass="org.expressiveos.settings.fragments.about.ChangelogActivity"/>
+        </Preference>
+
+        <!-- Telegram -->
+        <Preference
+            android:key="about_telegram"
+            android:title="@string/about_telegram_title"
+            android:summary="@string/about_telegram_summary"
+            android:icon="@drawable/ic_about_telegram">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://t.me/ExpressiveLauncherFeedback" />
+        </Preference>
+
+        <!-- Github -->
+        <Preference
+            android:key="about_github"
+            android:title="@string/about_github_title"
+            android:summary="@string/about_github_summary"
+            android:icon="@drawable/ic_about_github">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/denson9874" />
+        </Preference>
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
+
+    <PreferenceCategory
+        android:key="maintainers"
+        android:title="@string/about_maintainer_title">
+
+        <Preference
+            android:key="about_maintainer"
+            android:title="@string/about_maintainer_name"
+            android:summary="@string/about_maintainer_summary">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/denson9874" />
+        </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="special_thanks"
+        android:title="@string/about_thanks_title">
+
+        <!-- Loïc: there would be no ExpressiveOS without him -->
+        <Preference
+            android:key="about_thanks_loic"
+            android:icon="@drawable/ic_about_thanks"
+            android:title="@string/about_thanks_loic_name"
+            android:summary="@string/about_thanks_loic_summary"
+            android:selectable="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

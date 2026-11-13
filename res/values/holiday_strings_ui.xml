@@ -4,7 +4,7 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Holiday themes (org.evolution.settings.holiday): the page, and its card in Expressive Studio -->
+    <!-- Holiday themes (org.expressiveos.settings.holiday): the page, and its card in Expressive Studio -->
     <string name="holiday_themes_title">Holiday themes</string>
     <string name="holiday_themes_auto_title">Switch on by date</string>
 
