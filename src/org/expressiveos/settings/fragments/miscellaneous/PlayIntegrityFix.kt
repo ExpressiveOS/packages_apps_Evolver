@@ -492,7 +492,7 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         private const val REFETCH_WINDOW_DAYS = 15L
         private const val PIF_ENABLED_KEY = "spoof_pif_enabled"
         internal const val LAST_AUTO_FETCH_KEY = "spoof_pif_last_auto_fetch"
-        private const val MATCH_DEVICE_PROP = "ro.evolution.device"
+        private const val MATCH_DEVICE_PROP = "ro.lineage.device"
 
         private data class Flag(val name: String, val default: Boolean)
 
