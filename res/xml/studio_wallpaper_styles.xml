@@ -20,7 +20,7 @@
         android:key="wallpaper_blur"
         android:title="@string/wallpaper_blur_title">
 
-        <org.evolution.settings.preferences.SystemPropertyListPreference
+        <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.blur_enabled"
             android:title="@string/wallpaper_blur_title"
             android:entries="@array/wallpaper_blur_entries"
@@ -28,7 +28,7 @@
             android:summary="%s"
             android:defaultValue="0" />
 
-        <org.evolution.settings.preferences.SystemPropertyListPreference
+        <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.blur_type"
             android:title="@string/wallpaper_blur_filter"
             android:entries="@array/wallpaper_blur_filter_entries"
@@ -41,7 +41,7 @@
         android:key="wallpaper_effects"
         android:title="@string/wallpaper_effects_title">
         
-        <org.evolution.settings.preferences.SystemPropertyListPreference
+        <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.effect_type"
             android:title="@string/wallpaper_effect_type_title"
             android:entries="@array/wallpaper_effect_entries"
@@ -49,7 +49,7 @@
             android:summary="%s"
             android:defaultValue="0" />
             
-        <org.evolution.settings.preferences.SystemPropertyListPreference
+        <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.effect_target"
             android:title="@string/wallpaper_effect_target_title"
             android:entries="@array/wallpaper_effect_target_entries"
@@ -57,7 +57,7 @@
             android:summary="%s"
             android:defaultValue="1" />
             
-        <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
             android:key="persist.sys.wallpaper.saturation_level"
             android:title="@string/wallpaper_saturation_title"
             android:summary="@string/wallpaper_saturation_summary"
@@ -67,7 +67,7 @@
             android:max="200"
             android:min="50"/>
             
-        <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
             android:key="persist.sys.wallpaper.pixelation_size"
             android:title="@string/wallpaper_pixelation_size_title"
             android:summary="@string/wallpaper_pixelation_size_summary"
@@ -77,7 +77,7 @@
             android:max="20"
             android:min="2"/>
             
-        <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
             android:key="persist.sys.wallpaper.vignette_intensity"
             android:title="@string/wallpaper_vignette_intensity_title"
             android:summary="@string/wallpaper_vignette_intensity_summary"
@@ -87,7 +87,7 @@
             android:max="100"
             android:min="10"/>
             
-        <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
             android:key="persist.sys.wallpaper.posterize_levels"
             android:title="@string/wallpaper_posterize_levels_title"
             android:summary="@string/wallpaper_posterize_levels_summary"
@@ -102,7 +102,7 @@
         android:key="wallpaper_dim"
         android:title="@string/wallpaper_dim_title">
 
-        <org.evolution.settings.preferences.SystemPropertyListPreference
+        <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.dim_enabled"
             android:title="@string/wallpaper_dim_title"
             android:entries="@array/wallpaper_blur_entries"
@@ -110,7 +110,7 @@
             android:summary="%s"
             android:defaultValue="0" />
 
-        <org.evolution.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
             android:key="persist.sys.wallpaper.dim_level"
             android:title="@string/wallpaper_dim_level_title"
             android:summary="@string/wallpaper_dim_level_summary"

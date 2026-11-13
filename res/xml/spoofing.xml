@@ -16,19 +16,19 @@
         android:title="@string/spoofing_integrity_category">
 
         <!-- TrickyStore -->
-        <org.evolution.settings.preferences.SystemSettingPrimarySwitchPreference
+        <org.expressiveos.settings.preferences.SystemSettingPrimarySwitchPreference
             android:key="spoof_trickystore_enabled"
             android:title="@string/tricky_store_title"
             android:summary="@string/tricky_store_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.TrickyStore"
+            android:fragment="org.expressiveos.settings.fragments.miscellaneous.TrickyStore"
             android:defaultValue="true" />
 
         <!-- Play Integrity Fix -->
-        <org.evolution.settings.preferences.SystemSettingPrimarySwitchPreference
+        <org.expressiveos.settings.preferences.SystemSettingPrimarySwitchPreference
             android:key="spoof_pif_enabled"
             android:title="@string/play_integrity_fix_title"
             android:summary="@string/play_integrity_fix_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.PlayIntegrityFix"
+            android:fragment="org.expressiveos.settings.fragments.miscellaneous.PlayIntegrityFix"
             android:defaultValue="true" />
     </PreferenceCategory>
 
@@ -42,14 +42,14 @@
             android:key="user_selectable_app_spoofing"
             android:title="@string/user_selectable_app_spoofing_title"
             android:summary="@string/user_selectable_app_spoofing_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.UserSelectedAppSpoofSettings" />
+            android:fragment="org.expressiveos.settings.fragments.miscellaneous.UserSelectedAppSpoofSettings" />
 
         <!-- Pixel props -->
         <Preference
             android:key="pi_pp_spoof"
             android:title="@string/spoofing_pixel_props_title"
             android:summary="@string/spoofing_pixel_props_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.PixelPropsSettings" />
+            android:fragment="org.expressiveos.settings.fragments.miscellaneous.PixelPropsSettings" />
     </PreferenceCategory>
 
     <!-- Features -->
@@ -62,7 +62,7 @@
             android:key="tensor_targets_settings"
             android:title="@string/tensor_spoof_title"
             android:summary="@string/tensor_spoof_summary"
-            android:fragment="org.evolution.settings.fragments.miscellaneous.TensorTargetsSettings" />
+            android:fragment="org.expressiveos.settings.fragments.miscellaneous.TensorTargetsSettings" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -70,14 +70,14 @@
         android:title="@string/spoofing_app_specific_category">
 
         <!-- Google Photos -->
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="pi_photos_spoof"
             android:title="@string/spoofing_photos_title"
             android:summary="@string/spoofing_photos_summary"
             android:defaultValue="true" />
 
         <!-- Snapchat -->
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="pi_snapchat_spoof"
             android:title="@string/spoofing_snap_title"
             android:summary="@string/spoofing_snap_summary"

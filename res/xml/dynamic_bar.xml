@@ -29,14 +29,14 @@
         android:summary="@string/dynamic_bar_summary"
         android:defaultValue="false" />
 
-    <org.evolution.settings.preferences.SecureSettingSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
         android:key="ax_dynamic_bar_keyguard_enabled"
         android:title="@string/dynamic_bar_keyguard_enable"
         android:summary="@string/dynamic_bar_keyguard_enable_summary"
         android:defaultValue="true"
         android:dependency="ax_dynamic_bar_enabled" />
 
-    <org.evolution.settings.preferences.SecureSettingListPreference
+    <org.expressiveos.settings.preferences.SecureSettingListPreference
         android:key="ax_dynamic_bar_keyguard_battery_chip_mode"
         android:title="@string/dynamic_bar_keyguard_battery_chip"
         android:entries="@array/dynamic_bar_keyguard_battery_chip_entries"
@@ -77,7 +77,7 @@
             android:icon="@drawable/ic_notifications"
             android:defaultValue="true" />
 
-        <org.evolution.settings.preferences.SecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="ax_dynamic_bar_compact_notifications"
             android:title="@string/dynamic_bar_compact_notifications"
             android:summary="@string/dynamic_bar_compact_notifications_summary"
@@ -192,7 +192,7 @@
             android:title="@string/dynamic_bar_guide_title"
             android:summary="@string/dynamic_bar_guide_chip"
             android:icon="@drawable/ic_touch_app"
-            android:fragment="org.evolution.settings.fragments.statusbar.DynamicBarGuide" />
+            android:fragment="org.expressiveos.settings.fragments.statusbar.DynamicBarGuide" />
     </PreferenceCategory>
 
     <PreferenceCategory
