@@ -44,7 +44,7 @@ import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.search.SearchIndexable;
 import com.android.settingslib.widget.ButtonPreference;
 
-import lineageos.preference.SystemSettingMainSwitchPreference;
+import org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference;
 
 import org.expressiveos.settings.preferences.colorpicker.SystemSettingColorPickerPreference;
 import org.expressiveos.settings.preferences.SystemSettingSeekBarPreference;

@@ -21,7 +21,7 @@
     android:title="@string/charging_animation_title">
 
     <!-- Enable/Disable -->
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="charging_animation_enabled"
         android:title="@string/charging_animation_title"
         android:summary="@string/charging_animation_summary"

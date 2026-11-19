@@ -73,7 +73,7 @@
         android:title="@string/quick_settings_brightness_slider_category">
 
         <!-- Brightness slider -->
-        <org.expressiveos.settings.preferences.LineageSecureSettingPickerListPreference
+        <org.expressiveos.settings.preferences.SecureSettingPickerListPreference
             android:key="qs_show_brightness_slider"
             android:title="@string/quick_settings_show_brightness_slider_title"
             android:entries="@array/quick_settings_show_brightness_slider_entries"
@@ -97,7 +97,7 @@
             android:defaultValue="0" />
 
         <!-- Brightness slider position -->
-        <org.expressiveos.settings.preferences.LineageSecureSettingPickerListPreference
+        <org.expressiveos.settings.preferences.SecureSettingPickerListPreference
             android:key="qs_brightness_slider_position"
             android:title="@string/quick_settings_brightness_slider_position_title"
             android:entries="@array/quick_settings_brightness_slider_position_entries"
@@ -112,7 +112,7 @@
             android:defaultValue="true" />
 
         <!-- Auto brightness icon -->
-        <lineageos.preference.LineageSecureSettingSwitchPreference
+        <org.expressiveos.settings.preferences.SecureSettingSwitchPreference
             android:key="qs_show_auto_brightness"
             android:title="@string/quick_settings_auto_brightness_icon_title"
             android:summary="@string/quick_settings_auto_brightness_icon_summary"

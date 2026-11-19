@@ -6,7 +6,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
-    xmlns:lineage="http://schemas.android.com/apk/res-auto"
     android:title="@string/ls_clock_title">
 
     <!-- Custom clock style -->

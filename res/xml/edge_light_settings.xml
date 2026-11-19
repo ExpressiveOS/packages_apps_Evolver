@@ -15,7 +15,7 @@
         app:allowDividerBelow="false"
         settings:searchable="false" />
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="edge_light_enabled"
         android:title="@string/edge_light_title"
         android:summary="@string/edge_light_summary"

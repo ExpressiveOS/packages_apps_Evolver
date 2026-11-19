@@ -11,9 +11,7 @@ import android.util.AttributeSet;
 
 import com.android.settingslib.development.SystemPropPoker;
 
-import lineageos.preference.SelfRemovingSwitchPreference;
-
-public class SystemPropertySwitchPreference extends SelfRemovingSwitchPreference {
+public class SystemPropertySwitchPreference extends EosSwitchPreference {
 
     public SystemPropertySwitchPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

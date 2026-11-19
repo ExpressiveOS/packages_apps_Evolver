@@ -27,8 +27,6 @@ import com.android.settingslib.search.SearchIndexable;
 
 import java.util.List;
 
-import lineageos.providers.LineageSettings;
-
 import org.expressiveos.settings.preferences.SecureSettingListPreference;
 import org.expressiveos.settings.preferences.SystemSettingSwitchPreference;
 import org.expressiveos.settings.utils.DeviceUtils;
@@ -102,8 +100,8 @@ public class QuickSettings extends SettingsPreferenceFragment implements
 
         mShowBrightnessSlider = findPreference(KEY_SHOW_BRIGHTNESS_SLIDER);
         mShowBrightnessSlider.setOnPreferenceChangeListener(this);
-        boolean showSlider = LineageSettings.Secure.getIntForUser(resolver,
-                LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER, 1, UserHandle.USER_CURRENT) > 0;
+        boolean showSlider = Settings.Secure.getIntForUser(resolver,
+                KEY_SHOW_BRIGHTNESS_SLIDER, 1, UserHandle.USER_CURRENT) > 0;
 
         mVolumeSliderMode = findPreference(KEY_SHOW_VOLUME_SLIDER);
         mVolumeSliderMode.setEnabled(showSlider);

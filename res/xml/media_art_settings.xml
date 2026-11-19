@@ -20,7 +20,7 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/ls_media_art_title">
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="ls_media_art_enabled"
         android:title="@string/ls_media_art_title"
         android:summary="@string/ls_media_art_summary"

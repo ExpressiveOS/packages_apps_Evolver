@@ -446,7 +446,7 @@ fun ExpressiveEmptyState(
 // ---------------------------------------------------------------------------
 // AppListAnimatedContent
 // Adapted from ForceFullscreenCompose.kt's AnimatedContent state-transition
-// pattern (LineageOS/AxionOS diff). Wraps the loading/empty/content
+// pattern (AxionOS diff). Wraps the loading/empty/content
 // branching used by PixelProps, TensorTargets, and TrickyStoreAppSettings
 // behind a single shared AnimatedContent + sealed state, instead of each
 // screen hand-rolling its own if/else block.

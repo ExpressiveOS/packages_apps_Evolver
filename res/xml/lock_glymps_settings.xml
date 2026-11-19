@@ -4,7 +4,7 @@
     xmlns:settings="http://schemas.android.com/apk/res-auto"
     android:title="@string/lock_glymps_title">
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="lock_glymps_enabled"
         android:title="@string/action_enable"
         android:defaultValue="false" />

@@ -29,13 +29,9 @@ import com.android.settingslib.search.SearchIndexable;
 
 import java.util.List;
 
-import lineageos.providers.LineageSettings;
-
 import org.expressiveos.settings.preferences.CustomSeekBarPreference;
 import org.expressiveos.settings.preferences.SystemSettingSwitchPreference;
 import org.expressiveos.settings.utils.PreferenceUtils;
-
-import static org.lineageos.internal.util.DeviceKeysConstants.*;
 
 @SearchIndexable
 public class Miscellaneous extends SettingsPreferenceFragment implements
@@ -44,6 +40,8 @@ public class Miscellaneous extends SettingsPreferenceFragment implements
     private static final String TAG = "Miscellaneous";
 
     private static final String KEY_THREE_FINGERS_SWIPE = "three_fingers_swipe";
+    private static final String KEY_THREE_FINGERS_SWIPE_ACTION = "key_three_fingers_swipe_action";
+    private static final int ACTION_NOTHING = 0;
     private static final String FLASHLIGHT_CALL_PREF = "flashlight_on_call";
     private static final String FLASHLIGHT_DND_PREF = "flashlight_on_call_ignore_dnd";
     private static final String FLASHLIGHT_RATE_PREF = "flashlight_on_call_rate";
@@ -63,9 +61,10 @@ public class Miscellaneous extends SettingsPreferenceFragment implements
         final PreferenceScreen prefScreen = getPreferenceScreen();
         final Resources res = mContext.getResources();
 
-        Action threeFingersSwipeAction = Action.fromSettings(getContentResolver(),
-                LineageSettings.System.KEY_THREE_FINGERS_SWIPE_ACTION,
-                Action.NOTHING);
+        int threeFingersSwipeAction = Settings.System.getIntForUser(getContentResolver(),
+                KEY_THREE_FINGERS_SWIPE_ACTION,
+                ACTION_NOTHING,
+                UserHandle.USER_CURRENT);
         mThreeFingersSwipeAction = initList(KEY_THREE_FINGERS_SWIPE, threeFingersSwipeAction);
 
         if (!Utils.deviceHasFlashlight(mContext)) {
@@ -88,10 +87,6 @@ public class Miscellaneous extends SettingsPreferenceFragment implements
             mFlashOnCallIgnoreDND.setEnabled(value > 1);
             mFlashOnCallRate.setEnabled(value > 0);
         }
-    }
-
-    private ListPreference initList(String key, Action value) {
-        return initList(key, value.ordinal());
     }
 
     private ListPreference initList(String key, int value) {
@@ -119,7 +114,7 @@ public class Miscellaneous extends SettingsPreferenceFragment implements
             return false;
         }
         pref.setSummary(pref.getEntries()[index]);
-        LineageSettings.System.putIntForUser(
+        Settings.System.putIntForUser(
                 getContentResolver(), setting, intValue, UserHandle.USER_CURRENT);
         return true;
     }
@@ -130,7 +125,7 @@ public class Miscellaneous extends SettingsPreferenceFragment implements
         final ContentResolver resolver = context.getContentResolver();
         if (preference == mThreeFingersSwipeAction) {
             return handleListChange((ListPreference) preference, newValue,
-                    LineageSettings.System.KEY_THREE_FINGERS_SWIPE_ACTION);
+                    KEY_THREE_FINGERS_SWIPE_ACTION);
         } else if (preference == mFlashOnCall) {
             int value = Integer.parseInt((String) newValue);
             mFlashOnCallIgnoreDND.setEnabled(value > 1);

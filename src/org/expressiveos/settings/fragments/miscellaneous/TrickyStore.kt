@@ -65,6 +65,7 @@ class TrickyStore : SettingsPreferenceFragment() {
     private var currentRevocationReason: String = ""   // e.g. "KEY_COMPROMISE"
     private var isCheckInProgress = false
     private var isKeyboxPickerOpen = false
+    private var cachedKeyboxSummary: EosIntegrityClient.KeyboxSummary? = null
 
     // Set by a manual keybox import; consumed once the revocation check that follows it
     // finishes, so the Play Store wipe prompt never competes with a keep/replace dialog.
@@ -155,6 +156,9 @@ class TrickyStore : SettingsPreferenceFragment() {
          */
         @JvmStatic
         fun resetAllSpoofDefaults(context: Context) {
+            if (EosIntegrityClient.isAvailable()) {
+                EosIntegrityClient.resetDefaults()
+            }
             val resolver = context.contentResolver
             Settings.Secure.putLong(resolver, PlayIntegrityFix.LAST_AUTO_FETCH_KEY, 0L)
             Settings.Secure.putString(
@@ -182,11 +186,31 @@ class TrickyStore : SettingsPreferenceFragment() {
             try {
                 val bytes = requireContext().contentResolver.openInputStream(uri)
                     ?.use { it.readBytes() } ?: ByteArray(0)
+                val rawXml = bytes.toString(Charsets.UTF_8)
                 // The framework rejects a keybox that fails these checks, so refuse it here
                 // instead of storing something that silently never takes effect.
-                val problem = keyboxProblem(bytes.toString(Charsets.UTF_8))
+                val problem = keyboxProblem(rawXml)
                 if (problem != null) {
                     toast(getString(R.string.ts_fetch_keybox_failed, problem))
+                    return@registerForActivityResult
+                }
+                if (EosIntegrityClient.isAvailable()) {
+                    lifecycleScope.launch {
+                        val rpc = withContext(Dispatchers.IO) {
+                            EosIntegrityClient.importUserKeybox(rawXml)
+                        }
+                        if (!isAdded) return@launch
+                        if (rpc != null && rpc.ok) {
+                            toast(getString(R.string.ts_keybox_imported))
+                            currentRevocationStatus = RevocationStatus.UNKNOWN
+                            currentRevocationReason = ""
+                            refreshStatus()
+                            offerWipeAfterCheck = true
+                            checkKeyboxRevocation()
+                        } else {
+                            toast(getString(R.string.ts_fetch_keybox_failed, rpc?.message ?: "IPC error"))
+                        }
+                    }
                     return@registerForActivityResult
                 }
                 val encoded = Base64.encodeToString(bytes, Base64.NO_WRAP)
@@ -256,6 +280,13 @@ class TrickyStore : SettingsPreferenceFragment() {
                 .firstOrNull { it.isNotEmpty() && !it.startsWith("#") && !TARGET_LINE_REGEX.matches(it) }
             if (bad != null) {
                 toast(getString(R.string.ts_target_list_invalid, bad))
+                return
+            }
+        }
+        if (EosIntegrityClient.isAvailable()) {
+            val rpc = EosIntegrityClient.importUserTargets(text)
+            if (rpc != null && !rpc.ok) {
+                toast(getString(R.string.ts_target_list_invalid, rpc.message.ifEmpty { rpc.code }))
                 return
             }
         }
@@ -353,23 +384,39 @@ class TrickyStore : SettingsPreferenceFragment() {
         super.onCreate(savedInstanceState)
         requireActivity().title = getString(R.string.tricky_store_title)
 
-        // Restore persisted status
-        currentRevocationStatus = when (
-            Settings.Secure.getString(
-                requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY)
-        ) {
-            "VALID"          -> RevocationStatus.VALID
-            "REVOKED"        -> RevocationStatus.REVOKED
-            "SUSPENDED"      -> RevocationStatus.SUSPENDED
-            "EXPIRING_SOON"  -> RevocationStatus.EXPIRING_SOON
-            "CHAIN_INVALID"  -> RevocationStatus.CHAIN_INVALID
-            "UNTRUSTED_ROOT" -> RevocationStatus.UNTRUSTED_ROOT
-            else             -> RevocationStatus.UNKNOWN
-        }
-        currentRevocationReason = Settings.Secure.getString(
-            requireContext().contentResolver, LAST_REVOCATION_REASON_KEY) ?: ""
+        // Restore persisted status (preferring privileged eos_integrity metadata when present)
+        val summary = EosIntegrityClient.getKeyboxSummary()
+        cachedKeyboxSummary = summary
+        currentRevocationStatus = parseRevocationStatus(
+            summary?.revocationStatus
+                ?: Settings.Secure.getString(
+                    requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY)
+        )
+        currentRevocationReason = summary?.revocationReason
+            ?: Settings.Secure.getString(
+                requireContext().contentResolver, LAST_REVOCATION_REASON_KEY) ?: ""
 
         refreshStatus()
+    }
+
+    private fun parseRevocationStatus(raw: String?): RevocationStatus = when (raw) {
+        "VALID"          -> RevocationStatus.VALID
+        "REVOKED"        -> RevocationStatus.REVOKED
+        "SUSPENDED"      -> RevocationStatus.SUSPENDED
+        "EXPIRING_SOON"  -> RevocationStatus.EXPIRING_SOON
+        "CHAIN_INVALID"  -> RevocationStatus.CHAIN_INVALID
+        "UNTRUSTED_ROOT" -> RevocationStatus.UNTRUSTED_ROOT
+        else             -> RevocationStatus.UNKNOWN
+    }
+
+    private fun hasInstalledKeybox(): Boolean {
+        val summary = cachedKeyboxSummary ?: EosIntegrityClient.getKeyboxSummary()
+        if (summary != null) {
+            cachedKeyboxSummary = summary
+            return summary.present
+        }
+        return !Settings.Secure.getString(
+            requireContext().contentResolver, KEYBOX_KEY).isNullOrBlank()
     }
 
     override fun onResume() {
@@ -377,15 +424,17 @@ class TrickyStore : SettingsPreferenceFragment() {
         refreshStatus()
         if (!isTrickyStoreEnabled) return
 
-        val lastChecked = Settings.Secure.getLong(
-            requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
+        val summary = cachedKeyboxSummary
+        val lastChecked = summary?.lastCheckedMs
+            ?: Settings.Secure.getLong(
+                requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
         val overADay = System.currentTimeMillis() - lastChecked > TimeUnit.HOURS.toMillis(24)
         // A keybox with no stored result (one the framework swapped in) is checked now: the
         // Spoofing payments row says "Check" and sends the user here.
-        val unchecked = !Settings.Secure.getString(
-                requireContext().contentResolver, KEYBOX_KEY).isNullOrBlank() &&
-            Settings.Secure.getString(
-                requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY).isNullOrEmpty()
+        val storedStatus = summary?.revocationStatus
+            ?: Settings.Secure.getString(
+                requireContext().contentResolver, LAST_REVOCATION_STATUS_KEY)
+        val unchecked = hasInstalledKeybox() && storedStatus.isNullOrEmpty()
         if ((overADay || unchecked) && !isCheckInProgress) {
             checkKeyboxRevocation()
         } else {
@@ -397,7 +446,14 @@ class TrickyStore : SettingsPreferenceFragment() {
 
     private fun refreshStatus() {
         val resolver = requireContext().contentResolver
-        val keyboxExists = !Settings.Secure.getString(resolver, KEYBOX_KEY).isNullOrEmpty()
+        val summary = EosIntegrityClient.getKeyboxSummary()
+        cachedKeyboxSummary = summary
+        if (summary != null && !isCheckInProgress) {
+            currentRevocationStatus = parseRevocationStatus(summary.revocationStatus)
+            currentRevocationReason = summary.revocationReason
+        }
+        val keyboxExists = summary?.present
+            ?: !Settings.Secure.getString(resolver, KEYBOX_KEY).isNullOrEmpty()
 
         // Count only installed targets: uninstalled defaults stay in the stored list so they
         // apply once installed, but they aren't "configured" from the user's view.
@@ -455,8 +511,7 @@ class TrickyStore : SettingsPreferenceFragment() {
                 getString(R.string.ts_revocation_checking))
             RevocationStatus.UNKNOWN -> Triple(
                 getString(R.string.ts_chip_unchecked), ExpressiveTone.Neutral,
-                if (!Settings.Secure.getString(
-                        requireContext().contentResolver, KEYBOX_KEY).isNullOrEmpty())
+                if (hasInstalledKeybox())
                     getString(R.string.ts_revocation_not_yet_checked)
                 else
                     getString(R.string.ts_revocation_no_keybox))
@@ -493,6 +548,45 @@ class TrickyStore : SettingsPreferenceFragment() {
 
     private fun checkKeyboxRevocation() {
         if (isCheckInProgress) return
+        if (EosIntegrityClient.isAvailable()) {
+            if (!hasInstalledKeybox()) {
+                currentRevocationStatus = RevocationStatus.UNKNOWN
+                currentRevocationReason = ""
+                applyRevocationUi(RevocationStatus.UNKNOWN)
+                updateFetchButtonState(keyboxExists = false)
+                autoFetchIfNoKeybox()
+                return
+            }
+            isCheckInProgress = true
+            currentRevocationStatus = RevocationStatus.CHECKING
+            applyRevocationUi(RevocationStatus.CHECKING)
+            updateFetchButtonState(keyboxExists = true)
+
+            lifecycleScope.launch {
+                val summary = withContext(Dispatchers.IO) {
+                    EosIntegrityClient.checkKeyboxRevocation()
+                }
+                isCheckInProgress = false
+                if (!isAdded) return@launch
+                if (summary != null) {
+                    cachedKeyboxSummary = summary
+                    val status = parseRevocationStatus(summary.revocationStatus)
+                    val reason = summary.revocationReason
+                    currentRevocationStatus = status
+                    currentRevocationReason = reason
+                    applyRevocationUi(status, reason)
+                    updateFetchButtonState(keyboxExists = summary.present)
+                    refreshStatus()
+                    handleActionableStatus(status)
+                    offerWipeIfPending(status)
+                } else {
+                    ui.revocationChecking = false
+                    ui.revocationSummary = getString(R.string.ts_revocation_error, "IPC error")
+                    offerWipeIfPending(null)
+                }
+            }
+            return
+        }
         val raw = Settings.Secure.getString(requireContext().contentResolver, KEYBOX_KEY)
         if (raw.isNullOrEmpty()) {
             currentRevocationStatus = RevocationStatus.UNKNOWN
@@ -920,8 +1014,7 @@ class TrickyStore : SettingsPreferenceFragment() {
         if (isCheckInProgress) return
         if (isNoValidCooldownActive()) return
 
-        val existing = Settings.Secure.getString(requireContext().contentResolver, KEYBOX_KEY)
-        if (!existing.isNullOrEmpty()) {
+        if (hasInstalledKeybox()) {
             // Only replace when we have a definitively non-functional keybox
             if (currentRevocationStatus == RevocationStatus.REVOKED ||
                 currentRevocationStatus == RevocationStatus.SUSPENDED) {
@@ -938,6 +1031,35 @@ class TrickyStore : SettingsPreferenceFragment() {
         if (!silent) {
             ui.fetching = true
             ui.fetchSummary = getString(R.string.ts_fetch_keybox_fetching)
+        }
+
+        if (EosIntegrityClient.isAvailable()) {
+            lifecycleScope.launch {
+                val rpc = withContext(Dispatchers.IO) {
+                    EosIntegrityClient.fetchOfficialKeybox(force = !silent)
+                }
+                if (!isAdded) return@launch
+                if (!silent) updateFetchButtonState(keyboxExists = hasInstalledKeybox())
+                if (rpc != null && rpc.ok) {
+                    if (rpc.code == "UNCHANGED") {
+                        if (!silent) toast(getString(R.string.ts_fetch_keybox_same_file))
+                    } else {
+                        clearNoValidKeyboxCooldown()
+                        toast(getString(
+                            if (silent) R.string.ts_fetch_keybox_auto_replaced
+                            else R.string.ts_fetch_keybox_success))
+                    }
+                    refreshStatus()
+                } else {
+                    if (!silent) {
+                        toast(getString(R.string.ts_fetch_keybox_failed, rpc?.message ?: "IPC error"))
+                    } else {
+                        toast(getString(R.string.ts_fetch_keybox_no_valid_found))
+                        markNoValidKeyboxFound()
+                    }
+                }
+            }
+            return
         }
 
         lifecycleScope.launch {
@@ -1094,15 +1216,17 @@ class TrickyStore : SettingsPreferenceFragment() {
     }
 
     private fun getLastFetchedFormatted(): String? {
-        val millis = Settings.Secure.getLong(
-            requireContext().contentResolver, LAST_FETCHED_KEY, 0L)
+        val millis = cachedKeyboxSummary?.lastFetchedMs
+            ?: Settings.Secure.getLong(
+                requireContext().contentResolver, LAST_FETCHED_KEY, 0L)
         if (millis == 0L) return null
         return SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(millis))
     }
 
     private fun getLastRevocationCheckedFormatted(): String? {
-        val millis = Settings.Secure.getLong(
-            requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
+        val millis = cachedKeyboxSummary?.lastCheckedMs
+            ?: Settings.Secure.getLong(
+                requireContext().contentResolver, LAST_REVOCATION_CHECK_KEY, 0L)
         if (millis == 0L) return null
         return SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(millis))
     }
@@ -1128,6 +1252,10 @@ class TrickyStore : SettingsPreferenceFragment() {
 
     private fun deleteKeybox() {
         try {
+            if (EosIntegrityClient.isAvailable()) {
+                EosIntegrityClient.deleteKeybox()
+                cachedKeyboxSummary = null
+            }
             Settings.Secure.putString(
                 requireContext().contentResolver, KEYBOX_KEY, "")
             Settings.Secure.putLong(
@@ -1222,9 +1350,12 @@ class TrickyStore : SettingsPreferenceFragment() {
         ui.dialog = TsDialog.PatchDate(current)
     }
 
-    private fun isUserImportedKeybox(): Boolean =
-        Settings.Secure.getString(
+    private fun isUserImportedKeybox(): Boolean {
+        val summary = cachedKeyboxSummary
+        if (summary != null) return summary.source == KEYBOX_SOURCE_USER
+        return Settings.Secure.getString(
             requireContext().contentResolver, KEYBOX_SOURCE_KEY) == KEYBOX_SOURCE_USER
+    }
 
     // ---- GMS kill -----------------------------------------------------------
 

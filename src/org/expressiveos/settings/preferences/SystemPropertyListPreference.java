@@ -22,9 +22,7 @@ import android.util.AttributeSet;
 
 import com.android.settingslib.development.SystemPropPoker;
 
-import lineageos.preference.SelfRemovingListPreference;
-
-public class SystemPropertyListPreference extends SelfRemovingListPreference {
+public class SystemPropertyListPreference extends EosListPreference {
     private ComposeDialogHandle mPickerDialog;
 
     public SystemPropertyListPreference(Context context, AttributeSet attrs, int defStyle) {

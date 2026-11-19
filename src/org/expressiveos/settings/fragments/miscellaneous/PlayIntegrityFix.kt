@@ -224,6 +224,15 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         markAutoFetchDone()
         scope.launch {
             try {
+                if (EosIntegrityClient.isAvailable()) {
+                    val rpcResult = withContext(Dispatchers.IO) {
+                        EosIntegrityClient.refreshCanaryPif(force = false)
+                    }
+                    if (rpcResult != null && rpcResult.ok) {
+                        refreshStatus()
+                        return@launch
+                    }
+                }
                 val profiles = withContext(Dispatchers.IO) {
                     PixelDeviceRepository.getProfiles(requireContext(), true)
                 }
@@ -335,7 +344,7 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
                     return@launch
                 }
 
-                val currentDevice = android.os.SystemProperties.get(MATCH_DEVICE_PROP, "")
+                val currentDevice = android.os.Build.DEVICE
                 val sortedProfiles = profiles.sortedWith(
                     compareByDescending<PixelDeviceRepository.PixelProfile> {
                         it.codename == PixelDeviceRepository.PIF_DEFAULT_CODENAME
@@ -492,7 +501,6 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         private const val REFETCH_WINDOW_DAYS = 15L
         private const val PIF_ENABLED_KEY = "spoof_pif_enabled"
         internal const val LAST_AUTO_FETCH_KEY = "spoof_pif_last_auto_fetch"
-        private const val MATCH_DEVICE_PROP = "ro.lineage.device"
 
         private data class Flag(val name: String, val default: Boolean)
 

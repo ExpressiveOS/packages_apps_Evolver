@@ -23,7 +23,7 @@
         android:layout="@layout/dynamic_bar_hero_banner"
         android:selectable="false" />
 
-    <lineageos.preference.SecureSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingMainSwitchPreference
         android:key="ax_dynamic_bar_enabled"
         android:title="@string/dynamic_bar"
         android:summary="@string/dynamic_bar_summary"

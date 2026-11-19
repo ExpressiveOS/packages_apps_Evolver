@@ -1291,7 +1291,7 @@
     <string name="custom_system_theme_summary">Customize system appearance with themes and icon packs</string>
 
     <!-- About -->
-    <string name="about_info">ExpressiveOS is a custom Android ROM that brings the Pixel experience with extra customization. Based on the LineageOS Project.</string>
+    <string name="about_info">ExpressiveOS is a custom Android ROM that brings the Pixel experience with extra customization. Built directly on AOSP.</string>
     <string name="about_telegram_title" translatable="false">Telegram</string>
     <string name="about_telegram_summary">Chat with us on Telegram</string>
     <string name="about_github_title" translatable="false">GitHub</string>

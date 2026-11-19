@@ -20,7 +20,7 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/cutout_progress_title">
 
-    <lineageos.preference.SecureSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SecureSettingMainSwitchPreference
         android:key="cutout_progress_enabled"
         android:title="@string/cutout_progress_title"
         android:summary="@string/cutout_progress_summary"

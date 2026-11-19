@@ -34,7 +34,7 @@ import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.search.SearchIndexable;
 
-import lineageos.preference.SystemSettingMainSwitchPreference;
+import org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference;
 
 import java.io.File;
 

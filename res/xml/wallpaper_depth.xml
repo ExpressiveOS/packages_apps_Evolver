@@ -17,10 +17,9 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
-    xmlns:lineage="http://schemas.android.com/apk/res-auto"
     android:title="@string/depthwall_wallpaper_enabled_title">
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="depth_wallpaper_enabled"
         android:title="@string/depthwall_wallpaper_enabled_title"
         android:summary="@string/depthwall_wallpaper_enabled_summary"

@@ -19,7 +19,7 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/quick_settings_header_image_title">
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="status_bar_custom_header"
         android:title="@string/quick_settings_header_image_title"
         android:summary="@string/quick_settings_header_image_summary"

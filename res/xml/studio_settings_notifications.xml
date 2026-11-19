@@ -12,7 +12,7 @@
         android:key="heads_up"
         android:title="@string/notifications_heads_up_title">
 
-        <lineageos.preference.GlobalSettingSwitchPreference
+        <org.expressiveos.settings.preferences.GlobalSettingSwitchPreference
             android:key="heads_up_notifications_enabled"
             android:title="@string/heads_up_notifications_enabled_title"
             android:summary="@string/heads_up_notifications_enabled_summary" />

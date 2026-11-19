@@ -19,7 +19,7 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/lockscreen_widgets_title">
 
-    <lineageos.preference.SystemSettingMainSwitchPreference
+    <org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference
         android:key="lockscreen_widgets_enabled"
         android:title="@string/lockscreen_widgets_enabled_title"
         android:summary="@string/lockscreen_widgets_enabled_summary"

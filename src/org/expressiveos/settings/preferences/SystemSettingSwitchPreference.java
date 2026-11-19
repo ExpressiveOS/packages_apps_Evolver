@@ -10,9 +10,7 @@ import android.provider.Settings;
 import android.os.UserHandle;
 import android.util.AttributeSet;
 
-import lineageos.preference.SelfRemovingSwitchPreference;
-
-public class SystemSettingSwitchPreference extends SelfRemovingSwitchPreference {
+public class SystemSettingSwitchPreference extends EosSwitchPreference {
 
     public SystemSettingSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

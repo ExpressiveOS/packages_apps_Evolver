@@ -31,8 +31,6 @@ import com.android.settingslib.search.SearchIndexable;
 
 import java.util.List;
 
-import lineageos.preference.LineageSystemSettingListPreference;
-
 import org.expressiveos.settings.preferences.SystemSettingListPreference;
 import org.expressiveos.settings.preferences.ExpressiveDialogs;
 import org.expressiveos.settings.preferences.SystemSettingSeekBarPreference;
@@ -86,8 +84,8 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private static final int PULLDOWN_DIR_LEFT = 2;
     private static final int PULLDOWN_DIR_ALWAYS = 3;
 
-    private LineageSystemSettingListPreference mQuickPulldown;
-    private LineageSystemSettingListPreference mStatusBarClock;
+    private SystemSettingListPreference mQuickPulldown;
+    private SystemSettingListPreference mStatusBarClock;
     private PreferenceCategory mIconsCategory;
     private SystemSettingSwitchPreference mBluetoothBatteryStatus;
     private SystemSettingSwitchPreference mLogo;
@@ -134,7 +132,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
         }
 
         mQuickPulldown =
-                (LineageSystemSettingListPreference) findPreference(QUICK_PULLDOWN);
+                (SystemSettingListPreference) findPreference(QUICK_PULLDOWN);
         mQuickPulldown.setOnPreferenceChangeListener(this);
         updateQuickPulldownSummary(mQuickPulldown.getIntValue(0));
 

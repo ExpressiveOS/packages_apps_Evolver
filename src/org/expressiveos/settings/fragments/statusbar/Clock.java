@@ -37,9 +37,6 @@ import com.android.settingslib.search.SearchIndexable;
 
 import java.util.Date;
 
-import lineageos.preference.LineageSystemSettingListPreference;
-import lineageos.providers.LineageSettings;
-
 import org.expressiveos.settings.preferences.ExpressiveDialogs;
 import org.expressiveos.settings.preferences.SystemSettingListPreference;
 
@@ -59,7 +56,7 @@ public class Clock extends SettingsPreferenceFragment
     private static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
     private static final int CUSTOM_CLOCK_DATE_FORMAT_INDEX = 18;
 
-    private LineageSystemSettingListPreference mStatusBarAmPm;
+    private SystemSettingListPreference mStatusBarAmPm;
     private SystemSettingListPreference mClockDateDisplay;
     private SystemSettingListPreference mClockDatePosition;
     private SystemSettingListPreference mClockDateStyle;
@@ -74,7 +71,7 @@ public class Clock extends SettingsPreferenceFragment
         ContentResolver resolver = getActivity().getContentResolver();
 
         mStatusBarAmPm =
-                (LineageSystemSettingListPreference) findPreference(STATUS_BAR_AM_PM);
+                (SystemSettingListPreference) findPreference(STATUS_BAR_AM_PM);
 
         if (DateFormat.is24HourFormat(getActivity())) {
             mStatusBarAmPm.setEnabled(false);

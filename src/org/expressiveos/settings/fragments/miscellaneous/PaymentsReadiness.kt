@@ -43,16 +43,22 @@ internal fun paymentsReadiness(context: Context): PaymentsReadiness {
     if (Settings.System.getInt(resolver, PIF_ENABLED_KEY, 1) == 0) {
         return noPif(R.string.payments_reason_pif_off)
     }
-    if (Settings.Secure.getString(resolver, TrickyStore.KEYBOX_KEY).isNullOrBlank()) {
+    val keyboxSummary = EosIntegrityClient.getKeyboxSummary()
+    val keyboxPresent = keyboxSummary?.present
+        ?: !Settings.Secure.getString(resolver, TrickyStore.KEYBOX_KEY).isNullOrBlank()
+    if (!keyboxPresent) {
         return no(R.string.payments_reason_no_keybox)
     }
-    when (Settings.Secure.getString(resolver, TrickyStore.LAST_REVOCATION_STATUS_KEY)) {
+    val revocationStatus = keyboxSummary?.revocationStatus
+        ?: Settings.Secure.getString(resolver, TrickyStore.LAST_REVOCATION_STATUS_KEY)
+    when (revocationStatus) {
         "REVOKED", "SUSPENDED", "CHAIN_INVALID" -> return no(R.string.payments_reason_keybox_bad)
         // TrickyStore's own page warns about this one but says it may still pass.
         "UNTRUSTED_ROOT" -> return check(R.string.payments_reason_untrusted_root)
         null, "" -> return check(R.string.payments_reason_unchecked)
     }
-    val checkedAt = Settings.Secure.getLong(resolver, TrickyStore.LAST_REVOCATION_CHECK_KEY, 0L)
+    val checkedAt = keyboxSummary?.lastCheckedMs
+        ?: Settings.Secure.getLong(resolver, TrickyStore.LAST_REVOCATION_CHECK_KEY, 0L)
     if (System.currentTimeMillis() - checkedAt > REVOCATION_CHECK_MAX_AGE_MS) {
         return check(R.string.payments_reason_unchecked)
     }

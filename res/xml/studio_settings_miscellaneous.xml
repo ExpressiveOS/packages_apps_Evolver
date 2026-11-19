@@ -39,7 +39,7 @@
             android:summary="@string/shake_gestures_enabled_summary"
             android:defaultValue="false" />
 
-        <org.expressiveos.settings.preferences.LineageSystemSettingPickerListPreference
+        <org.expressiveos.settings.preferences.SystemSettingPickerListPreference
             android:key="shake_gestures_action"
             android:title="@string/shake_gestures_action_title"
             android:summary="%s"
