@@ -19,15 +19,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.lifecycle.lifecycleScope
 import com.android.internal.logging.nano.MetricsProto
 import com.android.internal.util.expressiveos.PixelDeviceRepository
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
 import java.nio.charset.StandardCharsets
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.expressiveos.settings.fragments.miscellaneous.TrickyStore
@@ -38,12 +37,13 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     private val ui = PifUiState()
 
     private val isPifEnabled: Boolean
-        get() = Settings.System.getInt(
-            requireContext().contentResolver,
-            PIF_ENABLED_KEY, 1
-        ) != 0
-
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        get() {
+            val ctx = context ?: return false
+            return Settings.System.getInt(
+                ctx.contentResolver,
+                PIF_ENABLED_KEY, 1
+            ) != 0
+        }
 
     private var activeConfigData: Map<String, String> = emptyMap()
 
@@ -56,10 +56,12 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     private val importLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
+        if (!isAdded) return@registerForActivityResult
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
+                val ctx = context ?: return@let
                 try {
-                    val content = requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                    val content = ctx.contentResolver.openInputStream(uri)?.use { input ->
                         input.readBytes().toString(StandardCharsets.UTF_8)
                     } ?: ""
                     val normalized = normalizePifPayload(content)
@@ -73,23 +75,24 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
                         put("manually_imported", true)
                     }.toString(2)
                     Settings.Secure.putString(
-                        requireContext().contentResolver,
+                        ctx.contentResolver,
                         PIF_CONFIG_KEY,
                         stamped
                     )
                     try {
                         val patch = JSONObject(normalized).optString("SECURITY_PATCH")
                         if (patch.isNotEmpty()) {
-                            updatePatchDateIfSimple(requireContext().contentResolver, patch)
+                            updatePatchDateIfSimple(ctx.contentResolver, patch)
                         }
                     } catch (_: Exception) {}
                     killGmsWithConfirmation {
+                        if (!isAdded) return@killGmsWithConfirmation
                         toast(getString(R.string.pif_imported_as, PIF_CONFIG_NAME))
                         refreshStatus()
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to import config", e)
-                    toast(getString(R.string.pif_failed, e.message ?: ""))
+                    if (isAdded) toast(getString(R.string.pif_failed, e.message ?: ""))
                 }
             }
         }
@@ -167,11 +170,6 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         refreshStatus()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        scope.cancel()
-    }
-
     override fun onResume() {
         super.onResume()
         refreshStatus()
@@ -197,9 +195,11 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun autoFetchIfStale() {
+        if (!isAdded || view == null) return
         if (!isPifEnabled) return
+        val appContext = context?.applicationContext ?: return
         val content = Settings.Secure.getString(
-            requireContext().contentResolver, PIF_CONFIG_KEY
+            appContext.contentResolver, PIF_CONFIG_KEY
         )
         val isManuallyImported = try {
             !content.isNullOrEmpty() && JSONObject(content).optBoolean("manually_imported", false)
@@ -222,15 +222,17 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
         if (daysLeft != null && daysLeft > REFETCH_WINDOW_DAYS) return
 
         markAutoFetchDone()
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val profiles = withContext(Dispatchers.IO) {
-                    PixelDeviceRepository.getProfiles(requireContext(), true)
+                    PixelDeviceRepository.getProfiles(appContext, true)
                 }
+                if (!isAdded) return@launch
                 val defaultCodename = PixelDeviceRepository.getDefaultPifCodename(profiles)
                 val matched = withContext(Dispatchers.IO) {
-                    PixelDeviceRepository.getProfileByCodename(requireContext(), defaultCodename, false)
+                    PixelDeviceRepository.getProfileByCodename(appContext, defaultCodename, false)
                 } ?: return@launch
+                if (!isAdded) return@launch
 
                 if (!PixelDeviceRepository.isValidFingerprint(matched.fingerprint)) return@launch
 
@@ -242,22 +244,28 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
                 if (matched.fingerprint == currentFingerprint) return@launch
 
                 val toSave = buildProfileConfig(content, matched)
-                Settings.Secure.putString(
-                    requireContext().contentResolver,
-                    PIF_CONFIG_KEY,
-                    toSave.toString(2)
-                )
-                updatePatchDateIfSimple(requireContext().contentResolver, matched.securityPatch)
+                withContext(Dispatchers.IO) {
+                    Settings.Secure.putString(
+                        appContext.contentResolver,
+                        PIF_CONFIG_KEY,
+                        toSave.toString(2)
+                    )
+                    updatePatchDateIfSimple(appContext.contentResolver, matched.securityPatch)
+                }
+                if (!isAdded) return@launch
                 // Background auto-fetch shouldn't interrupt with a dialog — stop GMS
                 // only, skip the Play Store data wipe prompt.
                 stopGmsPackages()
                 refreshStatus()
+            } catch (e: CancellationException) {
+                throw e
             } catch (_: Exception) {}
         }
     }
 
     private fun refreshStatus() {
-        val content = Settings.Secure.getString(requireContext().contentResolver, PIF_CONFIG_KEY)
+        val ctx = context ?: return
+        val content = Settings.Secure.getString(ctx.contentResolver, PIF_CONFIG_KEY)
         activeConfigData = if (!content.isNullOrEmpty()) readConfigData(content) else emptyMap()
         ui.enabled = isPifEnabled
         ui.config = activeConfigData
@@ -322,13 +330,16 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun fetchDevicesForChannel() {
+        if (!isAdded || view == null) return
+        val appContext = context?.applicationContext ?: return
         ui.fetching = true
 
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val profiles = withContext(Dispatchers.IO) {
-                    PixelDeviceRepository.getProfiles(requireContext(), true)
+                    PixelDeviceRepository.getProfiles(appContext, true)
                 }
+                if (!isAdded) return@launch
 
                 if (profiles.isEmpty()) {
                     toast(getString(R.string.pif_failed, getString(R.string.pif_no_devices_found)))
@@ -364,8 +375,12 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
 
                 pickerProfiles = sortedProfiles
                 ui.dialog = PifDialog.DevicePicker(modelNames, preselectedIndex)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                toast(getString(R.string.pif_failed, e.message ?: ""))
+                if (isAdded) {
+                    toast(getString(R.string.pif_failed, e.message ?: ""))
+                }
             } finally {
                 ui.fetching = false
             }
@@ -373,9 +388,11 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun saveProfileAsPif(profile: PixelDeviceRepository.PixelProfile) {
+        if (!isAdded || view == null) return
+        val appContext = context?.applicationContext ?: return
         ui.fetching = true
 
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 if (!isPifEnabled) return@launch
                 if (!PixelDeviceRepository.isValidFingerprint(profile.fingerprint)) {
@@ -383,23 +400,29 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
                     return@launch
                 }
                 val pifJson = buildProfileConfig(
-                    Settings.Secure.getString(requireContext().contentResolver, PIF_CONFIG_KEY),
+                    Settings.Secure.getString(appContext.contentResolver, PIF_CONFIG_KEY),
                     profile,
                 )
                 withContext(Dispatchers.IO) {
                     Settings.Secure.putString(
-                        requireContext().contentResolver,
+                        appContext.contentResolver,
                         PIF_CONFIG_KEY,
                         pifJson.toString(2)
                     )
-                    updatePatchDateIfSimple(requireContext().contentResolver, profile.securityPatch)
+                    updatePatchDateIfSimple(appContext.contentResolver, profile.securityPatch)
                 }
+                if (!isAdded) return@launch
                 killGmsWithConfirmation {
+                    if (!isAdded) return@killGmsWithConfirmation
                     toast(getString(R.string.pif_fetched_model, profile.model))
                     refreshStatus()
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                toast(getString(R.string.pif_failed, e.message ?: ""))
+                if (isAdded) {
+                    toast(getString(R.string.pif_failed, e.message ?: ""))
+                }
             } finally {
                 ui.fetching = false
             }
@@ -437,8 +460,9 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun stopGmsPackages() {
+        val ctx = context ?: return
         try {
-            val am = requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val am = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             am.forceStopPackage(VENDING_PACKAGE)
             am.forceStopPackage(DROIDGUARD_PACKAGE)
             am.forceStopPackage(GMS_PACKAGE)
@@ -452,8 +476,9 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun wipeVendingData() {
+        val ctx = context ?: return
         try {
-            requireContext().packageManager.clearApplicationUserData(
+            ctx.packageManager.clearApplicationUserData(
                 VENDING_PACKAGE, null)
         } catch (_: Exception) {}
     }
@@ -471,7 +496,8 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     }
 
     private fun toast(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        val ctx = context ?: return
+        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun getMetricsCategory(): Int = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
