@@ -38,7 +38,7 @@ public class ChangelogFragment extends SettingsPreferenceFragment {
     private volatile boolean mViewDestroyed;
 
     private static final String CHANGELOG_URL_TEMPLATE =
-            "https://raw.githubusercontent.com/denson9874/expressiveos_ota/main/changelogs/%s.txt";
+            "https://raw.githubusercontent.com/denson9874/expressiveos_ota/main/changelogs/v2/%s.txt";
     private static final String OTA_REPO_URL = "https://github.com/denson9874/expressiveos_ota";
 
     private int getThemeColor(Context context, int attr) {
