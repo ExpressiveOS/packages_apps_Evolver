@@ -1132,13 +1132,14 @@
     <string name="ts_verification_cert_count">%1$d cert</string>
     <string name="ts_verification_leaf_count">%1$d leaf</string>
     <string name="ts_verification_skip_count">%1$d skip</string>
-    <string name="ts_fetch_keybox">Fetch latest keybox</string>
-    <string name="ts_fetch_keybox_summary">Download the latest shared keybox</string>
+    <string name="ts_fetch_keybox">Download keybox</string>
+    <string name="ts_fetch_keybox_summary">Opens keybox.kowx712.cc in your browser — download keybox.xml, then tap Import</string>
     <string name="ts_fetch_keybox_fetching">Fetching keybox…</string>
     <string name="ts_fetch_keybox_success">Latest keybox fetched successfully</string>
-    <string name="ts_fetch_keybox_failed">Fetch failed: %s</string>
+    <string name="ts_fetch_keybox_failed">Keybox import failed: %s</string>
     <string name="ts_fetch_keybox_same_file">Keybox is already up to date</string>
-    <string name="ts_fetch_keybox_blocked">Your keybox is valid — no fetch needed</string>
+    <string name="ts_fetch_keybox_blocked">Your keybox is valid — tap to browse newer keyboxes</string>
+    <string name="ts_fetch_keybox_no_browser">No browser app found to open keybox repository</string>
     <string name="ts_fetch_keybox_last_fetched">Last fetched: %1$s</string>
     <string name="ts_fetch_keybox_auto_replaced">Keybox automatically replaced with a valid one</string>
     <string name="ts_fetch_keybox_no_valid_found">No valid keybox available yet, will retry tomorrow</string>
@@ -1175,8 +1176,8 @@
     <string name="ts_chip_unknown_root">Unknown root</string>
     <string name="ts_chip_checking">Checking</string>
     <string name="ts_chip_unchecked">Not checked</string>
-    <string name="ts_fetch_keybox_revoked_refetch">Keybox revoked, fetching a newer one…</string>
-    <string name="ts_fetch_keybox_suspended_refetch">Keybox suspended, fetching a newer one…</string>
+    <string name="ts_fetch_keybox_revoked_refetch">Keybox revoked — download a newer keybox and tap Import</string>
+    <string name="ts_fetch_keybox_suspended_refetch">Keybox suspended — download a newer keybox and tap Import</string>
 
     <!-- Wallpaper styles -->
     <string name="wallpaper_styles_title">Wallpaper styles</string>

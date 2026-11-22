@@ -7,9 +7,12 @@ package org.expressiveos.settings.fragments.miscellaneous
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,8 +137,8 @@ class TrickyStore : SettingsPreferenceFragment() {
 
         private const val REVOCATION_URL     =
             "https://android.googleapis.com/attestation/status?encrypted=0"
-        private const val OFFICIAL_KEYBOX_URL =
-            "https://ota-mirror.daryldenson-apps.workers.dev/expressiveos/keybox.xml"
+        private const val KEYBOX_REPO_URL =
+            "https://keybox.kowx712.cc/"
 
         /** Warn user when the leaf cert expires within this window. */
         private val EXPIRY_WARN_MS = TimeUnit.DAYS.toMillis(14)
@@ -292,12 +295,19 @@ class TrickyStore : SettingsPreferenceFragment() {
             if (enabled) refreshStatus()
         }
 
-        override fun onFetchKeybox() = fetchOfficialKeybox()
+        override fun onFetchKeybox() = openKeyboxRepository()
 
         override fun onImportKeybox() {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "*/*"
+                putExtra(
+                    DocumentsContract.EXTRA_INITIAL_URI,
+                    DocumentsContract.buildDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:Download",
+                    ),
+                )
             }
             isKeyboxPickerOpen = true
             keyboxPicker.launch(intent)
@@ -328,7 +338,7 @@ class TrickyStore : SettingsPreferenceFragment() {
         override fun onConfirmDeleteKeybox() = deleteKeybox()
 
         // Explicit request: ignore the cooldown, keep the old keybox on failure
-        override fun onReplaceKeybox() = fetchOfficialKeybox(silent = false)
+        override fun onReplaceKeybox() = openKeyboxRepository()
 
         override fun onSavePatch(value: String): String? {
             if (value.isNotEmpty() && !isValidPatchContent(value)) {
@@ -423,8 +433,6 @@ class TrickyStore : SettingsPreferenceFragment() {
         val unchecked = hasInstalledKeybox() && storedStatus.isNullOrEmpty()
         if ((overADay || unchecked) && !isCheckInProgress) {
             checkKeyboxRevocation()
-        } else {
-            autoFetchIfNoKeybox()
         }
     }
 
@@ -514,18 +522,11 @@ class TrickyStore : SettingsPreferenceFragment() {
 
     private fun updateFetchButtonState(keyboxExists: Boolean) {
         ui.fetching = false
-        val isBlockingStatus = currentRevocationStatus == RevocationStatus.VALID
-
-        if (isBlockingStatus) {
-            ui.fetchEnabled = false
-            ui.fetchSummary = getString(R.string.ts_fetch_keybox_blocked)
+        ui.fetchEnabled = true
+        ui.fetchSummary = if (keyboxExists && currentRevocationStatus == RevocationStatus.VALID) {
+            getString(R.string.ts_fetch_keybox_blocked)
         } else {
-            ui.fetchEnabled = true
-            val timestamp = getLastFetchedFormatted()
-            ui.fetchSummary = if (timestamp != null && keyboxExists)
-                getString(R.string.ts_fetch_keybox_last_fetched, timestamp)
-            else
-                getString(R.string.ts_fetch_keybox_summary)
+            getString(R.string.ts_fetch_keybox_summary)
         }
     }
 
@@ -545,7 +546,6 @@ class TrickyStore : SettingsPreferenceFragment() {
             currentRevocationReason = ""
             applyRevocationUi(RevocationStatus.UNKNOWN)
             updateFetchButtonState(keyboxExists = false)
-            autoFetchIfNoKeybox()
             return
         }
         isCheckInProgress = true
@@ -581,16 +581,13 @@ class TrickyStore : SettingsPreferenceFragment() {
     private fun handleActionableStatus(status: RevocationStatus) {
         when (status) {
             RevocationStatus.REVOKED, RevocationStatus.SUSPENDED -> {
-                // Never wipe here: a revoked keybox may still be better than none.
-                // fetchOfficialKeybox swaps it only once a non-revoked, unexpired
-                // replacement has been fetched.
+                // Never wipe here: prompt the user to download a replacement and import it.
                 toast(getString(
                     if (status == RevocationStatus.REVOKED)
                         R.string.ts_fetch_keybox_revoked_refetch
                     else
                         R.string.ts_fetch_keybox_suspended_refetch
                 ))
-                if (!isNoValidCooldownActive()) fetchOfficialKeybox(silent = true)
             }
             RevocationStatus.EXPIRING_SOON -> {
                 showExpiringSoonDialog()
@@ -942,66 +939,16 @@ class TrickyStore : SettingsPreferenceFragment() {
         }
     }
 
-    // ---- Auto-fetch ---------------------------------------------------------
+    // ---- Interactive keybox repository handoff ------------------------------
 
-    private fun autoFetchIfNoKeybox() {
-        if (!isTrickyStoreEnabled) return
-        if (isKeyboxPickerOpen) return
-        if (isCheckInProgress) return
-        if (isNoValidCooldownActive()) return
-
-        if (hasInstalledKeybox()) {
-            // Only replace when we have a definitively non-functional keybox
-            if (currentRevocationStatus == RevocationStatus.REVOKED ||
-                currentRevocationStatus == RevocationStatus.SUSPENDED) {
-                fetchOfficialKeybox(silent = true)
-            }
-            return
+    private fun openKeyboxRepository() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(KEYBOX_REPO_URL)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
         }
-        fetchOfficialKeybox(silent = true)
-    }
-
-    // ---- Official keybox fetch ----------------------------------------------
-
-    private fun fetchOfficialKeybox(silent: Boolean = false) {
-        if (!silent) {
-            ui.fetching = true
-            ui.fetchSummary = getString(R.string.ts_fetch_keybox_fetching)
-        }
-
-        if (!EosIntegrityClient.isAvailable()) {
-            Log.e(TAG, "EosIntegrityService unavailable; refusing to fetch/store keybox via Settings.Secure")
-            ui.fetching = false
-            if (!silent) {
-                updateFetchButtonState(keyboxExists = false)
-                toast(getString(R.string.ts_fetch_keybox_failed, "Integrity service unavailable"))
-            }
-            return
-        }
-        lifecycleScope.launch {
-            val rpc = withContext(Dispatchers.IO) {
-                EosIntegrityClient.fetchOfficialKeybox(force = !silent)
-            }
-            if (!isAdded) return@launch
-            if (!silent) updateFetchButtonState(keyboxExists = hasInstalledKeybox())
-            if (rpc != null && rpc.ok) {
-                if (rpc.code == "UNCHANGED") {
-                    if (!silent) toast(getString(R.string.ts_fetch_keybox_same_file))
-                } else {
-                    clearNoValidKeyboxCooldown()
-                    toast(getString(
-                        if (silent) R.string.ts_fetch_keybox_auto_replaced
-                        else R.string.ts_fetch_keybox_success))
-                }
-                refreshStatus()
-            } else {
-                if (!silent) {
-                    toast(getString(R.string.ts_fetch_keybox_failed, rpc?.message ?: "IPC error"))
-                } else {
-                    toast(getString(R.string.ts_fetch_keybox_no_valid_found))
-                    markNoValidKeyboxFound()
-                }
-            }
+        try {
+            startActivity(intent)
+        } catch (_: ActivityNotFoundException) {
+            toast(getString(R.string.ts_fetch_keybox_no_browser))
         }
     }
 
