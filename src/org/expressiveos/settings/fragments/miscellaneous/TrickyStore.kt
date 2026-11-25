@@ -10,6 +10,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,6 +78,15 @@ class TrickyStore : SettingsPreferenceFragment() {
 
         private val PACKAGE_REGEX = Regex("""[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*""")
         private val TARGET_LINE_REGEX = Regex("""[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*\s*[?!-]?""")
+        private val KEY_ECDSA_REGEX = Regex(
+            """<Key\s[^>]*?algorithm\s*=\s*["'](?:ecdsa|ec)["']""",
+            RegexOption.IGNORE_CASE,
+        )
+        private val KEY_RSA_REGEX = Regex(
+            """<Key\s[^>]*?algorithm\s*=\s*["']rsa["']""",
+            RegexOption.IGNORE_CASE,
+        )
+        private val ZERO_WIDTH_REGEX = Regex("""[\u200B-\u200D\u2060\uFEFF]""")
 
         // Mode strings TrickyStoreService.parseTargetsJson accepts; anything else there
         // falls back to AUTO, so the UI refuses it rather than let it degrade silently.
@@ -182,14 +192,20 @@ class TrickyStore : SettingsPreferenceFragment() {
             try {
                 val bytes = requireContext().contentResolver.openInputStream(uri)
                     ?.use { it.readBytes() } ?: ByteArray(0)
+                val xml = decodeKeyboxXml(bytes.toString(Charsets.UTF_8))
+                if (xml == null) {
+                    toast(getString(R.string.ts_fetch_keybox_failed, "Not a valid keybox XML"))
+                    return@registerForActivityResult
+                }
                 // The framework rejects a keybox that fails these checks, so refuse it here
                 // instead of storing something that silently never takes effect.
-                val problem = keyboxProblem(bytes.toString(Charsets.UTF_8))
+                val problem = keyboxProblem(xml)
                 if (problem != null) {
                     toast(getString(R.string.ts_fetch_keybox_failed, problem))
                     return@registerForActivityResult
                 }
-                val encoded = Base64.encodeToString(bytes, Base64.NO_WRAP)
+                val encoded = Base64.encodeToString(
+                    xml.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
                 Settings.Secure.putString(
                     requireContext().contentResolver, KEYBOX_KEY, encoded)
                 Settings.Secure.putString(
@@ -280,6 +296,13 @@ class TrickyStore : SettingsPreferenceFragment() {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "*/*"
+                putExtra(
+                    DocumentsContract.EXTRA_INITIAL_URI,
+                    DocumentsContract.buildDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:Download",
+                    ),
+                )
             }
             isKeyboxPickerOpen = true
             keyboxPicker.launch(intent)
@@ -651,11 +674,12 @@ class TrickyStore : SettingsPreferenceFragment() {
     // ---- Certificate parsing ------------------------------------------------
 
     private fun decodeKeyboxXml(payload: String): String? {
-        val trimmed = payload.trim()
+        val trimmed = ZERO_WIDTH_REGEX.replace(payload, "").trim()
+        if (trimmed.isEmpty()) return null
         if (trimmed.startsWith("<")) return trimmed
         return try {
             val decoded = Base64.decode(trimmed, Base64.DEFAULT)
-            val asXml = String(decoded, Charsets.UTF_8).trim()
+            val asXml = ZERO_WIDTH_REGEX.replace(String(decoded, Charsets.UTF_8), "").trim()
             if (asXml.startsWith("<")) asXml else null
         } catch (_: Exception) { null }
     }
@@ -963,9 +987,10 @@ class TrickyStore : SettingsPreferenceFragment() {
             if (!isAdded) return@launch
 
             result.fold(
-                onSuccess = { xml ->
+                onSuccess = { rawBody ->
                     if (!isTrickyStoreEnabled) return@fold
                     try {
+                        val xml = decodeKeyboxXml(rawBody) ?: rawBody
                         // Deduplicate: don't install same content we already have
                         val existing = Settings.Secure.getString(
                             requireContext().contentResolver, KEYBOX_KEY)
@@ -1250,14 +1275,14 @@ class TrickyStore : SettingsPreferenceFragment() {
      * reason.
      */
     private fun keyboxProblem(rawXml: String): String? {
-        // isValidKeyboxXml() looks at the raw text, KeyBoxManager parses the sanitized one.
-        if (!rawXml.contains("<Key algorithm=\"ecdsa\">") && !rawXml.contains("<Key algorithm=\"rsa\">")) {
+        val xml = sanitizeKeyboxXml(rawXml)
+        // Match TrickyStoreService.isValidKeyboxXml() and KeyBoxManager.parseKeybox().
+        if (!KEY_ECDSA_REGEX.containsMatchIn(xml) && !KEY_RSA_REGEX.containsMatchIn(xml)) {
             return "No ECDSA or RSA key block"
         }
-        if (!rawXml.contains("<serial>") && !rawXml.contains("DeviceID")) {
+        if (!xml.contains("<serial>") && !xml.contains("DeviceID")) {
             return "No serial or DeviceID"
         }
-        val xml = sanitizeKeyboxXml(rawXml)
         var declared: Int? = null
         var parsedBoxes = 0
         var parsedKeys = 0
@@ -1324,23 +1349,25 @@ class TrickyStore : SettingsPreferenceFragment() {
         } catch (_: Exception) {
             return "Not a valid keybox XML"
         }
-        // A document without <Keybox> wrappers holds a single implicit box.
         if (!sawKeyboxTag && parsedKeys > 0) parsedBoxes = 1
-        val count = declared
-        // Generators disagree on whether NumberOfKeyboxes counts <Keybox> or <Key> elements,
-        // and KeyBoxManager accepts either. Only a document matching neither is incomplete.
-        if (count != null && count != parsedBoxes && count != parsedKeys) {
-            return "Declares $count keybox(es) but $parsedBoxes box(es) / $parsedKeys key(s) parsed"
+        if (parsedKeys == 0) {
+            val count = declared
+            return if (count != null && count > 0) {
+                "Declares $count keybox(es) but no complete key parsed"
+            } else {
+                "No complete key parsed"
+            }
         }
         return null
     }
 
-    /** KeyBoxManager.sanitizeXml(): trim, strip a leading BOM, strip XML comments. */
+    /** KeyBoxManager.sanitizeXml(): trim, strip BOM/zero-width chars, strip XML comments. */
     private fun sanitizeKeyboxXml(content: String): String {
         var s = content.trim()
         for (bom in listOf("\uFEFF", "\uFFFE", "\u0000\uFEFF")) {
             if (s.startsWith(bom)) s = s.substring(bom.length)
         }
+        s = ZERO_WIDTH_REGEX.replace(s, "")
         return s.replace(Regex("<!--.*?-->", RegexOption.DOT_MATCHES_ALL), "").trim()
     }
 

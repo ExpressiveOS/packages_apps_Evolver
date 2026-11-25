@@ -160,7 +160,7 @@ class Spoofing : SettingsPreferenceFragment() {
                 mutableStateOf(Settings.System.getInt(resolver, PIF_ENABLED_KEY, 1) != 0)
             }
             var photosSpoof by remember(refreshKey) {
-                mutableStateOf(Settings.Secure.getInt(resolver, PI_PHOTOS_SPOOF, 1) != 0)
+                mutableStateOf(Settings.Secure.getInt(resolver, PI_PHOTOS_SPOOF, 0) != 0)
             }
             var snapSpoof by remember(refreshKey) {
                 mutableStateOf(Settings.Secure.getInt(resolver, PI_SNAPCHAT_SPOOF, 0) != 0)
