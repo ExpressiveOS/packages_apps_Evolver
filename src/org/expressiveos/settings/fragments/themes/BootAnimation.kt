@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemProperties
+import android.os.UserHandle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -88,6 +90,7 @@ import org.expressiveos.settings.fragments.miscellaneous.ExpressiveChoiceRow
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveGroup
 import org.expressiveos.settings.fragments.miscellaneous.expressiveVerticalScroll
+import org.expressiveos.settings.holiday.HolidayCatalog
 import org.expressiveos.settings.utils.BootAnimationUtils
 import java.io.File
 import java.io.FileOutputStream
@@ -177,7 +180,18 @@ private fun BootAnimationScreen(context: android.content.Context) {
 
     fun applyStyle(name: String) {
         try {
+            val wasHoliday =
+                SystemProperties.get(BootAnimationUtils.PROP_NAME, "") ==
+                    BootAnimationUtils.NAME_HOLIDAY
             SystemProperties.set(BootAnimationUtils.PROP_NAME, name)
+            if (wasHoliday) {
+                Settings.Secure.putStringForUser(
+                    context.contentResolver,
+                    HolidayCatalog.KEY_BOOT_PALETTE,
+                    null,
+                    UserHandle.USER_SYSTEM,
+                )
+            }
             selectedName = name
             loadPreview(name)
             context.sendBroadcast(Intent(ACTION_BOOTANIM_STYLE_CHANGED))
