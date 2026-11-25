@@ -31,6 +31,7 @@ import java.util.List;
 import org.expressiveos.settings.fragments.themes.IconShapeController;
 import org.expressiveos.settings.preferences.SoundPickerPreference;
 import org.expressiveos.settings.preferences.SystemPropertySwitchPreference;
+import org.expressiveos.settings.utils.BootAnimationUtils;
 import org.expressiveos.settings.utils.DeviceUtils;
 import org.expressiveos.settings.utils.PreferenceUtils;
 
@@ -110,6 +111,13 @@ public class Themes extends SettingsPreferenceFragment {
 
         if (mNavbarIcons != null && isGestureNavigationEnabled(context)) {
             mIconsCategory.removePreference(mNavbarIcons);
+        }
+
+        if (mAnimationsCategory != null && !BootAnimationUtils.isAvailable(context)) {
+            Preference bootAnim = findPreference(KEY_BOOT_ANIMATION);
+            if (bootAnim != null) {
+                mAnimationsCategory.removePreference(bootAnim);
+            }
         }
 
         setUpLauncherSwitch(context);
@@ -192,6 +200,10 @@ public class Themes extends SettingsPreferenceFragment {
 
                     if (!LauncherSwitch.isAvailable(context)) {
                         keys.add(LauncherSwitch.KEY);
+                    }
+
+                    if (!BootAnimationUtils.isAvailable(context)) {
+                        keys.add(KEY_BOOT_ANIMATION);
                     }
 
                     return keys;

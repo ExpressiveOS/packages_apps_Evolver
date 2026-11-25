@@ -19,14 +19,9 @@ public class BootAnimationController extends BasePreferenceController {
 
     @Override
     public int getAvailabilityStatus() {
-        if (BootAnimationUtils.isBootAnimationSelectorDisabled()) {
-            return UNSUPPORTED_ON_DEVICE;
-        }
-        // Hide on genuine Pixel devices where boot animation overrides have no effect.
-        // Delegates to PixelPropsUtils which checks ro.product.model and ro.soc.manufacturer.
-        return BootAnimationUtils.isPixelDevice()
-                ? UNSUPPORTED_ON_DEVICE
-                : AVAILABLE;
+        return BootAnimationUtils.isAvailable(mContext)
+                ? AVAILABLE
+                : UNSUPPORTED_ON_DEVICE;
     }
 
     @Override

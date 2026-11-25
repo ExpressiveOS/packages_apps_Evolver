@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.SystemProperties;
+import android.os.UserManager;
 import android.util.Log;
 
 import com.android.internal.util.expressiveos.PixelPropsUtils;
@@ -62,6 +63,7 @@ public class BootAnimationUtils {
     public static final String PROP_LEGACY_STYLE = "persist.sys.bootanimation_style";
     public static final String NAME_DEFAULT = "default";
     public static final String NAME_CUSTOM = "custom";
+    public static final String NAME_HOLIDAY = "holiday";
     public static final String CUSTOM_PATH = "/data/misc/bootanim/bootanimation.zip";
 
     private static final String MEDIA_DIR = "/product/media/";
@@ -79,12 +81,20 @@ public class BootAnimationUtils {
     };
 
     /**
-     * Returns true when this device is a genuine Pixel (Pixel 3+) and
-     * boot animation overrides have no effect. Uses PixelPropsUtils which
+     * Returns true when this device is a genuine Pixel (Pixel 3+). Uses PixelPropsUtils which
      * checks ro.product.model and ro.soc.manufacturer.
      */
     public static boolean isPixelDevice() {
         return PixelPropsUtils.isSupportedPixelDevice();
+    }
+
+    /**
+     * Whether a user-picked zip in /data/misc/bootanim can boot on this device. Tensor Pixels
+     * start bootanim in late-fs before /data is mounted, whereas /product/media styles work via
+     * init's /metadata/bootanim/name hint.
+     */
+    public static boolean isCustomZipSupported() {
+        return !isPixelDevice();
     }
 
     /**
@@ -93,6 +103,17 @@ public class BootAnimationUtils {
      */
     public static boolean isBootAnimationSelectorDisabled() {
         return !SystemProperties.getBoolean("ro.boot.custom_bootanim", true);
+    }
+
+    /**
+     * Whether the boot animation picker has a choice to offer this user: enabled, owned by the
+     * system user, and at least two selectable styles (for example ExpressiveOS and Silk Aurora).
+     */
+    public static boolean isAvailable(Context context) {
+        if (isBootAnimationSelectorDisabled()) return false;
+        UserManager um = context.getSystemService(UserManager.class);
+        if (um != null && !um.isSystemUser()) return false;
+        return getStyleNames(context).size() > 1;
     }
 
     public static boolean isValidName(String name) {
@@ -112,11 +133,13 @@ public class BootAnimationUtils {
     }
 
     /**
-     * Style that will actually boot. BootAnimation.cpp falls back to the default animation when
-     * the selected zip is missing, e.g. a style removed from the build or a deleted custom zip.
+     * Style that will actually boot in the picker. Holiday themes manage bootanimation_holiday.zip
+     * (4-channel dynamic colour masks) over the default animation, so it maps to default here.
      */
     public static String getEffectiveName() {
         String name = getCurrentName();
+        if (NAME_HOLIDAY.equals(name)) return NAME_DEFAULT;
+        if (NAME_CUSTOM.equals(name) && !isCustomZipSupported()) return NAME_DEFAULT;
         String path = getPathForName(name);
         return path != null && new File(path).isFile() ? name : NAME_DEFAULT;
     }
@@ -131,8 +154,8 @@ public class BootAnimationUtils {
 
     /**
      * Styles to offer: default, the known styles that are installed (in the order of
-     * themes_boot_animation_values), any other bootanimation_[name].zip found in /product/media,
-     * and custom last. A new style only needs its zip in the build.
+     * themes_boot_animation_values), any other bootanimation_[name].zip found in /product/media
+     * (excluding the internal holiday colour-mask zip), and custom last where supported.
      */
     public static List<String> getStyleNames(Context context) {
         String[] known = context.getResources()
@@ -140,7 +163,10 @@ public class BootAnimationUtils {
         List<String> names = new ArrayList<>();
         names.add(NAME_DEFAULT);
         for (String name : known) {
-            if (NAME_DEFAULT.equals(name) || NAME_CUSTOM.equals(name)) continue;
+            if (NAME_DEFAULT.equals(name) || NAME_CUSTOM.equals(name)
+                    || NAME_HOLIDAY.equals(name)) {
+                continue;
+            }
             String path = getPathForName(name);
             if (path != null && new File(path).isFile()) names.add(name);
         }
@@ -154,12 +180,15 @@ public class BootAnimationUtils {
                 }
                 String name = fileName.substring(NAMED_PREFIX.length(),
                         fileName.length() - NAMED_SUFFIX.length());
-                if (isValidName(name) && !NAME_CUSTOM.equals(name) && !names.contains(name)) {
+                if (isValidName(name) && !NAME_CUSTOM.equals(name)
+                        && !NAME_HOLIDAY.equals(name) && !names.contains(name)) {
                     names.add(name);
                 }
             }
         }
-        names.add(NAME_CUSTOM);
+        if (isCustomZipSupported()) {
+            names.add(NAME_CUSTOM);
+        }
         return names;
     }
 
