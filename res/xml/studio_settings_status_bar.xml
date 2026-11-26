@@ -12,6 +12,29 @@
         android:key="status_bar_gestures_category"
         android:title="@string/gestures_category_title">
 
+        <!-- Tap status bar to scroll to top -->
+        <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
+            android:key="status_bar_scroll_to_top"
+            android:title="@string/status_bar_scroll_to_top_title"
+            android:summary="@string/status_bar_scroll_to_top_summary"
+            android:defaultValue="true"
+            settings:keywords="@string/status_bar_scroll_to_top_keywords" />
+
+        <org.expressiveos.settings.preferences.SystemSettingPickerListPreference
+            android:key="status_bar_scroll_to_top_zone"
+            android:title="@string/status_bar_scroll_to_top_zone_title"
+            android:entries="@array/status_bar_scroll_to_top_zone_entries"
+            android:entryValues="@array/status_bar_scroll_to_top_zone_values"
+            android:defaultValue="0"
+            android:dependency="status_bar_scroll_to_top" />
+
+        <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
+            android:key="status_bar_scroll_to_top_restore"
+            android:title="@string/status_bar_scroll_to_top_restore_title"
+            android:summary="@string/status_bar_scroll_to_top_restore_summary"
+            android:defaultValue="true"
+            android:dependency="status_bar_scroll_to_top" />
+
         <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
             android:key="double_tap_sleep_gesture"
             android:title="@string/status_bar_double_tap_to_sleep_title"

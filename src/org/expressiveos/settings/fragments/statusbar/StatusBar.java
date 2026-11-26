@@ -51,6 +51,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private static final String KEY_BLUETOOTH_BATTERY_STATUS = "bluetooth_show_battery";
     private static final String KEY_CLOCK_CHIP = "statusbar_clock_chip";
     private static final String KEY_ICONS_CATEGORY = "status_bar_icons_category";
+    private static final String KEY_SCROLL_TO_TOP_ZONE = "status_bar_scroll_to_top_zone";
     private static final String QUICK_PULLDOWN = "qs_quick_pulldown";
     private static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock";
     private static final String STATUS_BAR_CARRIER_KEY = "status_bar_carrier_key";
@@ -84,6 +85,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private static final int PULLDOWN_DIR_LEFT = 2;
     private static final int PULLDOWN_DIR_ALWAYS = 3;
 
+    private SystemSettingListPreference mScrollToTopZone;
     private SystemSettingListPreference mQuickPulldown;
     private SystemSettingListPreference mStatusBarClock;
     private PreferenceCategory mIconsCategory;
@@ -129,6 +131,16 @@ public class StatusBar extends SettingsPreferenceFragment implements
         } else if (DeviceUtils.hasCenteredCutout(context)) {
             mStatusBarClock.setEntries(R.array.status_bar_clock_position_entries_notch);
             mStatusBarClock.setEntryValues(R.array.status_bar_clock_position_values_notch);
+        }
+
+        mScrollToTopZone = findPreference(KEY_SCROLL_TO_TOP_ZONE);
+        if (mScrollToTopZone != null) {
+            if (getResources().getConfiguration().getLayoutDirection()
+                    == View.LAYOUT_DIRECTION_RTL) {
+                mScrollToTopZone.setEntries(R.array.status_bar_scroll_to_top_zone_entries_rtl);
+            }
+            mScrollToTopZone.setOnPreferenceChangeListener(this);
+            updateScrollToTopZoneSummary(mScrollToTopZone.getValue());
         }
 
         mQuickPulldown =
@@ -214,7 +226,14 @@ public class StatusBar extends SettingsPreferenceFragment implements
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         ContentResolver resolver = getActivity().getContentResolver();
-        if (preference == mQuickPulldown) {
+        if (preference == mScrollToTopZone) {
+            Integer value = parseIntegerValue(newValue);
+            if (value == null) {
+                return false;
+            }
+            updateScrollToTopZoneSummary(newValue);
+            return true;
+        } else if (preference == mQuickPulldown) {
             Integer value = parseIntegerValue(newValue);
             if (value == null) {
                 return false;
@@ -495,9 +514,37 @@ public class StatusBar extends SettingsPreferenceFragment implements
         mQuickPulldown.setSummary(summary);
     }
 
+    private void updateScrollToTopZoneSummary(Object value) {
+        if (mScrollToTopZone == null) {
+            return;
+        }
+        CharSequence[] entries = mScrollToTopZone.getEntries();
+        if (entries == null || entries.length == 0) {
+            return;
+        }
+        int index = value != null
+                ? mScrollToTopZone.findIndexOfValue(String.valueOf(value))
+                : -1;
+        if (index < 0 || index >= entries.length) {
+            index = 0;
+        }
+        mScrollToTopZone.setSummary(entries[index]);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        if (mScrollToTopZone != null) {
+            String value = Settings.System.getStringForUser(
+                    requireContext().getContentResolver(),
+                    KEY_SCROLL_TO_TOP_ZONE,
+                    UserHandle.USER_CURRENT);
+            String resolved = value != null ? value : "0";
+            if (!TextUtils.equals(resolved, mScrollToTopZone.getValue())) {
+                mScrollToTopZone.setValue(resolved);
+            }
+            updateScrollToTopZoneSummary(resolved);
+        }
         updateClockChipSummary();
         PreferenceUtils.reloadCustomPrimarySwitches(getPreferenceScreen());
     }
