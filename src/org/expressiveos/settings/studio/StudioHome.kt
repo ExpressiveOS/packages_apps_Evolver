@@ -53,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -426,21 +427,30 @@ private fun FontsTile(onClick: () -> Unit, modifier: Modifier) {
                 Column(Modifier.clearAndSetSemantics {}) {
                     Text(
                         text = stringResource(R.string.studio_fonts_specimen_name),
-                        style = type.titleMedium,
+                        style = type.titleMedium.copy(hyphens = Hyphens.None),
                         fontWeight = FontWeight.Bold,
+                        softWrap = false,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = stringResource(R.string.studio_fonts_specimen_letters),
-                        style = type.titleMedium,
+                        style = type.titleMedium.copy(hyphens = Hyphens.None),
                         color = Petal.Violet.ink,
+                        softWrap = false,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = stringResource(R.string.studio_fonts_specimen_digits),
-                        style = type.bodyMedium.copy(fontFeatureSettings = "tnum"),
+                        style = type.bodyMedium.copy(
+                            fontFeatureSettings = "tnum",
+                            hyphens = Hyphens.None,
+                        ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        softWrap = false,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             },
