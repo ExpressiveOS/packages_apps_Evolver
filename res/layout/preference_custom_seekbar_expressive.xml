@@ -67,22 +67,27 @@
 
             <FrameLayout
                 android:id="@+id/custom_seekbar_reset_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_custom_seekbar_reset_pill"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/color_picker_reset"
                 android:visibility="gone">
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                <FrameLayout
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_custom_seekbar_reset"
-                    android:tint="@color/settingslib_materialColorOnSurfaceVariant"
-                    android:importantForAccessibility="no" />
+                    android:background="@drawable/bg_custom_seekbar_reset_pill">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_custom_seekbar_reset"
+                        android:tint="@color/settingslib_materialColorOnSurfaceVariant"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
             </FrameLayout>
 
             <TextView

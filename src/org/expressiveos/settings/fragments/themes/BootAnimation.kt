@@ -27,11 +27,14 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,7 +81,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.Fragment
 import com.android.settings.R
-import com.android.settingslib.spa.framework.theme.SettingsTheme
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -89,7 +94,9 @@ import kotlinx.coroutines.withContext
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveChoiceRow
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveGroup
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTheme
 import org.expressiveos.settings.fragments.miscellaneous.expressiveVerticalScroll
+import org.expressiveos.settings.fragments.miscellaneous.rememberAnimatorsEnabled
 import org.expressiveos.settings.holiday.HolidayCatalog
 import org.expressiveos.settings.utils.BootAnimationUtils
 import java.io.File
@@ -114,6 +121,7 @@ private val FRAME_ENTRY = Regex("[^/]+/.+\\.(png|jpg)", RegexOption.IGNORE_CASE)
 // Fragment
 // ---------------------------------------------------------------------------
 
+@SearchIndexable
 class BootAnimation : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,8 +136,27 @@ class BootAnimation : Fragment() {
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
-            SettingsTheme {
+            ExpressiveTheme {
                 BootAnimationScreen(context = requireContext())
+            }
+        }
+    }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: android.content.Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "boot_animation"
+                    title = res.getString(R.string.themes_boot_animation_title)
+                    summaryOn = res.getString(R.string.themes_boot_animation_summary)
+                    screenTitle = res.getString(R.string.themes_title)
+                }
+                return listOf(raw)
             }
         }
     }
@@ -364,6 +391,9 @@ private fun PreviewCard(
 ) {
     // Colour of the part being played, like the boot animation clears to it
     var previewBackground by remember(previewDrawable) { mutableStateOf<Color?>(null) }
+    val animatorsEnabled = rememberAnimatorsEnabled()
+    var playOverride by remember(previewDrawable) { mutableStateOf(false) }
+    val shouldPlay = animatorsEnabled || playOverride
     Surface(
         modifier = modifier,
         shape = ExpressiveCorners.single,
@@ -420,13 +450,20 @@ private fun PreviewCard(
                     .fillMaxWidth(0.55f)        // narrow like a phone screen
                     .aspectRatio(9f / 16f)
                     .clip(ExpressiveCorners.preview)
-                    .background(previewBackground ?: Color.Black),
+                    .background(previewBackground ?: Color.Black)
+                    .clickable(enabled = !animatorsEnabled && previewDrawable != null) {
+                        playOverride = !playOverride
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 AnimatedContent(
                     targetState = isLoading to previewDrawable,
                     transitionSpec = {
-                        fadeIn(tween(300)) togetherWith fadeOut(tween(200))
+                        if (animatorsEnabled) {
+                            fadeIn(tween(300)) togetherWith fadeOut(tween(200))
+                        } else {
+                            EnterTransition.None togetherWith ExitTransition.None
+                        }
                     },
                     label = "preview",
                 ) { (loading, drawable) ->
@@ -434,6 +471,7 @@ private fun PreviewCard(
                         loading -> LoadingIndicator(modifier = Modifier.size(36.dp))
                         drawable != null -> AnimationPreviewView(
                             drawable = drawable,
+                            play = shouldPlay,
                             onBackground = { previewBackground = it },
                             modifier = Modifier.fillMaxSize(),
                         )
@@ -457,6 +495,14 @@ private fun PreviewCard(
                         }
                     }
                 }
+            }
+            if (!animatorsEnabled && !playOverride && !isLoading && previewDrawable != null) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = stringResource(R.string.boot_animation_reduced_motion_hint),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
@@ -561,13 +607,22 @@ private fun ThumbnailSlot(
 @Composable
 private fun AnimationPreviewView(
     drawable: Drawable,
+    play: Boolean,
     onBackground: (Color?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Follow the colour of the frame being shown, parts of a zip can differ
-    LaunchedEffect(drawable) {
+    LaunchedEffect(drawable, play) {
         if (drawable !is AnimationDrawable) {
             onBackground(null)
+            return@LaunchedEffect
+        }
+        if (!play) {
+            val mid = (drawable.numberOfFrames / 2)
+                .coerceIn(0, (drawable.numberOfFrames - 1).coerceAtLeast(0))
+            drawable.selectDrawable(mid)
+            val frame = drawable.current as? BootAnimationUtils.PartFrame
+            onBackground(frame?.let { Color(it.background) })
             return@LaunchedEffect
         }
         while (true) {
@@ -577,10 +632,22 @@ private fun AnimationPreviewView(
         }
     }
 
-    DisposableEffect(drawable) {
-        when (drawable) {
-            is AnimatedImageDrawable -> drawable.start()
-            is AnimationDrawable -> drawable.start()
+    DisposableEffect(drawable, play) {
+        if (play) {
+            when (drawable) {
+                is AnimatedImageDrawable -> drawable.start()
+                is AnimationDrawable -> drawable.start()
+            }
+        } else {
+            when (drawable) {
+                is AnimatedImageDrawable -> drawable.stop()
+                is AnimationDrawable -> {
+                    drawable.stop()
+                    val mid = (drawable.numberOfFrames / 2)
+                        .coerceIn(0, (drawable.numberOfFrames - 1).coerceAtLeast(0))
+                    drawable.selectDrawable(mid)
+                }
+            }
         }
         onDispose {
             when (drawable) {

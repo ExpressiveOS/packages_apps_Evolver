@@ -1,11 +1,13 @@
 /*
  * SPDX-FileCopyrightText: 2026 kenway214
  * SPDX-FileCopyrightText: crDroid Android Project
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 package org.expressiveos.settings.fragments.lockscreen
 
 import android.app.WallpaperManager
+import android.content.Context
 import android.os.Bundle
 import android.os.UserHandle
 import android.provider.Settings
@@ -21,16 +23,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
@@ -39,11 +44,14 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -54,6 +62,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -77,15 +87,21 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent
 import com.android.internal.util.expressiveos.ThemeUtils
 import com.android.settings.R
+import com.android.settings.core.SubSettingLauncher
+import com.android.settings.search.BaseSearchIndexProvider
 import com.android.settings.widget.scrollbar
-import com.android.settingslib.spa.framework.theme.SettingsTheme
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import kotlin.math.roundToInt
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTheme
 import org.expressiveos.settings.fragments.miscellaneous.insetFocusRing
 import org.expressiveos.settings.utils.SystemUtils
 
+@SearchIndexable
 class ClockPickerFragment : Fragment() {
 
     private lateinit var themeUtils: ThemeUtils
@@ -104,7 +120,7 @@ class ClockPickerFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             isNestedScrollingEnabled = true
             setContent {
-                SettingsTheme {
+                ExpressiveTheme {
                     val initialClock = remember {
                         Settings.Secure.getIntForUser(
                             context.contentResolver,
@@ -118,6 +134,13 @@ class ClockPickerFragment : Fragment() {
                         onApply = { clockStyle ->
                             applyClock(clockStyle)
                             requireActivity().onBackPressedDispatcher.onBackPressed()
+                        },
+                        onCustomize = {
+                            SubSettingLauncher(requireContext())
+                                .setDestination(CustomClockPreview::class.java.name)
+                                .setTitleRes(R.string.lockscreen_custom_clock_style_title)
+                                .setSourceMetricsCategory(MetricsEvent.EXPRESSIVE_STUDIO)
+                                .launch()
                         }
                     )
                 }
@@ -152,12 +175,30 @@ class ClockPickerFragment : Fragment() {
             "com.android.systemui"
         )
     }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> = listOf(
+                SearchIndexableRaw(context).apply {
+                    key = "clock_picker_fragment"
+                    title = context.getString(R.string.lockscreen_custom_clock_style_title)
+                    summaryOn = context.getString(R.string.studio_clock_styles_summary)
+                    screenTitle = context.getString(R.string.lockscreen_custom_clock_style_title)
+                }
+            )
+        }
+    }
 }
 
 @Composable
 fun ClockPickerScreen(
     initialClock: Int,
-    onApply: (Int) -> Unit
+    onApply: (Int) -> Unit,
+    onCustomize: () -> Unit = {},
 ) {
     var selectedClock by rememberSaveable { mutableStateOf(initialClock) }
     val clockNames = remember { ClockUtils.getClockNames() }
@@ -204,6 +245,45 @@ fun ClockPickerScreen(
                 .nestedScroll(nestedScrollInterop)
                 .scrollbar(gridState.scrollIndicatorState, Orientation.Vertical)
         ) {
+            if (initialClock != 0) {
+                item(key = "custom_clock_banner", span = { GridItemSpan(maxLineSpan) }) {
+                    Surface(
+                        shape = ExpressiveCorners.single,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.clock_picker_custom_active_title),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                            Text(
+                                text = stringResource(R.string.clock_picker_custom_active_summary),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.85f),
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                FilledTonalButton(
+                                    onClick = { onApply(0) },
+                                    modifier = Modifier.heightIn(min = 48.dp),
+                                ) {
+                                    Text(stringResource(R.string.clock_picker_use_default_action))
+                                }
+                                TextButton(
+                                    onClick = onCustomize,
+                                    modifier = Modifier.heightIn(min = 48.dp),
+                                ) {
+                                    Text(stringResource(R.string.clock_picker_customize_action))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             items(
                 count = clockLayouts.size,
                 key = { it }
@@ -225,7 +305,12 @@ fun ClockPickerScreen(
             containerColor = if (hasSelectionChange) {
                 FloatingActionButtonDefaults.containerColor
             } else {
-                MaterialTheme.colorScheme.surfaceVariant
+                MaterialTheme.colorScheme.surfaceContainerHighest
+            },
+            contentColor = if (hasSelectionChange) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -255,7 +340,7 @@ private fun ClockItem(
             BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
         } else null,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -271,9 +356,19 @@ private fun ClockItem(
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
-                        alpha = 0.5f
+                        alpha = 0.55f
                     )
                 }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                0f to Color.Black.copy(alpha = 0.35f),
+                                1f to Color.Black.copy(alpha = 0.20f),
+                            )
+                        )
+                )
 
                 AndroidView(
                     factory = { ctx ->
@@ -318,9 +413,9 @@ private fun ClockItem(
                 text = name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .padding(horizontal = 6.dp, vertical = 8.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 11.sp,
                 textAlign = TextAlign.Center,
                 maxLines = 1,

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2024-2025 Lunaris AOSP
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +23,18 @@ import android.provider.Settings
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
-import com.android.internal.logging.nano.MetricsProto.MetricsEvent
-import org.json.JSONObject
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import org.expressiveos.settings.preferences.CustomSeekBarPreference
 import org.expressiveos.settings.preferences.colorpicker.ColorPickerPreference
 import org.expressiveos.settings.utils.toArgb
+import org.json.JSONObject
 
-class ColorsSettingsFragment : SettingsPreferenceFragment(), 
+@SearchIndexable
+class ColorsSettingsFragment : SettingsPreferenceFragment(),
     Preference.OnPreferenceChangeListener {
 
     companion object {
@@ -41,10 +45,39 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         private const val KEY_FIDELITY = "fidelity_enabled"
         private const val KEY_CONTRAST = "contrast_level"
         private const val KEY_CHROMA = "chroma_boost"
+        private const val KEY_CHROMA_ACCENT1 = "chroma_boost_accent1"
+        private const val KEY_CHROMA_ACCENT2 = "chroma_boost_accent2"
+        private const val KEY_CHROMA_ACCENT3 = "chroma_boost_accent3"
+        private const val KEY_CHROMA_NEUTRAL1 = "chroma_boost_neutral1"
+        private const val KEY_CHROMA_NEUTRAL2 = "chroma_boost_neutral2"
+        private const val KEY_HUE_SHIFT = "hue_shift"
+        private const val KEY_TONE_SHIFT_LIGHT = "tone_shift_light"
+        private const val KEY_TONE_SHIFT_DARK = "tone_shift_dark"
         private const val KEY_USE_SECONDARY_SEED = "use_secondary_seed"
         private const val KEY_SECONDARY_SEED_COLOR = "secondary_seed_color"
+
+        private const val DEFAULT_THEME_STYLE = "EXPRESSIVE"
         private const val DEFAULT_SEED_COLOR = "6750A4"
         private const val DEFAULT_SECONDARY_SEED_COLOR = "FF5500"
+
+        private val WALLPAPER_COLOR_SOURCES = setOf(
+            "home", "lock", "home_wallpaper", "lock_wallpaper"
+        )
+
+        private val DOUBLE_SLIDER_JSON_KEYS = mapOf(
+            KEY_CHROMA to "_chroma_boost",
+            KEY_CHROMA_ACCENT1 to "_chroma_accent1",
+            KEY_CHROMA_ACCENT2 to "_chroma_accent2",
+            KEY_CHROMA_ACCENT3 to "_chroma_accent3",
+            KEY_CHROMA_NEUTRAL1 to "_chroma_neutral1",
+            KEY_CHROMA_NEUTRAL2 to "_chroma_neutral2",
+            KEY_HUE_SHIFT to "_hue_shift",
+            KEY_TONE_SHIFT_LIGHT to "_tone_shift_light",
+            KEY_TONE_SHIFT_DARK to "_tone_shift_dark",
+        )
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.monet_settings)
     }
 
     private lateinit var useWallpaperColors: SwitchPreferenceCompat
@@ -53,7 +86,7 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
     private lateinit var themeStyle: ListPreference
     private lateinit var fidelity: SwitchPreferenceCompat
     private var contrast: CustomSeekBarPreference? = null
-    private var chroma: CustomSeekBarPreference? = null
+    private val doubleSliders = mutableMapOf<String, CustomSeekBarPreference>()
     private lateinit var useSecondarySeed: SwitchPreferenceCompat
     private lateinit var secondarySeedColorPref: ColorPickerPreference
 
@@ -66,27 +99,31 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         themeStyle = findPreference(KEY_THEME_STYLE)!!
         fidelity = findPreference(KEY_FIDELITY)!!
         contrast = findPreference(KEY_CONTRAST)
-        chroma = findPreference(KEY_CHROMA)
 
         useWallpaperColors.onPreferenceChangeListener = this
-        
         seedColorPref.onPreferenceChangeListener = this
 
         wallpaperSeedColorPref.setOnPreferenceClickListener {
             showWallpaperColorPickerDialog()
             true
         }
-        
+
         themeStyle.onPreferenceChangeListener = this
         fidelity.onPreferenceChangeListener = this
         contrast?.onPreferenceChangeListener = this
-        chroma?.onPreferenceChangeListener = this
+
+        doubleSliders.clear()
+        DOUBLE_SLIDER_JSON_KEYS.keys.forEach { prefKey ->
+            findPreference<CustomSeekBarPreference>(prefKey)?.let { slider ->
+                slider.onPreferenceChangeListener = this
+                doubleSliders[prefKey] = slider
+            }
+        }
 
         useSecondarySeed = findPreference(KEY_USE_SECONDARY_SEED)!!
         secondarySeedColorPref = findPreference(KEY_SECONDARY_SEED_COLOR)!!
 
         useSecondarySeed.onPreferenceChangeListener = this
-
         secondarySeedColorPref.onPreferenceChangeListener = this
 
         loadCurrentSettings()
@@ -100,11 +137,12 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         try {
             val json = getCurrentSettings()
 
-            val colorSource = json.optString("android.theme.customization.color_source", "home")
-            val useWallpaper = colorSource == "home" || colorSource == "lock"
+            val colorSource = json.optString("android.theme.customization.color_source", "home_wallpaper")
+            val useWallpaper = colorSource in WALLPAPER_COLOR_SOURCES
             useWallpaperColors.isChecked = useWallpaper
 
-            val style = json.optString("android.theme.customization.theme_style", "TONAL_SPOT")
+            val style = json.optString("android.theme.customization.theme_style", DEFAULT_THEME_STYLE)
+                .ifEmpty { DEFAULT_THEME_STYLE }
             themeStyle.value = style
 
             val fidelityValue = json.optBoolean("_fidelity_enabled", false)
@@ -115,9 +153,9 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
                 it.value = contrastValue
             }
 
-            chroma?.let {
-                val chromaValue = json.optDouble("_chroma_boost", 0.0).toInt()
-                it.value = chromaValue
+            doubleSliders.forEach { (prefKey, slider) ->
+                val jsonKey = DOUBLE_SLIDER_JSON_KEYS[prefKey] ?: return@forEach
+                slider.value = json.optDouble(jsonKey, 0.0).toInt()
             }
 
             val secondarySeedHex = json.optString("_secondary_seed_color", "")
@@ -128,7 +166,12 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-        when (preference.key) {
+        val key = preference.key
+        DOUBLE_SLIDER_JSON_KEYS[key]?.let { jsonKey ->
+            applyDoubleSlider(jsonKey, newValue as Int)
+            return true
+        }
+        when (key) {
             KEY_USE_WALLPAPER -> {
                 val useWallpaper = newValue as Boolean
                 applyWallpaperColorsSetting(useWallpaper)
@@ -146,10 +189,6 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
             }
             KEY_CONTRAST -> {
                 applyContrastLevel(newValue as Int)
-                return true
-            }
-            KEY_CHROMA -> {
-                applyChromaBoost(newValue as Int)
                 return true
             }
             KEY_USE_SECONDARY_SEED -> {
@@ -190,11 +229,20 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         // without _base_seed_color (hardware defaults, Wallpaper & style), so it wins.
         seedColorPref.setColor(
             parseSeed(
-                DEFAULT_SEED_COLOR,
+                currentSystemAccentHex(),
                 "android.theme.customization.system_palette",
                 "_base_seed_color"
             )
         )
+    }
+
+    private fun currentSystemAccentHex(): String = try {
+        String.format(
+            "%06X",
+            0xFFFFFF and requireContext().getColor(android.R.color.system_accent1_500)
+        )
+    } catch (_: Exception) {
+        DEFAULT_SEED_COLOR
     }
 
     private fun updateSecondarySeedColor() {
@@ -214,7 +262,7 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         return try {
             Color.parseColor("#$hex") or 0xFF000000.toInt()
         } catch (e: Exception) {
-            Color.parseColor("#$default")
+            Color.parseColor("#$default") or 0xFF000000.toInt()
         }
     }
 
@@ -260,20 +308,11 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
                 json.remove("android.theme.customization.system_palette")
                 json.remove("android.theme.customization.accent_color")
                 json.remove("_base_seed_color")
-                json.put("android.theme.customization.color_source", "home")
+                json.put("android.theme.customization.color_source", "home_wallpaper")
             } else {
                 json.put("android.theme.customization.color_source", "preset")
                 if (!json.has("_base_seed_color")) {
-                    // Start from the color the wallpaper currently produces
-                    // instead of a hardcoded default.
-                    val hex = try {
-                        String.format(
-                            "%06X",
-                            0xFFFFFF and requireContext().getColor(android.R.color.system_accent1_500)
-                        )
-                    } catch (e: Exception) {
-                        "6750A4"
-                    }
+                    val hex = currentSystemAccentHex()
                     json.put("_base_seed_color", hex)
                     json.put("android.theme.customization.system_palette", hex)
                     json.put("android.theme.customization.accent_color", hex)
@@ -288,14 +327,11 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
     private fun applySeedColor(argb: Int) {
         try {
             val json = getCurrentSettings()
-
             val hexColor = String.format("%06X", 0xFFFFFF and argb)
-
             json.put("_base_seed_color", hexColor)
             json.put("android.theme.customization.system_palette", hexColor)
             json.put("android.theme.customization.accent_color", hexColor)
             json.put("android.theme.customization.color_source", "preset")
-
             applySettings(json)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -332,10 +368,10 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
         }
     }
 
-    private fun applyChromaBoost(value: Int) {
+    private fun applyDoubleSlider(jsonKey: String, value: Int) {
         try {
             val json = getCurrentSettings()
-            json.put("_chroma_boost", value.toDouble())
+            json.put(jsonKey, value.toDouble())
             applySettings(json)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -345,12 +381,9 @@ class ColorsSettingsFragment : SettingsPreferenceFragment(),
     private fun applySecondarySeedColor(argb: Int) {
         try {
             val json = getCurrentSettings()
-
             val hexColor = String.format("%06X", 0xFFFFFF and argb)
-
             json.put("_secondary_seed_color", hexColor)
             applySettings(json)
-
             useSecondarySeed.isChecked = true
             updateSecondarySeedVisibility(true)
         } catch (e: Exception) {

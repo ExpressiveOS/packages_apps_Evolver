@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2023-2024 the risingOS Android Project
+     SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -15,7 +16,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/wallpaper_styles_title">
-    
+
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        android:key="wallpaper_apply_category">
+
+        <Preference
+            android:key="wallpaper_styles_apply"
+            android:icon="@drawable/ic_refresh"
+            android:title="@string/wallpaper_styles_apply_title"
+            android:summary="@string/wallpaper_styles_apply_summary"
+            android:persistent="false"
+            android:visible="false"
+            settings:searchable="false" />
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
+
     <PreferenceCategory
         android:key="wallpaper_blur"
         android:title="@string/wallpaper_blur_title">
@@ -36,11 +50,11 @@
             android:summary="%s"
             android:defaultValue="0" />
     </PreferenceCategory>
-    
+
     <PreferenceCategory
         android:key="wallpaper_effects"
         android:title="@string/wallpaper_effects_title">
-        
+
         <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.effect_type"
             android:title="@string/wallpaper_effect_type_title"
@@ -48,7 +62,7 @@
             android:entryValues="@array/wallpaper_effect_values"
             android:summary="%s"
             android:defaultValue="0" />
-            
+
         <org.expressiveos.settings.preferences.SystemPropertyListPreference
             android:key="persist.sys.wallpaper.effect_target"
             android:title="@string/wallpaper_effect_target_title"
@@ -56,8 +70,8 @@
             android:entryValues="@array/wallpaper_effect_target_values"
             android:summary="%s"
             android:defaultValue="1" />
-            
-        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+
+        <org.expressiveos.settings.preferences.SystemPropertySeekBarPreference
             android:key="persist.sys.wallpaper.saturation_level"
             android:title="@string/wallpaper_saturation_title"
             android:summary="@string/wallpaper_saturation_summary"
@@ -65,9 +79,9 @@
             settings:interval="5"
             settings:units="%"
             android:max="200"
-            android:min="50"/>
-            
-        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            settings:min="50" />
+
+        <org.expressiveos.settings.preferences.SystemPropertySeekBarPreference
             android:key="persist.sys.wallpaper.pixelation_size"
             android:title="@string/wallpaper_pixelation_size_title"
             android:summary="@string/wallpaper_pixelation_size_summary"
@@ -75,9 +89,9 @@
             settings:interval="1"
             settings:units="px"
             android:max="20"
-            android:min="2"/>
-            
-        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            settings:min="2" />
+
+        <org.expressiveos.settings.preferences.SystemPropertySeekBarPreference
             android:key="persist.sys.wallpaper.vignette_intensity"
             android:title="@string/wallpaper_vignette_intensity_title"
             android:summary="@string/wallpaper_vignette_intensity_summary"
@@ -85,19 +99,19 @@
             settings:interval="5"
             settings:units="%"
             android:max="100"
-            android:min="10"/>
-            
-        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            settings:min="10" />
+
+        <org.expressiveos.settings.preferences.SystemPropertySeekBarPreference
             android:key="persist.sys.wallpaper.posterize_levels"
             android:title="@string/wallpaper_posterize_levels_title"
             android:summary="@string/wallpaper_posterize_levels_summary"
             android:defaultValue="8"
             settings:interval="1"
-            settings:units=" levels"
+            settings:units="levels"
             android:max="16"
-            android:min="2"/>
+            settings:min="2" />
     </PreferenceCategory>
-    
+
     <PreferenceCategory
         android:key="wallpaper_dim"
         android:title="@string/wallpaper_dim_title">
@@ -110,7 +124,7 @@
             android:summary="%s"
             android:defaultValue="0" />
 
-        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+        <org.expressiveos.settings.preferences.SystemPropertySeekBarPreference
             android:key="persist.sys.wallpaper.dim_level"
             android:title="@string/wallpaper_dim_level_title"
             android:summary="@string/wallpaper_dim_level_summary"
@@ -118,15 +132,15 @@
             settings:interval="1"
             settings:units="%"
             android:max="100"
-            android:min="1"/>
+            settings:min="1" />
     </PreferenceCategory>
-    
+
     <com.android.settingslib.widget.FooterPreference
         android:key="wallpaper_styles_footer"
         android:title="@string/wallpaper_styles_footer"
         android:selectable="false"
         settings:searchable="false" />
-    
+
     <com.android.settingslib.widget.FooterPreference
         android:key="wallpaper_performance_footer"
         android:title="@string/wallpaper_performance_warning"

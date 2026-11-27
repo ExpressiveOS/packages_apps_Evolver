@@ -41,6 +41,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -98,7 +100,7 @@ internal fun ExpressiveTonalSwatchStrip(
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         swatches.forEach { swatch ->
@@ -112,30 +114,41 @@ internal fun ExpressiveTonalSwatchStrip(
             )
             val shape = RoundedCornerShape(cornerRadius)
             val checkColor = if (swatch.luminance() > 0.55f) Color(0xFF1B1B1F) else Color.White
+            val swatchDesc = stringResource(
+                R.string.color_picker_swatch_desc,
+                "#${String.format("%06X", swatchRgb)}",
+            )
             Box(
                 modifier = Modifier
-                    .size(40.dp)
-                    .insetFocusRing(shape)
-                    .clip(shape)
-                    .background(swatch)
-                    .border(
-                        width = if (isSelected) 2.5.dp else 1.dp,
-                        color = if (isSelected) scheme.primary else scheme.outlineVariant,
-                        shape = shape,
-                    )
+                    .size(48.dp)
+                    .semantics { contentDescription = swatchDesc }
                     .clickable(role = Role.RadioButton) {
                         view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                         onSwatchSelected(preservedAlpha or swatchRgb)
                     },
                 contentAlignment = Alignment.Center,
             ) {
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Rounded.Check,
-                        contentDescription = null,
-                        tint = checkColor,
-                        modifier = Modifier.size(18.dp),
-                    )
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .insetFocusRing(shape)
+                        .clip(shape)
+                        .background(swatch)
+                        .border(
+                            width = if (isSelected) 2.5.dp else 1.dp,
+                            color = if (isSelected) scheme.primary else scheme.outlineVariant,
+                            shape = shape,
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (isSelected) {
+                        Icon(
+                            imageVector = Icons.Rounded.Check,
+                            contentDescription = null,
+                            tint = checkColor,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                 }
             }
         }
@@ -217,7 +230,7 @@ fun PreferenceColorPickerDialog(
                         color = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier
-                            .height(40.dp)
+                            .heightIn(min = 48.dp)
                             .insetFocusRing(CircleShape),
                     ) {
                         Row(
@@ -251,7 +264,7 @@ fun PreferenceColorPickerDialog(
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(48.dp)
                                 .insetFocusRing(CircleShape),
                         ) {
                             Box(contentAlignment = Alignment.Center) {

@@ -80,7 +80,12 @@ class QSTileIconShapePreference @JvmOverloads constructor(
             }
         }
 
-        dialog = context.showPickerDialog(title, options, selectedIndex) { position ->
+        dialog = context.showPickerDialog(
+            title = title,
+            options = options,
+            selectedIndex = selectedIndex,
+            onClosed = { dialog = null },
+        ) { position ->
             val shapeKey = entryValues[position]
             if (position != selectedIndex) {
                 if (!callChangeListener(shapeKey)) return@showPickerDialog false

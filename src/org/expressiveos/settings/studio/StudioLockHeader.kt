@@ -8,7 +8,6 @@
 package org.expressiveos.settings.studio
 
 import android.view.HapticFeedbackConstants
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -80,7 +78,6 @@ private fun LockHeader(actions: StudioActions) {
     Surface(
         shape = BloomShapes.tile,
         color = MaterialTheme.colorScheme.surfaceBright,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, bottom = 12.dp),
@@ -100,7 +97,7 @@ private fun LockHeader(actions: StudioActions) {
                     .aspectRatio(9f / 19.5f)
                     .border(
                         1.dp,
-                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f),
                         previewShape,
                     ),
             )
@@ -110,7 +107,7 @@ private fun LockHeader(actions: StudioActions) {
             ) {
                 Text(
                     text = stringResource(R.string.studio_lock_clock_face),
-                    color = Petal.Coral.ink,
+                    color = MaterialTheme.colorScheme.primary,
                     fontFamily = BloomRounded,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
@@ -132,8 +129,8 @@ private fun LockHeader(actions: StudioActions) {
                         },
                         shapes = buttonShapes,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Petal.Blue.deep,
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -156,8 +153,8 @@ private fun LockHeader(actions: StudioActions) {
                             },
                             shapes = buttonShapes,
                             colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = Petal.Blue.tile,
-                                contentColor = Petal.Blue.ink,
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -931,6 +931,12 @@ fun ExpressiveSwitchNavRow(
         onClick = onClick,
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.width(SettingsSpace.extraSmall4))
                 VerticalDivider(modifier = Modifier.height(SettingsDimension.itemDividerHeight))
                 Spacer(Modifier.width(SettingsSpace.extraSmall6))
                 CheckCloseSwitch(checked = checked, onCheckedChange = onCheckedChange)

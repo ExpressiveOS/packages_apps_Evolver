@@ -7,7 +7,10 @@ package org.expressiveos.settings.fragments.miscellaneous
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.lazy.rememberLazyListState
+import com.android.settings.search.BaseSearchIndexProvider
 import com.android.settings.widget.scrollbar
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import com.android.settingslib.spa.framework.theme.SettingsShape
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.WindowInsets
@@ -89,6 +92,7 @@ data class PpAppEntry(
     var isTargeted: Boolean = false,
 )
 
+@SearchIndexable
 class PixelPropsSettings : SettingsPreferenceFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +100,7 @@ class PixelPropsSettings : SettingsPreferenceFragment() {
         requireActivity().title = getString(R.string.spoofing_pixel_props_title)
     }
 
-    override fun getMetricsCategory() = MetricsProto.MetricsEvent.VIEW_UNKNOWN
+    override fun getMetricsCategory() = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {}
 
@@ -109,6 +113,24 @@ class PixelPropsSettings : SettingsPreferenceFragment() {
         setContent {
             ExpressiveTheme {
                 PixelPropsContent(context = requireContext())
+            }
+        }
+    }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: android.content.Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "pixel_props_settings"
+                    title = res.getString(R.string.spoofing_pixel_props_title)
+                    screenTitle = res.getString(R.string.spoofing_title)
+                }
+                return listOf(raw)
             }
         }
     }

@@ -5,30 +5,24 @@
 
 package org.expressiveos.settings.fragments.lockscreen;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.UserHandle;
-import android.provider.Settings;
 
 import androidx.preference.Preference;
-import androidx.preference.Preference.OnPreferenceChangeListener;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.util.android.OmniJawsClient;
 import com.android.settings.R;
-import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settings.SettingsPreferenceFragment;
+import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.search.SearchIndexable;
 
 import java.util.List;
 
-import org.expressiveos.settings.preferences.SecureSettingSwitchPreference;
 import org.expressiveos.settings.studio.StudioLockHeader;
 import org.expressiveos.settings.utils.DeviceUtils;
-import org.expressiveos.settings.utils.PixelAmbientIndicationDetector;
 import org.expressiveos.settings.utils.PreferenceUtils;
 import org.expressiveos.settings.utils.SystemUtils;
 
@@ -38,21 +32,16 @@ public class LockScreen extends SettingsPreferenceFragment implements
 
     private static final String TAG = "LockScreen";
 
-    private static final String KEY_NOW_PLAYING = "now_playing_enabled";
-    private static final String KEY_NOW_PLAYING_ON_DEMAND = "now_playing_on_demand";
-    private static final String KEY_NOW_PLAYING_SAVED = "now_playing_saved_songs";
     private static final String KEY_FACE_ANIMATION = "face_unlock_animation";
     private static final String KEY_FP_ERROR = "fp_error_vibrate";
     private static final String KEY_FP_SUCCESS = "fp_success_vibrate";
     private static final String KEY_RIPPLE_EFFECT = "enable_ripple_effect";
-    private static final String KEY_SMARTSPACE = "lockscreen_smartspace_enabled";
     private static final String KEY_WEATHER = "lockscreen_weather_enabled";
     private static final String LOCKSCREEN_GESTURES_CATEGORY = "lockscreen_gestures_category";
 
     private Preference mRippleEffect;
     private SwitchPreferenceCompat mFpErrorVib;
     private SwitchPreferenceCompat mFpSuccessVib;
-    private SwitchPreferenceCompat mSmartspace;
     private SwitchPreferenceCompat mWeather;
 
     @Override
@@ -70,53 +59,33 @@ public class LockScreen extends SettingsPreferenceFragment implements
         mRippleEffect = findPreference(KEY_RIPPLE_EFFECT);
 
         boolean hasFingerprint = DeviceUtils.hasFingerprint(context);
-        if (!hasFingerprint) {
+        if (!hasFingerprint && gestCategory != null && mRippleEffect != null) {
             gestCategory.removePreference(mRippleEffect);
         }
 
-        if (!hasFingerprint || !DeviceUtils.hasVibrator(context)) {
-            gestCategory.removePreference(mFpSuccessVib);
-            gestCategory.removePreference(mFpErrorVib);
-        }
-
-        // Pixels with Android System Intelligence provide Now Playing natively
-        if (PixelAmbientIndicationDetector.INSTANCE.shouldUseNativeAmbientIndication(context)) {
-            final Preference nowPlaying = findPreference(KEY_NOW_PLAYING);
-            final Preference onDemand = findPreference(KEY_NOW_PLAYING_ON_DEMAND);
-            nowPlaying.setEnabled(false);
-            nowPlaying.setSummary(R.string.nowplaying_pixel_native_summary);
-            onDemand.setEnabled(false);
-
-            // The saved songs list is only filled by the non-Pixel indication
-            final Preference savedSongs = findPreference(KEY_NOW_PLAYING_SAVED);
-            if (savedSongs != null) {
-                savedSongs.getParent().removePreference(savedSongs);
-            }
+        if ((!hasFingerprint || !DeviceUtils.hasVibrator(context)) && gestCategory != null) {
+            if (mFpSuccessVib != null) gestCategory.removePreference(mFpSuccessVib);
+            if (mFpErrorVib != null) gestCategory.removePreference(mFpErrorVib);
         }
 
         if (!DeviceUtils.hasFace(context)) {
             final Preference faceAnim = findPreference(KEY_FACE_ANIMATION);
-            if (faceAnim != null) {
+            if (faceAnim != null && faceAnim.getParent() != null) {
                 faceAnim.getParent().removePreference(faceAnim);
             }
         }
 
-        mSmartspace = findPreference(KEY_SMARTSPACE);
-        mSmartspace.setOnPreferenceChangeListener(this);
-
         mWeather = findPreference(KEY_WEATHER);
-        mWeather.setOnPreferenceChangeListener(this);
+        if (mWeather != null) {
+            mWeather.setOnPreferenceChangeListener(this);
+        }
 
         updateWeatherSettings();
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mSmartspace) {
-            updateWeatherSettings();
-            SystemUtils.showSystemUiRestartDialog(getContext());
-            return true;
-        } else if (preference == mWeather) {
+        if (preference == mWeather) {
             SystemUtils.showSystemUiRestartDialog(getContext());
             return true;
         }
@@ -124,9 +93,10 @@ public class LockScreen extends SettingsPreferenceFragment implements
     }
 
     private void updateWeatherSettings() {
+        if (mWeather == null) return;
         boolean weatherEnabled = OmniJawsClient.get().isOmniJawsEnabled(getContext());
-        mWeather.setEnabled(!mSmartspace.isChecked() && weatherEnabled);
-        mWeather.setSummary(!mSmartspace.isChecked() && weatherEnabled
+        mWeather.setEnabled(weatherEnabled);
+        mWeather.setSummary(weatherEnabled
                 ? R.string.lockscreen_weather_summary
                 : R.string.lockscreen_weather_enabled_info);
     }
@@ -149,12 +119,6 @@ public class LockScreen extends SettingsPreferenceFragment implements
                 @Override
                 public List<String> getNonIndexableKeys(Context context) {
                     List<String> keys = super.getNonIndexableKeys(context);
-
-                    if (PixelAmbientIndicationDetector.INSTANCE
-                            .shouldUseNativeAmbientIndication(context)) {
-                        keys.add(KEY_NOW_PLAYING);
-                        keys.add(KEY_NOW_PLAYING_ON_DEMAND);
-                    }
 
                     boolean hasFingerprint = DeviceUtils.hasFingerprint(context);
                     if (!hasFingerprint) {

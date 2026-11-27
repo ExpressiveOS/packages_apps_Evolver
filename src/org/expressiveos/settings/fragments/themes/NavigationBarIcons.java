@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2022-2025 crDroid Android Project
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,62 +18,46 @@
 package org.expressiveos.settings.fragments.themes;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.AnimationDrawable;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.UserHandle;
-import android.provider.SearchIndexableResource;
-import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.text.TextUtils;
-import androidx.preference.PreferenceViewHolder;
-import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.preference.Preference;
-import androidx.preference.Preference.OnPreferenceChangeListener;
-import androidx.preference.PreferenceScreen;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.android.settings.R;
-import com.android.settings.search.BaseSearchIndexProvider;
-import com.android.settingslib.search.Indexable;
-import com.android.settings.SettingsPreferenceFragment;
-
-import com.bumptech.glide.Glide;
-
 import com.android.internal.util.expressiveos.ThemeUtils;
 import com.android.internal.util.expressiveos.Utils;
+import com.android.settings.R;
+import com.android.settings.SettingsPreferenceFragment;
+import com.android.settings.search.BaseSearchIndexProvider;
+import com.android.settingslib.search.SearchIndexable;
+import com.android.settingslib.search.SearchIndexableRaw;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.json.JSONObject;
-import org.json.JSONException;
-
+@SearchIndexable
 public class NavigationBarIcons extends SettingsPreferenceFragment {
+
+    private static final ExecutorService OVERLAY_EXECUTOR = Executors.newSingleThreadExecutor();
 
     private RecyclerView mRecyclerView;
     private ThemeUtils mThemeUtils;
-    private String mCategory = "android.theme.customization.navbar";
+    private final String mCategory = "android.theme.customization.navbar";
 
     private List<String> mPkgs;
     private String mLauncherPackage;
@@ -80,12 +65,10 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.themes_navigation_bar_icons_title);
+        requireActivity().setTitle(R.string.themes_navigation_bar_icons_title);
 
-        mThemeUtils = ThemeUtils.getInstance(getActivity());
-
+        mThemeUtils = ThemeUtils.getInstance(requireActivity());
         mLauncherPackage = getNavBarPackage();
-
         mPkgs = mThemeUtils.getOverlayPackagesForCategory(mCategory, mLauncherPackage);
     }
 
@@ -110,14 +93,11 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(
-                R.layout.item_view, container, false);
+        View view = inflater.inflate(R.layout.item_view, container, false);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
-        Adapter mAdapter = new Adapter(getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        mRecyclerView.setAdapter(new Adapter(requireActivity()));
 
         return view;
     }
@@ -132,8 +112,16 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
             }
             return;
         }
-
         super.setDivider(divider);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(null);
+            mRecyclerView = null;
+        }
     }
 
     @Override
@@ -141,58 +129,63 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
         return MetricsEvent.EXPRESSIVE_STUDIO;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
+    public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
+            new BaseSearchIndexProvider() {
+                @Override
+                public List<SearchIndexableRaw> getRawDataToIndex(Context context, boolean enabled) {
+                    SearchIndexableRaw raw = new SearchIndexableRaw(context);
+                    raw.key = "android.theme.customization.navbar";
+                    raw.title = context.getString(R.string.themes_navigation_bar_icons_title);
+                    raw.summaryOn = context.getString(R.string.themes_navigation_bar_icons_summary);
+                    raw.screenTitle = context.getString(R.string.themes_navigation_bar_icons_title);
+                    return Collections.singletonList(raw);
+                }
+            };
 
     public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
-        Context context;
+        final Context context;
         String mSelectedPkg;
         String mAppliedPkg;
 
         public Adapter(Context context) {
             this.context = context;
+            mAppliedPkg = mThemeUtils.getOverlayInfos(mCategory, mLauncherPackage).stream()
+                    .filter(info -> info.isEnabled())
+                    .map(info -> info.packageName)
+                    .findFirst()
+                    .orElse(mLauncherPackage);
+            mSelectedPkg = mAppliedPkg;
         }
 
+        @NonNull
         @Override
-        public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.navbar_option, parent, false);
-            CustomViewHolder vh = new CustomViewHolder(v);
-            return vh;
+            return new CustomViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(CustomViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull CustomViewHolder holder, final int position) {
             String navPkg = mPkgs.get(position);
 
-            holder.image1.setBackgroundDrawable(getDrawable(holder.image1.getContext(), navPkg, "ic_sysbar_back"));
-            holder.image2.setBackgroundDrawable(getDrawable(holder.image2.getContext(), navPkg, "ic_sysbar_home"));
-            holder.image3.setBackgroundDrawable(getDrawable(holder.image3.getContext(), navPkg, "ic_sysbar_recent"));
+            holder.image1.setBackground(getDrawable(holder.image1.getContext(), navPkg, "ic_sysbar_back"));
+            holder.image2.setBackground(getDrawable(holder.image2.getContext(), navPkg, "ic_sysbar_home"));
+            holder.image3.setBackground(getDrawable(holder.image3.getContext(), navPkg, "ic_sysbar_recent"));
 
-            String currentPackageName = mThemeUtils.getOverlayInfos(mCategory, mLauncherPackage).stream()
-                .filter(info -> info.isEnabled())
-                .map(info -> info.packageName)
-                .findFirst()
-                .orElse(mLauncherPackage);
+            String label = Objects.equals(mLauncherPackage, navPkg)
+                    ? holder.name.getContext().getString(R.string.themes_default_label)
+                    : getLabel(holder.name.getContext(), navPkg);
+            holder.name.setText(label);
 
-            holder.name.setText(mLauncherPackage.equals(navPkg) ? "Default" : getLabel(holder.name.getContext(), navPkg));
-
-            if (currentPackageName.equals(navPkg)) {
-                mAppliedPkg = navPkg;
-                if (mSelectedPkg == null) {
+            holder.itemView.setActivated(Objects.equals(navPkg, mSelectedPkg));
+            holder.itemView.setOnClickListener(v -> {
+                if (!Objects.equals(navPkg, mSelectedPkg)) {
+                    String prevSelected = mSelectedPkg;
                     mSelectedPkg = navPkg;
-                }
-            }
-
-            holder.itemView.setActivated(navPkg == mSelectedPkg);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updateActivatedStatus(mSelectedPkg, false);
+                    mAppliedPkg = navPkg;
+                    updateActivatedStatus(prevSelected, false);
                     updateActivatedStatus(navPkg, true);
-                    mSelectedPkg = navPkg;
-                    enableOverlays(position);
+                    enableOverlays(navPkg);
                 }
             });
         }
@@ -209,18 +202,17 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
             ImageView image3;
             public CustomViewHolder(View itemView) {
                 super(itemView);
-                name = (TextView) itemView.findViewById(R.id.option_label);
-                image1 = (ImageView) itemView.findViewById(R.id.image1);
-                image2 = (ImageView) itemView.findViewById(R.id.image2);
-                image3 = (ImageView) itemView.findViewById(R.id.image3);
+                name = itemView.findViewById(R.id.option_label);
+                image1 = itemView.findViewById(R.id.image1);
+                image2 = itemView.findViewById(R.id.image2);
+                image3 = itemView.findViewById(R.id.image3);
             }
         }
 
         private void updateActivatedStatus(String pkg, boolean isActivated) {
+            if (pkg == null || mRecyclerView == null) return;
             int index = mPkgs.indexOf(pkg);
-            if (index < 0) {
-                return;
-            }
+            if (index < 0) return;
             RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(index);
             if (holder != null && holder.itemView != null) {
                 holder.itemView.setActivated(isActivated);
@@ -228,33 +220,35 @@ public class NavigationBarIcons extends SettingsPreferenceFragment {
         }
     }
 
+    @Nullable
     public Drawable getDrawable(Context context, String pkg, String drawableName) {
-        if (pkg.equals(mLauncherPackage))
+        if (Objects.equals(pkg, mLauncherPackage)) {
             pkg = "com.android.settings";
+        }
         try {
             PackageManager pm = context.getPackageManager();
             Resources res = pm.getResourcesForApplication(pkg);
             int resId = res.getIdentifier(drawableName, "drawable", pkg);
-            return res.getDrawable(resId);
+            if (resId == 0) {
+                return null;
+            }
+            return res.getDrawable(resId, context.getTheme());
+        } catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
+            return null;
         }
-        catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public String getLabel(Context context, String pkg) {
         PackageManager pm = context.getPackageManager();
         try {
-            return pm.getApplicationInfo(pkg, 0)
-                    .loadLabel(pm).toString();
+            return pm.getApplicationInfo(pkg, 0).loadLabel(pm).toString();
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            return pkg;
         }
-        return pkg;
     }
 
-    public void enableOverlays(int position) {
-        mThemeUtils.setOverlayEnabled(mCategory, mPkgs.get(position), mLauncherPackage);
+    public void enableOverlays(String pkg) {
+        OVERLAY_EXECUTOR.execute(() ->
+                mThemeUtils.setOverlayEnabled(mCategory, pkg, mLauncherPackage));
     }
 }

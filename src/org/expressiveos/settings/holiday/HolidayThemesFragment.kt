@@ -15,6 +15,8 @@ import androidx.preference.SwitchPreferenceCompat
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -24,6 +26,7 @@ import java.time.ZoneId
  * trying any holiday's theme now. Every change goes through [HolidayThemes]; the page shows its
  * state again at once and once more when the theme has caught up.
  */
+@SearchIndexable
 class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPreferenceChangeListener {
 
     companion object {
@@ -33,6 +36,9 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
         private const val KEY_PART = "holiday_part_"
         private const val KEY_TRY = "holiday_try"
         private const val KEY_STOP_TRYING = "holiday_stop_trying"
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.holiday_themes_settings)
     }
 
     private lateinit var auto: SwitchPreferenceCompat
@@ -143,15 +149,16 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
         val isAuto = HolidayThemes.isAuto(context)
 
         auto.isChecked = isAuto
-        status.title = HolidayStatus.read(context, today).text
+        status.summary = HolidayStatus.read(context, today).text
 
-        // Skipping is about the holiday on by date: offered while its theme is showing, and
-        // undone while it's skipped (with Switch on by date on, or skipping means nothing)
+        // Skipping is about the holiday on by date: offered while its theme is showing (not trial),
+        // and undone while it's skipped (only when Switch on by date is enabled).
         val scheduled = HolidayThemes.scheduled(today)
+        val isTrial = HolidayThemes.trial(context) != null
         skipped = scheduled != null &&
             HolidayThemes.isSkipped(context, scheduled.first, scheduled.second)
-        val showing = scheduled != null && HolidayThemes.applied(context) == scheduled.first
-        skip.isVisible = if (skipped) isAuto else showing
+        val showing = !isTrial && scheduled != null && HolidayThemes.applied(context) == scheduled.first
+        skip.isVisible = if (showing) true else (skipped && isAuto && !isTrial)
         skip.setTitle(if (skipped) R.string.holiday_themes_unskip else R.string.holiday_themes_skip)
 
         parts.forEach { (part, row) -> row.isChecked = HolidayThemes.isPartOn(context, part) }

@@ -16,8 +16,10 @@ import com.android.internal.logging.nano.MetricsProto
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
 import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import org.expressiveos.settings.preferences.SystemSettingListPreference
 
+@SearchIndexable
 class GradientSettings : SettingsPreferenceFragment() {
 
     private lateinit var colorModePref: SystemSettingListPreference

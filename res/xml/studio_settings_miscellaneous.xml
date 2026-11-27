@@ -21,6 +21,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="miscellaneous_sound_category"
+        android:title="@string/miscellaneous_sound_category">
+
+        <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
+            android:key="volume_panel_vertical_sliders"
+            android:title="@string/volume_panel_vertical_sliders_title"
+            android:summary="@string/volume_panel_vertical_sliders_summary"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="miscellaneous_gestures_category"
         android:title="@string/gestures_category_title">
 
@@ -57,7 +69,7 @@
             android:defaultValue="3"
             settings:interval="1"
             android:max="12"
-            android:min="1" />
+            settings:min="1" />
 
         <!-- Flashlight on call -->
         <org.expressiveos.settings.preferences.SystemSettingListPreference
@@ -135,12 +147,6 @@
             android:title="@string/usb_default_config_title"
             android:summary="@string/usb_default_config_summary"
             android:fragment="com.android.settings.connecteddevice.usb.UsbDefaultFragment" />
-
-        <org.expressiveos.settings.preferences.GlobalSettingSwitchPreference
-            android:key="no_storage_restrict"
-            android:title="@string/no_storage_restrict_title"
-            android:summary="@string/no_storage_restrict_summary"
-            android:defaultValue="false" />
 
         <org.expressiveos.settings.preferences.SystemPropertySwitchPreference
             android:key="persist.sys.pairip.activity.block"

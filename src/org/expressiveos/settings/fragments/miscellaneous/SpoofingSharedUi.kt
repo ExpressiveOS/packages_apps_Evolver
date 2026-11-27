@@ -246,6 +246,9 @@ fun CheckCloseSwitch(
         onCheckedChange = onCheckedChange,
         modifier = modifier.switchFocusRing(),
         enabled = enabled,
+        colors = SwitchDefaults.colors(
+            checkedIconColor = MaterialTheme.colorScheme.primary,
+        ),
         // Same as SettingsLib's SettingsSwitch (internal to SPA, so not linkable): the stock
         // Material 3 switch with default colours and a check/close thumb when SPA is expressive.
         thumbContent = if (isSpaExpressiveEnabled) {
@@ -328,6 +331,9 @@ fun ExpressiveHeaderCard(
                 Switch(
                     checked = checked,
                     modifier = Modifier.switchFocusRing(),
+                    colors = SwitchDefaults.colors(
+                        checkedIconColor = MaterialTheme.colorScheme.primary,
+                    ),
                     onCheckedChange = { newValue ->
                         if (hapticOnToggle) {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)

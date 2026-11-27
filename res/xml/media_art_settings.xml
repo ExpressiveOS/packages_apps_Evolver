@@ -39,7 +39,8 @@
         android:key="ls_media_art_aod_dim_level"
         android:title="@string/aod_brightness_title"
         android:max="100"
-        android:min="0"
+        settings:min="0"
+        settings:units="%"
         android:defaultValue="35"
         android:dependency="ls_media_art_aod_enabled" />
 
@@ -64,7 +65,8 @@
         android:title="@string/ls_media_art_pixel_size_title"
         android:summary="@string/ls_media_art_pixel_size_summary"
         android:max="45"
-        android:min="5"
+        settings:min="5"
+        settings:units="px"
         android:defaultValue="20"
         android:dependency="ls_media_art_enabled" />
 
@@ -73,7 +75,8 @@
         android:title="@string/ls_media_art_fade_level_title"
         android:summary="@string/ls_media_art_fade_level_summary"
         android:max="100"
-        android:min="0"
+        settings:min="0"
+        settings:units="%"
         android:defaultValue="40"
         android:dependency="ls_media_art_enabled" />
 
@@ -82,7 +85,8 @@
         android:title="@string/ls_media_art_blur_level_title"
         android:summary="@string/ls_media_art_blur_level_summary"
         android:max="200"
-        android:min="0"
+        settings:min="0"
+        settings:units="px"
         android:defaultValue="90"
         android:dependency="ls_media_art_enabled" />
 

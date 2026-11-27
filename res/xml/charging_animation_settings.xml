@@ -17,7 +17,7 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:settings="http://schemas.android.com/apk/res-auto"
+    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/charging_animation_title">
 
     <!-- Enable/Disable -->
@@ -27,44 +27,50 @@
         android:summary="@string/charging_animation_summary"
         android:defaultValue="false" />
 
-    <org.expressiveos.settings.preferences.SystemSettingListPreference
-        android:key="charging_animation_style"
-        android:title="@string/charging_animation_style_title"
-        android:summary="%s"
-        android:entries="@array/charging_animation_style_entries"
-        android:entryValues="@array/charging_animation_style_values"
-        android:defaultValue="3"
-        android:dependency="charging_animation_enabled" />
+    <PreferenceCategory
+        android:key="charging_animation_style_category"
+        android:title="@string/charging_animation_style_category">
 
-    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
-        android:key="charging_ripple_opacity"
-        android:title="@string/charging_ripple_opacity_title"
-        android:summary="@string/charging_ripple_opacity_summary"
-        android:max="100"
-        android:min="0"
-        settings:units="%"
-        android:defaultValue="60"
-        android:dependency="charging_animation_enabled" />
+        <org.expressiveos.settings.preferences.SystemSettingListPreference
+            android:key="charging_animation_style"
+            android:title="@string/charging_animation_style_title"
+            android:summary="%s"
+            android:entries="@array/charging_animation_style_entries"
+            android:entryValues="@array/charging_animation_style_values"
+            android:defaultValue="3"
+            android:dependency="charging_animation_enabled" />
 
-    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
-        android:key="charging_glow_intensity"
-        android:title="@string/charging_glow_intensity_title"
-        android:summary="@string/charging_glow_intensity_summary"
-        android:max="100"
-        android:min="0"
-        settings:units="%"
-        android:defaultValue="80"
-        android:dependency="charging_animation_enabled" />
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            android:key="charging_ripple_opacity"
+            android:title="@string/charging_ripple_opacity_title"
+            android:summary="@string/charging_ripple_opacity_summary"
+            android:max="100"
+            settings:min="0"
+            settings:units="%"
+            android:defaultValue="60"
+            android:dependency="charging_animation_enabled" />
 
-    <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
-        android:key="charging_arc_count"
-        android:title="@string/charging_arc_count_title"
-        android:summary="@string/charging_arc_count_summary"
-        android:max="6"
-        android:min="1"
-        settings:units=""
-        android:defaultValue="3"
-        android:dependency="charging_animation_enabled" />
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            android:key="charging_glow_intensity"
+            android:title="@string/charging_glow_intensity_title"
+            android:summary="@string/charging_glow_intensity_summary"
+            android:max="100"
+            settings:min="0"
+            settings:units="%"
+            android:defaultValue="80"
+            android:dependency="charging_animation_enabled" />
+
+        <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
+            android:key="charging_arc_count"
+            android:title="@string/charging_arc_count_title"
+            android:summary="@string/charging_arc_count_summary"
+            android:max="6"
+            settings:min="1"
+            settings:units=""
+            android:defaultValue="3"
+            android:dependency="charging_animation_enabled" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="charging_appearance_category"

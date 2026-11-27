@@ -64,6 +64,7 @@
         android:summary="@string/quick_settings_header_offset_summary"
         android:max="200"
         settings:min="100"
+        settings:units="dp"
         android:defaultValue="142"
         android:dependency="status_bar_custom_header" />
 
@@ -72,8 +73,8 @@
         android:title="@string/quick_settings_header_shadow_title"
         android:summary="@string/quick_settings_header_shadow_summary"
         android:max="200"
-        android:min="0"
-        android:defaultValue="0" 
+        settings:min="0"
+        android:defaultValue="0"
         android:dependency="status_bar_custom_header" />
 
 </PreferenceScreen>

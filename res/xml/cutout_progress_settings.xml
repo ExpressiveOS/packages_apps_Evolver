@@ -26,62 +26,64 @@
         android:summary="@string/cutout_progress_summary"
         android:defaultValue="false" />
 
-    <org.expressiveos.settings.preferences.SecureSettingListPreference
-        android:key="cutout_progress_ring_color_mode"
-        android:title="@string/cutout_progress_ring_color_mode_title"
-        android:summary="%s"
-        android:entries="@array/cutout_progress_ring_color_mode_entries"
-        android:entryValues="@array/cutout_progress_ring_color_mode_values"
-        android:defaultValue="0"
-        android:dependency="cutout_progress_enabled" />
+    <PreferenceCategory
+        android:key="cutout_progress_cat_ring"
+        android:title="@string/cutout_progress_ring_category"
+        android:dependency="cutout_progress_enabled">
 
-    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
-        android:key="cutout_progress_ring_color"
-        android:title="@string/cutout_progress_ring_color_title"
-        android:defaultValue="0xFF2196F3"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.SecureSettingListPreference
+            android:key="cutout_progress_ring_color_mode"
+            android:title="@string/cutout_progress_ring_color_mode_title"
+            android:summary="%s"
+            android:entries="@array/cutout_progress_ring_color_mode_entries"
+            android:entryValues="@array/cutout_progress_ring_color_mode_values"
+            android:defaultValue="0" />
 
-    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
-        android:key="cutout_progress_error_color"
-        android:title="@string/cutout_progress_error_color_title"
-        android:defaultValue="0xFFF44336"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+            android:key="cutout_progress_ring_color"
+            android:title="@string/cutout_progress_ring_color_title"
+            android:defaultValue="0xFF2196F3" />
 
-    <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
-        android:key="cutout_progress_finish_flash_color"
-        android:title="@string/cutout_progress_finish_flash_color_title"
-        android:defaultValue="0xFFFFFFFF"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+            android:key="cutout_progress_error_color"
+            android:title="@string/cutout_progress_error_color_title"
+            android:defaultValue="0xFFF44336" />
 
-    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
-        android:key="cutout_progress_opacity"
-        android:title="@string/cutout_progress_opacity_title"
-        android:max="100"
-        settings:min="0"
-        settings:interval="1"
-        settings:units="%"
-        android:defaultValue="90"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.colorpicker.SecureSettingColorPickerPreference
+            android:key="cutout_progress_finish_flash_color"
+            android:title="@string/cutout_progress_finish_flash_color_title"
+            android:defaultValue="0xFFFFFFFF" />
 
-    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
-        android:key="cutout_progress_stroke_width_dp10"
-        android:title="@string/cutout_progress_stroke_width_title"
-        android:max="80"
-        settings:min="5"
-        settings:interval="5"
-        settings:units=" (×0.1 dp)"
-        android:defaultValue="20"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
+            android:key="cutout_progress_opacity"
+            android:title="@string/cutout_progress_opacity_title"
+            android:max="100"
+            settings:min="0"
+            settings:interval="1"
+            settings:units="%"
+            android:defaultValue="90" />
 
-    <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
-        android:key="cutout_progress_ring_gap_x1000"
-        android:title="@string/cutout_progress_ring_gap_title"
-        android:max="2000"
-        settings:min="1000"
-        settings:interval="10"
-        settings:units=" (×0.001)"
-        android:defaultValue="1160"
-        android:dependency="cutout_progress_enabled" />
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
+            android:key="cutout_progress_stroke_width_dp10"
+            android:title="@string/cutout_progress_stroke_width_title"
+            android:max="80"
+            settings:min="5"
+            settings:interval="5"
+            settings:displayDivisor="10"
+            settings:units="dp"
+            android:defaultValue="20" />
+
+        <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
+            android:key="cutout_progress_ring_gap_x1000"
+            android:title="@string/cutout_progress_ring_gap_title"
+            android:max="2000"
+            settings:min="1000"
+            settings:interval="10"
+            settings:displayDivisor="1000"
+            settings:units="×"
+            android:defaultValue="1160" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="cutout_progress_cat_battery"
@@ -151,7 +153,8 @@
             android:max="80"
             settings:min="5"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="20"
             android:dependency="cutout_progress_music_enabled" />
 
@@ -246,7 +249,8 @@
             android:max="150"
             settings:min="10"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="40"
             android:dependency="cutout_progress_glow_enabled" />
 
@@ -314,7 +318,8 @@
             android:max="3000"
             settings:min="500"
             settings:interval="50"
-            settings:units=" (×0.001)"
+            settings:displayDivisor="1000"
+            settings:units="×"
             android:defaultValue="1000" />
 
         <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
@@ -323,7 +328,8 @@
             android:max="3000"
             settings:min="500"
             settings:interval="50"
-            settings:units=" (×0.001)"
+            settings:displayDivisor="1000"
+            settings:units="×"
             android:defaultValue="1000" />
 
         <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
@@ -332,7 +338,8 @@
             android:max="200"
             settings:min="-200"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="0" />
 
         <org.expressiveos.settings.preferences.SecureSettingSeekBarPreference
@@ -341,7 +348,8 @@
             android:max="200"
             settings:min="-200"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="0" />
 
     </PreferenceCategory>
@@ -363,7 +371,8 @@
             android:max="200"
             settings:min="60"
             settings:interval="5"
-            settings:units=" (×0.1 sp)"
+            settings:displayDivisor="10"
+            settings:units="sp"
             android:defaultValue="80"
             android:dependency="cutout_progress_percent_enabled" />
 
@@ -394,7 +403,8 @@
             android:max="180"
             settings:min="50"
             settings:interval="5"
-            settings:units=" (×0.1 sp)"
+            settings:displayDivisor="10"
+            settings:units="sp"
             android:defaultValue="70"
             android:dependency="cutout_progress_filename_enabled" />
 
@@ -419,6 +429,7 @@
             android:max="60"
             settings:min="5"
             settings:interval="1"
+            settings:units="@string/unit_chars"
             android:defaultValue="20"
             android:dependency="cutout_progress_filename_enabled" />
 
@@ -450,7 +461,8 @@
             android:max="180"
             settings:min="60"
             settings:interval="5"
-            settings:units=" (×0.1 sp)"
+            settings:displayDivisor="10"
+            settings:units="sp"
             android:defaultValue="100"
             android:dependency="cutout_progress_show_count_badge" />
 
@@ -460,7 +472,8 @@
             android:max="100"
             settings:min="-100"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="0"
             android:dependency="cutout_progress_show_count_badge" />
 
@@ -470,7 +483,8 @@
             android:max="100"
             settings:min="-100"
             settings:interval="5"
-            settings:units=" (×0.1 dp)"
+            settings:displayDivisor="10"
+            settings:units="dp"
             android:defaultValue="0"
             android:dependency="cutout_progress_show_count_badge" />
 

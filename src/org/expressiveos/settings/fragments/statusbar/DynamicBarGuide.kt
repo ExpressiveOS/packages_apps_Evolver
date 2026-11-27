@@ -11,8 +11,11 @@ import android.widget.TextView
 import com.android.internal.logging.nano.MetricsProto
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import com.android.settingslib.widget.LayoutPreference
 
+@SearchIndexable
 class DynamicBarGuide : SettingsPreferenceFragment() {
 
     private data class GuideStep(val titleRes: Int, val bodyRes: Int, val iconRes: Int)
@@ -59,5 +62,10 @@ class DynamicBarGuide : SettingsPreferenceFragment() {
 
     override fun getMetricsCategory(): Int {
         return MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
+    }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.dynamic_bar_guide_prefs)
     }
 }

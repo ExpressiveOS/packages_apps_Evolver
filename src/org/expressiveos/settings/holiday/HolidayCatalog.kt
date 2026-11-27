@@ -87,7 +87,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFB5651D,
             secondarySeed = 0xFF8E2A3B,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFE2B5, 0xFFF2A541, 0xFF9A5B00, 0xFFFFC076, 0xFF422600, 0xFF764800, 0xFFFFE4C8, 0xFF663E00, 0xFFFFDDB9, 0xFFFFB963), // amber
                 HolidayPetal(0xFFFFD2BC, 0xFFE07B39, 0xFFA8441C, 0xFFFFBE99, 0xFF4C1F00, 0xFF883D00, 0xFFFFE3D4, 0xFF763400, 0xFFFFDBC9, 0xFFFFB68C), // rust
@@ -106,7 +106,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFC62828,
             secondarySeed = 0xFF1B7F4D,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFC7C7, 0xFFFF5252, 0xFFC62828, 0xFFFFBBB6, 0xFF60000A, 0xFFA70A1C, 0xFFFFE1DF, 0xFF930015, 0xFFFFDAD7, 0xFFFFB3AE), // red
                 HolidayPetal(0xFFBDF2D2, 0xFF3DDC84, 0xFF1B7F4D, 0xFF4BE78D, 0xFF003419, 0xFF005F33, 0xFF90FFB4, 0xFF00522B, 0xFF66FEA2, 0xFF43E188), // evergreen
@@ -125,7 +125,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFC9A227,
             secondarySeed = 0xFF2A3FA8,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFE7A3, 0xFFF2C25A, 0xFF9A6A00, 0xFFF5C55D, 0xFF3B2900, 0xFF6A4E00, 0xFFFFE5B6, 0xFF5C4300, 0xFFFFDEA0, 0xFFEFC058), // gold
                 HolidayPetal(0xFFEEF2FA, 0xFFC9D3E6, 0xFF4A5873, 0xFFB2CEF9, 0xFF1E2D41, 0xFF495363, 0xFFDFE9FC, 0xFF344863, 0xFFD3E3FF, 0xFFB3C8E9), // silver
@@ -144,7 +144,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFE0457B,
             secondarySeed = 0xFF7B1FA2,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFC1D3, 0xFFFF5C8A, 0xFFC2185B, 0xFFFFBAC6, 0xFF5E0025, 0xFFA20E48, 0xFFFFE1E5, 0xFF90003D, 0xFFFFD9DF, 0xFFFFB1C0), // rose
                 HolidayPetal(0xFFFFB3B8, 0xFFFF3B4E, 0xFFB71C2C, 0xFFFFBBB9, 0xFF600010, 0xFFA80024, 0xFFFFE1E0, 0xFF92001E, 0xFFFFDAD8, 0xFFFFB3B2), // red
@@ -163,7 +163,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFF1E9E5A,
             secondarySeed = 0xFFC99A1E,
-            style = "TONAL_SPOT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFB9F5CF, 0xFF3CCB7F, 0xFF0B7A45, 0xFF5BE596, 0xFF00341A, 0xFF005F35, 0xFF8EFFB7, 0xFF00522D, 0xFF73FCAB, 0xFF54DF91), // shamrock
                 HolidayPetal(0xFF9EE6BE, 0xFF1FB86A, 0xFF0F5132, 0xFF5BE591, 0xFF003419, 0xFF005F33, 0xFF90FFB4, 0xFF00522B, 0xFF74FCA6, 0xFF55DF8C), // emerald
@@ -182,10 +182,10 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFA07BEA,
             secondarySeed = 0xFF5CC09C,
-            style = "TONAL_SPOT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFEBDDFF, 0xFFC9A7F5, 0xFF6B3FB8, 0xFFDCC0FF, 0xFF391B60, 0xFF62448A, 0xFFF2E2FF, 0xFF55387D, 0xFFEDDCFF, 0xFFD8B9FF), // lilac
-                HolidayPetal(0xFFD2F5E6, 0xFF8FE0BE, 0xFF12805C, 0xFF8BDCBA, 0xFF003324, 0xFF005E45, 0xFFA7F9D6, 0xFF00513B, 0xFFA1F3D0, 0xFF86D6B5), // mint
+                HolidayPetal(0xFFD2F5E6, 0xFF8FE0BE, 0xFF0E6F4E, 0xFF8BDCBA, 0xFF003324, 0xFF005E45, 0xFFA7F9D6, 0xFF00513B, 0xFFA1F3D0, 0xFF86D6B5), // mint
                 HolidayPetal(0xFFFFF2BF, 0xFFFFE07A, 0xFF8A6A00, 0xFFE8CA67, 0xFF362B00, 0xFF635100, 0xFFFFE79D, 0xFF564500, 0xFFFFE07D, 0xFFE2C462), // butter
                 HolidayPetal(0xFFD6ECFF, 0xFF93C8F7, 0xFF1E5FA8, 0xFF9FD1FF, 0xFF002F4A, 0xFF185780, 0xFFD7EAFF, 0xFF004B73, 0xFFCCE5FF, 0xFF97CCFB), // sky
             ),
@@ -201,7 +201,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFF2F5BD3,
             secondarySeed = 0xFFC1121F,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFC9CD, 0xFFFF4D5A, 0xFFC1121F, 0xFFFFBBBA, 0xFF600011, 0xFFA80025, 0xFFFFE1E0, 0xFF92001F, 0xFFFFDAD9, 0xFFFFB3B2), // red
                 HolidayPetal(0xFFFFFFFF, 0xFFF4F6FB, 0xFF4A5568, 0xFFA9D0F5, 0xFF182E3F, 0xFF4F5357, 0xFFE6E8ED, 0xFF2D4960, 0xFFCCE5FF, 0xFFADCAE6), // white
@@ -220,7 +220,7 @@ enum class Holiday(
         colors = HolidayColors(
             seed = 0xFFE8650A,
             secondarySeed = 0xFF6B21A8,
-            style = "VIBRANT",
+            style = "EXPRESSIVE",
             petals = listOf(
                 HolidayPetal(0xFFFFD8B0, 0xFFFF8A1F, 0xFFC2410C, 0xFFFFBE91, 0xFF492100, 0xFF824100, 0xFFFFE3D2, 0xFF713700, 0xFFFFDCC5, 0xFFFFB783), // pumpkin
                 HolidayPetal(0xFFE5CCFF, 0xFFB26BFF, 0xFF6B21A8, 0xFFDFBFFF, 0xFF420078, 0xFF7224BD, 0xFFF3E2FF, 0xFF650DB1, 0xFFEFDBFF, 0xFFDBB8FF), // witch

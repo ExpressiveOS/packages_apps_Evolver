@@ -29,17 +29,23 @@ import androidx.preference.Preference
 
 import com.android.settings.R
 import com.android.settings.preferences.BasePreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 
 import org.expressiveos.settings.preferences.showConfirmDialog
 import org.expressiveos.settings.utils.ImageUtils
 import org.expressiveos.settings.utils.PreferenceUtils
 
+@SearchIndexable
 class ClockStyles : BasePreferenceFragment(R.xml.clock_styles),
     Preference.OnPreferenceChangeListener {
 
     companion object {
         private const val KEY_CUSTOM_AOD_IMAGE = "lockscreen_custom_image"
         private const val CUSTOM_IMAGE_REQUEST_CODE = 1001
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.clock_styles)
     }
 
     private var mCustomImagePreference: Preference? = null

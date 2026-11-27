@@ -17,10 +17,12 @@
  */
 package org.expressiveos.settings.fragments.lockscreen;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -38,8 +40,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.util.expressiveos.ThemeUtils;
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
+import com.android.settings.search.BaseSearchIndexProvider;
+import com.android.settingslib.search.SearchIndexable;
 import com.android.settingslib.widget.LayoutPreference;
 
 import com.android.settings.core.SubSettingLauncher;
@@ -53,6 +58,7 @@ import java.util.List;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+@SearchIndexable
 public class CustomClockPreview extends SettingsPreferenceFragment implements Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "CustomClockPreview";
@@ -63,6 +69,7 @@ public class CustomClockPreview extends SettingsPreferenceFragment implements Pr
     private static final String KEY_GRADIENT_ENABLED = "lock_screen_custom_clock_gradient_enabled";
     private static final String KEY_GRADIENT_COLOR_START = "lock_screen_custom_clock_gradient_color_start";
     private static final String KEY_GRADIENT_COLOR_END = "lock_screen_custom_clock_gradient_color_end";
+    private static final String KEY_CLOCK_FONT_CATEGORY = "lock_screen_custom_clock_font_category";
     private static final String KEY_CLOCK_FONT = "lock_clock_font";
 
     private static final String KEY_CLOCK_COLOR_MODE = "lock_screen_custom_clock_color_mode";
@@ -86,7 +93,7 @@ public class CustomClockPreview extends SettingsPreferenceFragment implements Pr
     private int mClockPosition = 0;
 
     private ThemeUtils mThemeUtils;
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private static final int[] CLOCK_LAYOUTS = ClockUtils.INSTANCE.getCLOCK_LAYOUTS();
 
@@ -108,6 +115,10 @@ public class CustomClockPreview extends SettingsPreferenceFragment implements Pr
         mClockColorModePref = findPreference(KEY_CLOCK_COLOR_MODE);
 
         persistentPrefs.add(clockPreviewPref);
+        Preference fontCategory = findPreference(KEY_CLOCK_FONT_CATEGORY);
+        if (fontCategory != null) {
+            persistentPrefs.add(fontCategory);
+        }
         persistentPrefs.add(mClockFontPref);
 
         customOnlyPrefs.addAll(PreferenceUtils.getAllPreferences(getPreferenceScreen()));
@@ -280,13 +291,25 @@ public class CustomClockPreview extends SettingsPreferenceFragment implements Pr
             });
         }
 
+        LottieAnimationView guideLottie = highlightGuide != null
+                ? highlightGuide.findViewById(R.id.highlight_guide_lottie) : null;
         if (isFirstTime()) {
             highlightGuide.setVisibility(View.VISIBLE);
+            if (guideLottie != null) {
+                if (ValueAnimator.areAnimatorsEnabled()) {
+                    guideLottie.playAnimation();
+                } else {
+                    guideLottie.cancelAnimation();
+                    guideLottie.setProgress(0.5f);
+                }
+            }
             highlightGuide.setOnClickListener(v -> {
+                if (guideLottie != null) guideLottie.cancelAnimation();
                 highlightGuide.setVisibility(View.GONE);
                 disableHighlight();
             });
         } else {
+            if (guideLottie != null) guideLottie.cancelAnimation();
             highlightGuide.setVisibility(View.GONE);
         }
 
@@ -380,4 +403,7 @@ public class CustomClockPreview extends SettingsPreferenceFragment implements Pr
     public int getMetricsCategory() {
         return MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO;
     }
+
+    public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
+            new BaseSearchIndexProvider(R.xml.lockscreen_clock_preview_settings);
 }

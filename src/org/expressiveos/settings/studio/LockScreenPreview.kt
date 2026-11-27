@@ -27,8 +27,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -186,17 +188,27 @@ fun LockScreenPreview(
                 alignment = Alignment.TopCenter,
             )
         }
-        // The default face turns dark over a light wallpaper, as the lock screen's does. The
-        // other faces are drawn white: a scrim like the lock screen's own keeps them readable
-        val ink = if (isDefaultFace(style) && wallpaper?.darkText == true) DarkInk else Color.White
-        if (ink == Color.White) {
+        // Sync the default lock screen clock to the active Monet accent (dark tone over light
+        // wallpapers, bright primaryFixed over dark wallpapers with a top readability scrim).
+        val scheme = MaterialTheme.colorScheme
+        val isDarkWallpaper = wallpaper?.darkText != true
+        val ink = if (isDefaultFace(style)) {
+            if (isDarkWallpaper) {
+                scheme.primaryFixed
+            } else {
+                if (isSystemInDarkTheme()) scheme.onPrimary else scheme.primary
+            }
+        } else {
+            Color.White
+        }
+        if (isDarkWallpaper || !isDefaultFace(style)) {
             Box(
                 Modifier
                     .matchParentSize()
                     .background(
                         Brush.verticalGradient(
-                            0f to Color.Black.copy(alpha = 0.32f),
-                            0.5f to Color.Transparent,
+                            0f to Color.Black.copy(alpha = 0.38f),
+                            0.55f to Color.Transparent,
                         )
                     )
             )

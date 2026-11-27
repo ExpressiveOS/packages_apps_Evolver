@@ -59,6 +59,9 @@ import com.android.settings.R
 import com.android.settings.widget.scrollbar
 import com.android.settingslib.spa.framework.theme.SettingsSpace
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,6 +78,7 @@ data class TensorTargetEntry(
     var targeted: Boolean = false,
 )
 
+@SearchIndexable
 class TensorTargetsSettings : SettingsPreferenceFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +86,7 @@ class TensorTargetsSettings : SettingsPreferenceFragment() {
         requireActivity().title = getString(R.string.tensor_spoof_title)
     }
 
-    override fun getMetricsCategory() = MetricsProto.MetricsEvent.VIEW_UNKNOWN
+    override fun getMetricsCategory() = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {}
 
@@ -95,6 +99,24 @@ class TensorTargetsSettings : SettingsPreferenceFragment() {
         setContent {
             ExpressiveTheme {
                 TensorTargetsContent(context = requireContext())
+            }
+        }
+    }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: android.content.Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "tensor_targets_settings"
+                    title = res.getString(R.string.tensor_spoof_title)
+                    screenTitle = res.getString(R.string.spoofing_title)
+                }
+                return listOf(raw)
             }
         }
     }

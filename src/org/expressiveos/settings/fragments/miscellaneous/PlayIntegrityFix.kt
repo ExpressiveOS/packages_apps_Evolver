@@ -24,6 +24,9 @@ import com.android.internal.logging.nano.MetricsProto
 import com.android.internal.util.expressiveos.PixelDeviceRepository
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import java.nio.charset.StandardCharsets
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +35,7 @@ import kotlinx.coroutines.withContext
 import org.expressiveos.settings.fragments.miscellaneous.TrickyStore
 import org.json.JSONObject
 
+@SearchIndexable
 class PlayIntegrityFix : SettingsPreferenceFragment() {
 
     private val ui = PifUiState()
@@ -311,8 +315,8 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     private fun validateAndSaveEdit(key: String, raw: String): String? {
         val intKeys = setOf("DEVICE_INITIAL_SDK_INT", "SDK_INT")
         val v = raw.trim()
-        if (v.isEmpty()) return "Value cannot be empty"
-        if (key in intKeys && v.toIntOrNull() == null) return "Must be a valid integer"
+        if (v.isEmpty()) return getString(R.string.pif_validation_empty)
+        if (key in intKeys && v.toIntOrNull() == null) return getString(R.string.pif_validation_invalid_integer)
         if (key == "FINGERPRINT" && !PixelDeviceRepository.isValidFingerprint(v)) {
             return getString(R.string.pif_invalid_fingerprint)
         }
@@ -513,6 +517,22 @@ class PlayIntegrityFix : SettingsPreferenceFragment() {
     override fun getMetricsCategory(): Int = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
 
     companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "play_integrity_fix"
+                    title = res.getString(R.string.play_integrity_fix_title)
+                    screenTitle = res.getString(R.string.spoofing_title)
+                }
+                return listOf(raw)
+            }
+        }
+
         private const val TAG = "PlayIntegrityFix"
         internal const val PIF_CONFIG_KEY = "spoof_pif_config"
         private const val PIF_CONFIG_NAME = "pif.json"

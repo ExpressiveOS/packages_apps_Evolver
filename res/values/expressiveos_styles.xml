@@ -18,7 +18,7 @@
     <style name="OptionTitleTextAppearance" parent="@style/TextAppearance.SettingsLib.LabelMedium">
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:lineHeight">15sp</item>
+        <item name="android:lineHeight">20sp</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 </resources>

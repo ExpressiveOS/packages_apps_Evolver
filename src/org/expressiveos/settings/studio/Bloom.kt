@@ -11,7 +11,6 @@ import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.ColorUtils
 import com.android.settings.R
 import org.expressiveos.settings.fragments.miscellaneous.insetFocusRing
 import org.expressiveos.settings.fragments.miscellaneous.rememberAnimatorsEnabled
@@ -51,12 +52,11 @@ import org.expressiveos.settings.holiday.HolidayPetal
 import org.expressiveos.settings.holiday.HolidayThemes
 
 /**
- * The four petals of ExpressiveOS's Bloom mark, the colours Expressive Studio is drawn in.
- * [light], [mid] and [deep] are the petal's own colours. [ink] (text and icons) and [tile]
- * (the squircle behind an icon) follow the theme: light ink on a deep tile in dark mode, deep ink
- * on a pale tile in light mode, each pair at 4.8:1 contrast or more. While a holiday theme has
- * Studio in its colours ([StudioPalette]), each petal takes those of the holiday's petal in its
- * place.
+ * The four petals of ExpressiveOS's Bloom mark, harmonized toward the active Monet primary accent
+ * so Expressive Studio keeps playful category distinction without clashing with the wallpaper
+ * palette. While a holiday theme has Studio in its colours ([StudioPalette]), each petal takes
+ * those of the holiday's petal in its place. Every [ink] pair is contrast-checked to >= 4.8:1
+ * against both its icon [tile] and card surface in Light and Dark themes.
  */
 enum class Petal(
     private val bloomLight: Color,
@@ -116,11 +116,38 @@ enum class Petal(
     private val lightTile: Color
         get() = holiday?.let { Color(it.lightTile) } ?: bloomLightTile
 
-    val ink: Color
-        @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) darkInk else lightInk
+    /** Mid-tone accent harmonized toward Monet primary unless a holiday palette is active. */
+    val harmonizedMid: Color
+        @Composable @ReadOnlyComposable get() {
+            val base = mid
+            return if (holiday != null) base
+            else harmonizeToward(base, MaterialTheme.colorScheme.primary, factor = 0.40f, maxShiftDeg = 28f)
+        }
 
     val tile: Color
-        @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) darkTile else lightTile
+        @Composable @ReadOnlyComposable get() {
+            val dark = isSystemInDarkTheme()
+            val base = if (dark) darkTile else lightTile
+            return if (holiday != null) base
+            else harmonizeToward(base, MaterialTheme.colorScheme.primary, factor = 0.36f, maxShiftDeg = 24f)
+        }
+
+    val ink: Color
+        @Composable @ReadOnlyComposable get() {
+            val dark = isSystemInDarkTheme()
+            val rawInk = if (dark) darkInk else lightInk
+            val base = if (holiday != null) rawInk
+            else harmonizeToward(rawInk, MaterialTheme.colorScheme.primary, factor = 0.38f, maxShiftDeg = 26f)
+            val cardSurface = MaterialTheme.colorScheme.surfaceBright
+            val tileBg = tile
+            return ensureContrast(
+                foreground = base,
+                bg1 = tileBg,
+                bg2 = cardSurface,
+                isDark = dark,
+                minRatio = 4.8,
+            )
+        }
 
     /** Ink for text on the dark scrim over a wallpaper, in either theme. */
     val onScrim: Color
@@ -136,7 +163,74 @@ enum class Petal(
         /** The mark's mids in a sweep, for rings and highlights. */
         val sweep: Brush
             get() = Brush.linearGradient(listOf(Violet.mid, Blue.mid, Green.mid, Coral.mid))
+
+        /** Monet-harmonized sweep gradient for Studio thumbnails and highlights. */
+        @Composable
+        @ReadOnlyComposable
+        fun harmonizedSweep(): Brush = Brush.linearGradient(
+            listOf(Violet.harmonizedMid, Blue.harmonizedMid, Green.harmonizedMid, Coral.harmonizedMid)
+        )
     }
+}
+
+/**
+ * Shifts [design]'s hue gently toward [source] along the shortest arc (capped at [maxShiftDeg]),
+ * preserving [design]'s saturation and lightness so Studio's four category hues stay distinct while
+ * blending naturally with the user's active Monet palette.
+ */
+private fun harmonizeToward(
+    design: Color,
+    source: Color,
+    factor: Float,
+    maxShiftDeg: Float,
+): Color {
+    val dHsl = FloatArray(3)
+    val sHsl = FloatArray(3)
+    ColorUtils.colorToHSL(design.toArgb(), dHsl)
+    ColorUtils.colorToHSL(source.toArgb(), sHsl)
+    // Skip hue pull when Monet primary is nearly achromatic (Monochrome/Neutral themes).
+    if (sHsl[1] < 0.08f) return design
+    var diff = (sHsl[0] - dHsl[0]) % 360f
+    if (diff > 180f) diff -= 360f
+    if (diff < -180f) diff += 360f
+    val shift = (diff * factor).coerceIn(-maxShiftDeg, maxShiftDeg)
+    dHsl[0] = (dHsl[0] + shift + 360f) % 360f
+    return Color(ColorUtils.HSLToColor(dHsl)).copy(alpha = design.alpha)
+}
+
+/**
+ * Adjusts [foreground] lightness in HSL until WCAG contrast against both [bg1] and [bg2] reaches
+ * at least [minRatio] (lightening in dark theme, darkening in light theme).
+ */
+private fun ensureContrast(
+    foreground: Color,
+    bg1: Color,
+    bg2: Color,
+    isDark: Boolean,
+    minRatio: Double,
+): Color {
+    val fgArgb = foreground.toArgb()
+    val bg1Argb = bg1.toArgb()
+    val bg2Argb = bg2.toArgb()
+    if (ColorUtils.calculateContrast(fgArgb, bg1Argb) >= minRatio &&
+        ColorUtils.calculateContrast(fgArgb, bg2Argb) >= minRatio
+    ) {
+        return foreground
+    }
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(fgArgb, hsl)
+    val step = if (isDark) 0.03f else -0.03f
+    var current = fgArgb
+    for (i in 0 until 24) {
+        hsl[2] = (hsl[2] + step).coerceIn(0.05f, 0.96f)
+        current = ColorUtils.HSLToColor(hsl)
+        if (ColorUtils.calculateContrast(current, bg1Argb) >= minRatio &&
+            ColorUtils.calculateContrast(current, bg2Argb) >= minRatio
+        ) {
+            break
+        }
+    }
+    return Color(current).copy(alpha = foreground.alpha)
 }
 
 /**
@@ -178,15 +272,17 @@ object BloomShapes {
 }
 
 /**
- * A Studio card: the surface Settings' rows use, outlined instead of shadowed. Tapping it runs
- * [onClick]; its text is read out as one button, and it rings like Settings' rows when a keyboard
- * moves to it.
+ * A Studio card: borderless tonal surface matching SettingsLib's expressive preference cards.
+ * Tapping it runs [onClick]; its text is read out as one button, and it rings like Settings' rows
+ * when a keyboard moves to it.
  */
 @Composable
 fun BloomCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = BloomShapes.tile,
+    restRadius: Dp = if (shape == BloomShapes.gridTile) 24.dp else 28.dp,
+    pressedRadius: Dp = if (shape == BloomShapes.gridTile) 16.dp else 20.dp,
     color: Color = MaterialTheme.colorScheme.surfaceBright,
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -194,8 +290,6 @@ fun BloomCard(
     val animatorsEnabled = rememberAnimatorsEnabled()
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val restRadius = if (shape === BloomShapes.gridTile) 24.dp else 28.dp
-    val pressedRadius = if (shape === BloomShapes.gridTile) 16.dp else 20.dp
     val dpSpec = if (animatorsEnabled) {
         MaterialTheme.motionScheme.fastSpatialSpec<Dp>()
     } else {
@@ -233,7 +327,6 @@ fun BloomCard(
             .semantics { role = Role.Button },
         shape = morphShape,
         color = color,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
     ) {
         Box(content = content)
     }

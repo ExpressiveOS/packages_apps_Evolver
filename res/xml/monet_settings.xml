@@ -53,7 +53,7 @@
             android:summary="%s"
             android:entries="@array/monet_engine_style_entries"
             android:entryValues="@array/monet_engine_style_values"
-            android:defaultValue="TONAL_SPOT" />
+            android:defaultValue="EXPRESSIVE" />
 
     </PreferenceCategory>
 

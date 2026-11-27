@@ -88,30 +88,41 @@
         <Preference
             android:key="studio_colors"
             android:title="@string/themes_monet_title"
+            android:summary="@string/themes_monet_summary"
             android:fragment="org.expressiveos.settings.fragments.themes.ColorsSettingsFragment"
+            settings:searchable="false" />
+
+        <org.expressiveos.settings.preferences.FontsPickerPreference
+            android:key="studio_fonts"
+            android:title="@string/font_styles_title"
+            android:summary="@string/font_styles_summary"
             settings:searchable="false" />
 
         <Preference
             android:key="studio_wallpaper_styles"
             android:title="@string/wallpaper_styles_title"
+            android:summary="@string/studio_wallpaper_styles_summary"
             android:fragment="org.expressiveos.settings.fragments.themes.Wallpaper"
             settings:searchable="false" />
 
         <Preference
             android:key="studio_holiday_themes"
             android:title="@string/holiday_themes_title"
+            android:summary="@string/studio_holiday_themes_summary"
             android:fragment="org.expressiveos.settings.holiday.HolidayThemesFragment"
             settings:searchable="false" />
 
         <Preference
             android:key="studio_clock_styles"
             android:title="@string/ls_clock_title"
+            android:summary="@string/studio_clock_styles_summary"
             android:fragment="org.expressiveos.settings.fragments.lockscreen.ClockStyles"
             settings:searchable="false" />
 
         <Preference
             android:key="studio_changelog"
             android:title="@string/changelog_title"
+            android:summary="@string/changelog_summary"
             settings:searchable="false">
             <intent android:action="android.intent.action.MAIN"
                  android:targetPackage="com.android.settings"

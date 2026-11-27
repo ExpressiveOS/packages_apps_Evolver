@@ -15,6 +15,7 @@ import com.android.settings.R
 import com.android.settings.core.SubSettingLauncher
 import com.android.settings.display.WallpaperPreferenceController
 import org.expressiveos.settings.fragments.lockscreen.ClockPickerFragment
+import org.expressiveos.settings.preferences.FontsPickerPreference
 import org.expressiveos.settings.preferences.showConfirmDialog
 
 /** What Expressive Studio's tiles and buttons open, from the screen [fragment] shows them on. */
@@ -46,6 +47,17 @@ class StudioActions(private val fragment: PreferenceFragmentCompat) {
         val row = fragment.findPreference<Preference>(key) ?: return
         if (!fragment.onPreferenceTreeClick(row)) {
             row.intent?.let { fragment.startActivity(it) }
+        }
+    }
+
+    /** Opens the system font picker dialog directly from Studio's Fonts tile. */
+    fun openFontPicker() {
+        if (!fragment.isAdded) return
+        val pref = fragment.findPreference<FontsPickerPreference>(KEY_FONTS)
+        if (pref != null) {
+            pref.openPicker()
+        } else {
+            open("themes")
         }
     }
 
@@ -90,6 +102,7 @@ class StudioActions(private val fragment: PreferenceFragmentCompat) {
 
     private companion object {
         const val KEY_WALLPAPER = "studio_wallpaper"
+        const val KEY_FONTS = "studio_fonts"
         // ClockStyles' flag: the advice is shown once, from either page
         const val KEY_DISCLAIMER_DISMISSED = "custom_clock_disclaimer_dismissed"
     }

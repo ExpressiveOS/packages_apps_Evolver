@@ -42,7 +42,6 @@ import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.search.SearchIndexable;
-import com.android.settingslib.widget.ButtonPreference;
 
 import org.expressiveos.settings.preferences.SystemSettingMainSwitchPreference;
 
@@ -66,7 +65,7 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
     private static final String EXTRA_WIDGET_2_KEY = "custom_widgets2";
     private static final String EXTRA_WIDGET_3_KEY = "custom_widgets3";
     private static final String EXTRA_WIDGET_4_KEY = "custom_widgets4";
-    private static final String KEY_APPLY_CHANGE_BUTTON = "apply_change_button";
+    private static final String KEY_SLOTS_CATEGORY = "lockscreen_widgets_slots_category";
 
     private static final String LOCKSCREEN_WIDGETS_KEY = "lockscreen_widgets";
     private static final String LOCKSCREEN_WIDGETS_EXTRAS_KEY = "lockscreen_widgets_extras";
@@ -81,7 +80,7 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
     private Preference mExtraWidget2;
     private Preference mExtraWidget3;
     private Preference mExtraWidget4;
-    private ButtonPreference mApplyChange;
+    private PreferenceCategory mSlotsCategory;
     
     private ListPreference mLockScreenWidgetsColorModePref;
     private SystemSettingColorPickerPreference mLockScreenWidgetsColorPref;
@@ -91,7 +90,6 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
     private List<Preference> mWidgetPreferences;
     
     private Map<Preference, String> widgetKeysMap = new HashMap<>();
-    private Map<Preference, String> initialWidgetKeysMap = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,8 +112,6 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
         updateCustomColorPref(mLockScreenWidgetsColorModePref.getValue());
 
         loadInitialPreferences();
-        saveInitialPreferences();
-        mApplyChange.setEnabled(false);
     }
 
     private void initializePreferences() {
@@ -141,7 +137,7 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
         mLockScreenWidgetsStylePref = findPreference(LOCKSCREEN_WIDGETS_STYLE_KEY);
         mLockScreenWidgetsTransparencyPref = findPreference(LOCKSCREEN_WIDGETS_TRANSPARENCY_KEY);
 
-        mApplyChange = findPreference(KEY_APPLY_CHANGE_BUTTON);
+        mSlotsCategory = findPreference(KEY_SLOTS_CATEGORY);
     }
 
     private void setupListeners() {
@@ -153,21 +149,16 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
         mLockScreenWidgetsStylePref.setOnPreferenceChangeListener(this);
         mLockScreenWidgetsColorModePref.setOnPreferenceChangeListener(this);
 
-        mApplyChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateWidgetPreferences();
-                saveInitialPreferences();
-                mApplyChange.setEnabled(false);
-            }
-        });
+
     }
 
     private void showWidgetPreferences(boolean isEnabled) {
         for (Preference widgetPref : mWidgetPreferences) {
             widgetPref.setVisible(isEnabled);
         }
-        mApplyChange.setVisible(isEnabled);
+        if (mSlotsCategory != null) {
+            mSlotsCategory.setVisible(isEnabled);
+        }
     }
 
     private void loadInitialPreferences() {
@@ -197,7 +188,7 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (widgetKeysMap.containsKey(preference)) {
             widgetKeysMap.put(preference, String.valueOf(newValue));
-            mApplyChange.setEnabled(hasChanges());
+            updateWidgetPreferences();
             return true;
         } else if (preference == mLockScreenWidgetsEnabledPref) {
             boolean isEnabled = (boolean) newValue;
@@ -244,26 +235,6 @@ public class LockScreenWidgets extends SettingsPreferenceFragment implements Pre
         return inputList.stream()
                 .map(s -> TextUtils.isEmpty(s) ? "none" : s)
                 .collect(Collectors.toList());
-    }
-
-    private void saveInitialPreferences() {
-        initialWidgetKeysMap.clear();
-        for (Preference widgetPref : mWidgetPreferences) {
-            String value = widgetKeysMap.get(widgetPref);
-            initialWidgetKeysMap.put(widgetPref, value);
-        }
-    }
-
-    private boolean hasChanges() {
-        for (Map.Entry<Preference, String> entry : initialWidgetKeysMap.entrySet()) {
-            Preference pref = entry.getKey();
-            String initialValue = entry.getValue();
-            String currentValue = widgetKeysMap.get(pref);
-            if (!TextUtils.equals(initialValue, currentValue)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

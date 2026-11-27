@@ -29,12 +29,33 @@
         android:padding="20dp">
 
         <TextView
+            android:id="@+id/preview_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/font_preview_sample_headline"
+            android:textAppearance="@style/TextAppearance.SettingsLib.TitleLarge"
+            android:textColor="@color/settingslib_materialColorOnSurface"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/preview_digits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:fontFeatureSettings="tnum"
+            android:text="@string/font_preview_sample_digits"
+            android:textAppearance="@style/TextAppearance.SettingsLib.BodyMedium"
+            android:textColor="@color/settingslib_materialColorOnSurfaceVariant"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/preview_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/font_preview_quote"
             android:textAppearance="@style/TextAppearance.SettingsLib.BodyLarge"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@color/settingslib_materialColorOnSurface"
             android:textSize="18sp"
             android:lineSpacingMultiplier="1.3" />
 

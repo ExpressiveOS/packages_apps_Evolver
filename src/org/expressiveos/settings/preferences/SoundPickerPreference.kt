@@ -81,7 +81,7 @@ class SoundPickerPreference @JvmOverloads constructor(
                 val playing = playingPath == value
                 val spatialSpec = MaterialTheme.motionScheme.fastSpatialSpec<Dp>()
                 val cornerRadius by animateDpAsState(
-                    targetValue = if (playing) 12.dp else 20.dp,
+                    targetValue = if (playing) 14.dp else 24.dp,
                     animationSpec = if (animatorsEnabled) spatialSpec else SnapSpec(0),
                     label = "soundPlayShape",
                 )
@@ -103,7 +103,7 @@ class SoundPickerPreference @JvmOverloads constructor(
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(48.dp)
                         .insetFocusRing(btnShape),
                 ) {
                     Box(contentAlignment = Alignment.Center) {

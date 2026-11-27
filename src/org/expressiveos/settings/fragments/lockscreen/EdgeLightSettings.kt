@@ -14,9 +14,12 @@ import android.provider.Settings
 import com.android.internal.logging.nano.MetricsProto
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 
+@SearchIndexable
 class EdgeLightSettings : SettingsPreferenceFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,5 +62,8 @@ class EdgeLightSettings : SettingsPreferenceFragment() {
             Settings.System.putStringForUser(resolver,
                     Settings.System.EDGE_LIGHT_ANIMATION_EFFECT, "none", UserHandle.USER_CURRENT)
         }
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.edge_light_settings)
     }
 }

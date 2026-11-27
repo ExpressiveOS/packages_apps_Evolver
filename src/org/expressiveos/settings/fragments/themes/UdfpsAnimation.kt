@@ -5,6 +5,7 @@
 
 package org.expressiveos.settings.fragments.themes
 
+import android.animation.ValueAnimator
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
@@ -27,7 +28,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 
+@SearchIndexable
 class UdfpsAnimation : SettingsPreferenceFragment() {
 
     private var udfpsPkg = "org.expressiveos.udfps.animations"
@@ -124,6 +129,23 @@ class UdfpsAnimation : SettingsPreferenceFragment() {
                 UserHandle.USER_CURRENT
             )
         }
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "udfps_animation"
+                    title = res.getString(R.string.themes_udfps_animation_title)
+                    summaryOn = res.getString(R.string.themes_udfps_animation_summary)
+                    screenTitle = res.getString(R.string.themes_title)
+                }
+                return listOf(raw)
+            }
+        }
     }
 
     private data class AnimItem(
@@ -163,6 +185,9 @@ class UdfpsAnimation : SettingsPreferenceFragment() {
                 )
             }
 
+            (holder.image.background as? AnimationDrawable)?.stop()
+            holder.image.background = null
+            holder.image.setImageDrawable(null)
             holder.image.setImageDrawable(drawableLoader(item.previewDrawableName))
             holder.name.text = item.title
 
@@ -174,12 +199,14 @@ class UdfpsAnimation : SettingsPreferenceFragment() {
                 if (old != -1) notifyItemChanged(old)
                 notifyItemChanged(selectedPos)
 
-                val bg = drawableLoader(item.animDrawableName)
-                holder.image.background = bg
-                (bg as? AnimationDrawable)?.let { ad ->
-                    ad.isOneShot = true
-                    ad.stop()
-                    ad.start()
+                if (ValueAnimator.areAnimatorsEnabled()) {
+                    val bg = drawableLoader(item.animDrawableName)
+                    holder.image.background = bg
+                    (bg as? AnimationDrawable)?.let { ad ->
+                        ad.isOneShot = true
+                        ad.stop()
+                        ad.start()
+                    }
                 }
 
                 Settings.System.putIntForUser(
@@ -189,6 +216,13 @@ class UdfpsAnimation : SettingsPreferenceFragment() {
                     UserHandle.USER_CURRENT
                 )
             }
+        }
+
+        override fun onViewRecycled(holder: VH) {
+            (holder.image.background as? AnimationDrawable)?.stop()
+            holder.image.background = null
+            holder.image.setImageDrawable(null)
+            super.onViewRecycled(holder)
         }
 
         class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {

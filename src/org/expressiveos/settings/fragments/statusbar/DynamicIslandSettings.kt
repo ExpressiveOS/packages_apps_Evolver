@@ -29,5 +29,5 @@ class DynamicIslandSettings : SettingsPreferenceFragment() {
         addPreferencesFromResource(R.xml.dynamic_island_settings)
     }
 
-    override fun getMetricsCategory(): Int = MetricsProto.MetricsEvent.VIEW_UNKNOWN
+    override fun getMetricsCategory(): Int = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
 }

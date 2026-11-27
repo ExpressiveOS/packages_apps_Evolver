@@ -14,6 +14,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -119,8 +120,8 @@ private val gap = 12.dp
 
 @Composable
 private fun HomeScreen(actions: StudioActions) {
-    // The bento's fixed heights grow with the font size, up to half again
-    val grow = LocalDensity.current.fontScale.coerceIn(1f, 1.5f)
+    // Allow hero bento tiles to grow freely with accessibility font scale (no 1.5x clamp).
+    val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
     val hasPicker = remember { actions.hasWallpaperPicker }
     FollowStudioPalette()
     Column(
@@ -132,7 +133,8 @@ private fun HomeScreen(actions: StudioActions) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp * grow),
+                .heightIn(min = 300.dp)
+                .height((300f * fontScale).dp),
             horizontalArrangement = Arrangement.spacedBy(gap),
         ) {
             LockTile(
@@ -169,19 +171,20 @@ private fun HomeScreen(actions: StudioActions) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(148.dp * grow),
+                .heightIn(min = 148.dp)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(gap),
         ) {
             val tile = Modifier
                 .weight(1f)
                 .fillMaxHeight()
             ColorsTile(onClick = { actions.open(KEY_COLORS) }, modifier = tile)
-            FontsTile(onClick = { actions.open(KEY_THEMES) }, modifier = tile)
+            FontsTile(onClick = { actions.openFontPicker() }, modifier = tile)
         }
         HolidayThemesCard(onClick = { actions.open(KEY_HOLIDAY_THEMES) })
         ClockStylesCard(onClick = { actions.open(KEY_CLOCK_STYLES) })
         WhatsNewCard(onClick = { actions.open(KEY_CHANGELOG) })
-        sections.chunked(3).forEach { row ->
+        sections.chunked(2).forEach { row ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,15 +239,26 @@ private fun TileBody(picture: @Composable () -> Unit, text: @Composable () -> Un
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, top = 14.dp, end = 14.dp, bottom = 14.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Bottom),
     ) {
-        Box(Modifier.weight(1f, fill = false)) { picture() }
+        Box(Modifier.weight(1f, fill = true)) { picture() }
         text()
     }
 }
 
 @Composable
 private fun LockTile(onClick: () -> Unit, modifier: Modifier) {
+    val isDark = isSystemInDarkTheme()
+    val pillBg = if (isDark) {
+        Color(0xCC07070D)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.92f)
+    }
+    val pillInk = if (isDark) {
+        Color.White
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
     BloomCard(onClick = onClick, modifier = modifier, color = Petal.ground) {
         LockScreenPreview(modifier = Modifier.fillMaxSize(), showLockIcon = false) {
             Surface(
@@ -252,11 +266,11 @@ private fun LockTile(onClick: () -> Unit, modifier: Modifier) {
                     .align(Alignment.BottomStart)
                     .padding(12.dp),
                 shape = CircleShape,
-                color = Color(0xCC07070D),
+                color = pillBg,
             ) {
                 Text(
                     text = stringResource(R.string.lock_screen_title),
-                    color = Petal.Coral.onScrim,
+                    color = pillInk,
                     fontFamily = BloomRounded,
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp,
@@ -267,9 +281,18 @@ private fun LockTile(onClick: () -> Unit, modifier: Modifier) {
     }
 }
 
-/** Overlapping dots, each ringed in [ring] so they read as separate. */
+/**
+ * Overlapping dots, each ringed in [ring] so they read as separate and outlined with a subtle
+ * [outline] stroke so no swatch ever blends into a light or dark card surface.
+ */
 @Composable
-private fun Dots(colors: List<Color>, size: Dp, step: Dp, ring: Color) {
+private fun Dots(
+    colors: List<Color>,
+    size: Dp,
+    step: Dp,
+    ring: Color,
+    outline: Color = MaterialTheme.colorScheme.outlineVariant,
+) {
     Box(Modifier.size(width = size + step * (colors.size - 1), height = size)) {
         colors.forEachIndexed { i, color ->
             Box(
@@ -280,6 +303,7 @@ private fun Dots(colors: List<Color>, size: Dp, step: Dp, ring: Color) {
                     .padding(2.dp)
                     .clip(CircleShape)
                     .background(color)
+                    .border(1.dp, outline, CircleShape)
             )
         }
     }
@@ -292,7 +316,7 @@ private fun ThemesTile(onClick: () -> Unit, modifier: Modifier) {
             picture = {
                 BoxWithConstraints {
                     // Closer together when the tile is narrow
-                    val petals = Petal.entries.map { it.mid }
+                    val petals = Petal.entries.map { it.harmonizedMid }
                     Dots(
                         colors = petals,
                         size = 40.dp,
@@ -315,6 +339,7 @@ private fun ThemesTile(onClick: () -> Unit, modifier: Modifier) {
 
 @Composable
 private fun WallpaperTile(title: String, onClick: () -> Unit, modifier: Modifier) {
+    val frameSweep = Petal.harmonizedSweep()
     BloomCard(onClick = onClick, modifier = modifier) {
         TileBody(
             picture = {
@@ -322,7 +347,7 @@ private fun WallpaperTile(title: String, onClick: () -> Unit, modifier: Modifier
                     Modifier
                         .fillMaxWidth()
                         .height(56.dp)
-                        .border(2.dp, Petal.sweep, BloomShapes.thumb)
+                        .border(2.dp, frameSweep, BloomShapes.thumb)
                         .padding(3.dp)
                         .clip(RoundedCornerShape(9.dp))
                         .background(Petal.ground)
@@ -353,12 +378,12 @@ private fun WallpaperTile(title: String, onClick: () -> Unit, modifier: Modifier
 @Composable
 private fun ColorsTile(onClick: () -> Unit, modifier: Modifier) {
     val scheme = MaterialTheme.colorScheme
+    // Guaranteed mid-tone Monet roles + outlineVariant ring so zero swatches vanish on Light/Dark cards.
     val palettes = listOf(
-        listOf(scheme.primary, scheme.primaryContainer, scheme.onPrimaryContainer),
-        listOf(scheme.secondary, scheme.secondaryContainer, scheme.onSecondaryContainer),
-        listOf(scheme.tertiary, scheme.tertiaryContainer, scheme.onTertiaryContainer),
-        // The neutrals that stand out from the card in both themes
-        listOf(scheme.outline, scheme.onSurfaceVariant, scheme.inverseSurface),
+        listOf(scheme.primary, scheme.primaryContainer, scheme.primaryFixedDim),
+        listOf(scheme.secondary, scheme.secondaryContainer, scheme.secondaryFixedDim),
+        listOf(scheme.tertiary, scheme.tertiaryContainer, scheme.tertiaryFixedDim),
+        listOf(scheme.outline, scheme.surfaceContainerHighest, scheme.onSurfaceVariant),
     )
     BloomCard(onClick = onClick, modifier = modifier) {
         TileBody(
@@ -367,7 +392,13 @@ private fun ColorsTile(onClick: () -> Unit, modifier: Modifier) {
                     palettes.chunked(2).forEach { pair ->
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             pair.forEach {
-                                Dots(it, size = 26.dp, step = 18.dp, ring = scheme.surfaceBright)
+                                Dots(
+                                    colors = it,
+                                    size = 26.dp,
+                                    step = 18.dp,
+                                    ring = scheme.surfaceBright,
+                                    outline = scheme.outlineVariant,
+                                )
                             }
                         }
                     }
@@ -510,7 +541,7 @@ private fun ClockStylesCard(onClick: () -> Unit) {
                     if (DateFormat.is24HourFormat(context)) "HH\nmm" else "hh\nmm", now
                 ).toString(),
                 style = LocalTextStyle.current.copy(fontFeatureSettings = "tnum"),
-                color = Petal.Coral.light,
+                color = MaterialTheme.colorScheme.primaryFixed,
                 fontFamily = BloomRounded,
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp,
@@ -568,13 +599,15 @@ private fun WhatsNewCard(onClick: () -> Unit) {
 private fun SectionTile(section: Section, onClick: () -> Unit, modifier: Modifier) {
     BloomCard(
         onClick = onClick,
-        modifier = modifier.heightIn(min = 108.dp),
+        modifier = modifier.heightIn(min = 104.dp),
         shape = BloomShapes.gridTile,
+        restRadius = 24.dp,
+        pressedRadius = 16.dp,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 6.dp, vertical = 12.dp),
+                .padding(horizontal = 14.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
         ) {

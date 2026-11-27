@@ -46,5 +46,9 @@
     <string name="holiday_themes_try_category">Try a theme</string>
     <string name="holiday_themes_stop_trying">Stop trying</string>
 
-    <string name="holiday_themes_footer">Themes switch on by themselves after midnight on a holiday\'s first day, while the screen is off. Your wallpaper, colors, lock screen clock color, Quick Settings picture and boot animation are saved first and come back when the holiday ends. If you change something during a holiday, your change stays.</string>
+    <string name="holiday_themes_footer">When Switch on by date is enabled, themes activate after midnight on a holiday\'s first day while the screen is off. Your wallpaper, colors, lock screen clock color, Quick Settings picture, and boot animation are saved first and restored when the holiday ends. If you change something during a holiday, your change stays.</string>
+
+    <!-- Wave 4 ExpressiveOS 2.0 additions -->
+    <string name="holiday_themes_status_title">Status</string>
+    <string name="holiday_themes_general_category">Automatic schedule</string>
 </resources>

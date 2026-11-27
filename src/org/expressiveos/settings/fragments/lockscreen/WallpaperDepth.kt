@@ -15,12 +15,10 @@
  */
 package org.expressiveos.settings.fragments.lockscreen
 
-import android.Manifest
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -53,8 +51,6 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
     private var mClearSubjectPref: Preference? = null
     private var mAutoSubjectPref: Preference? = null
 
-    private var mPendingExtraction = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.wallpaper_depth)
@@ -72,7 +68,7 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
     }
 
     override fun getMetricsCategory(): Int {
-        return MetricsProto.MetricsEvent.VIEW_UNKNOWN
+        return MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -114,28 +110,6 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == REQUEST_WRITE_STORAGE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mPendingExtraction) {
-                    mPendingExtraction = false
-                    startExtractionService()
-                }
-            } else {
-                mPendingExtraction = false
-                Toast.makeText(
-                    context,
-                    R.string.depthwall_storage_permission_denied,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
-
     private fun launchImagePicker() {
         try {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -147,19 +121,6 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
     }
 
     private fun triggerExtraction() {
-        val ctx = context ?: return
-
-        if (ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            mPendingExtraction = true
-            requestPermissions(
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_WRITE_STORAGE
-            )
-            return
-        }
-
         startExtractionService()
     }
 
@@ -174,8 +135,9 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
             intent.component = ComponentName(ctx, WallpaperSubjectExtractorService::class.java)
             ctx.startService(intent)
         } catch (e: Exception) {
+            Log.e(TAG, "Failed to start subject extractor", e)
             Toast.makeText(
-                ctx, "Failed to start extractor: " + e.message, Toast.LENGTH_LONG
+                ctx, R.string.depthwall_extract_failed_toast, Toast.LENGTH_LONG
             ).show()
         }
     }
@@ -238,7 +200,6 @@ class WallpaperDepth : SettingsPreferenceFragment(), Preference.OnPreferenceChan
         const val TAG = "WallpaperDepth"
 
         private const val REQUEST_PICK_IMAGE = 10001
-        private const val REQUEST_WRITE_STORAGE = 10002
 
         private const val FILE_PREFIX = "DEPTH_WALLPAPER_SUBJECT"
         private const val SAVE_DIR = "ExpressiveOS/depthwallpaper"

@@ -28,6 +28,9 @@ import androidx.lifecycle.lifecycleScope
 import com.android.internal.logging.nano.MetricsProto
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.io.InputStreamReader
@@ -51,6 +54,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.json.JSONArray
 import org.json.JSONObject
 
+@SearchIndexable
 class TrickyStore : SettingsPreferenceFragment() {
 
     private val ui = TsUiState()
@@ -77,6 +81,22 @@ class TrickyStore : SettingsPreferenceFragment() {
     // ---- Trust anchors (SHA-256 of DER-encoded cert) ------------------------
 
     companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "tricky_store"
+                    title = res.getString(R.string.tricky_store_title)
+                    screenTitle = res.getString(R.string.spoofing_title)
+                }
+                return listOf(raw)
+            }
+        }
+
         private const val TAG = "TrickyStore"
 
         private val PACKAGE_REGEX = Regex("""[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*""")

@@ -98,6 +98,11 @@ class FontsPickerPreference @JvmOverloads constructor(
         super.onDetached()
     }
 
+    /** Opens the font picker dialog programmatically (e.g., from StudioHome's Fonts tile). */
+    fun openPicker() {
+        onClick()
+    }
+
     override fun onClick() {
         val ctx = context
         dialog?.dismiss()
@@ -112,7 +117,7 @@ class FontsPickerPreference @JvmOverloads constructor(
             pkgs.forEach { pkg ->
                 add(
                     PickerOption(
-                        label = if (pkg == "android") "Default" else getLabelSafe(ctx, pkg),
+                        label = if (pkg == "android") ctx.getString(R.string.themes_default_label) else getLabelSafe(ctx, pkg),
                         labelFontFamily = { getTypefaceSafe(ctx, pkg)?.let { FontFamily(it) } },
                     )
                 )
@@ -175,17 +180,19 @@ class FontsPickerPreference @JvmOverloads constructor(
                 }
             },
             onLater = {
-                Thread({
-                    if (reboot) ExternalFontInstaller(ctx).resetFontUpdates()
-                    mainHandler.post {
-                        if (reboot) clearCustomFontState()
-                        themeUtils.setOverlayEnabled(
-                            CATEGORY, if (reboot) getAppliedPkg() else old, old
-                        )
-                        themeUtils.setOverlayEnabled(CATEGORY, pkg, "android")
-                        updateSummary()
+                val prevPkg = if (reboot) getAppliedPkg() else old
+                applyOverlayInBackground(
+                    ctx,
+                    prevPkg,
+                    pkg,
+                    resetCustom = reboot,
+                    onFailed = {
+                        Toast.makeText(ctx, R.string.toast_failed_apply_font, Toast.LENGTH_SHORT).show()
                     }
-                }, "FontOverlay").start()
+                ) {
+                    if (reboot) clearCustomFontState()
+                    updateSummary()
+                }
             },
         )
     }
@@ -201,7 +208,9 @@ class FontsPickerPreference @JvmOverloads constructor(
         Thread({
             try {
                 if (resetCustom) ExternalFontInstaller(ctx).resetFontUpdates()
-                themeUtils.setOverlayEnabled(CATEGORY, oldPkg, oldPkg)
+                if (oldPkg != CUSTOM_PKG_KEY) {
+                    themeUtils.setOverlayEnabled(CATEGORY, oldPkg, oldPkg)
+                }
                 themeUtils.setOverlayEnabled(CATEGORY, newPkg, "android")
                 mainHandler.post { onDone() }
             } catch (e: Exception) {
@@ -234,7 +243,7 @@ class FontsPickerPreference @JvmOverloads constructor(
             hasCustomFont -> customFontName
             else -> {
                 val applied = getAppliedPkg()
-                if (applied == "android") "Default" else getLabelSafe(context, applied)
+                if (applied == "android") context.getString(R.string.themes_default_label) else getLabelSafe(context, applied)
             }
         }
     }

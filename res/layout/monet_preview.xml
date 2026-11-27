@@ -33,35 +33,49 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:weightSum="6">
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/bg_monet_swatch_primary" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="3dp"
+                android:layout_marginHorizontal="2dp"
                 android:background="@drawable/bg_monet_swatch_secondary" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="3dp"
+                android:layout_marginHorizontal="2dp"
                 android:background="@drawable/bg_monet_swatch_tertiary" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:layout_marginStart="6dp"
+                android:layout_marginHorizontal="2dp"
                 android:background="@drawable/bg_monet_swatch_container" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="2dp"
+                android:background="@drawable/bg_monet_swatch_neutral1" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_monet_swatch_neutral2" />
 
         </LinearLayout>
 

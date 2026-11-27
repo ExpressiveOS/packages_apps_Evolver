@@ -43,6 +43,8 @@ import com.android.settingslib.widget.SliderPreference;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.Slider;
 
+import java.util.Locale;
+
 /**
  * Material 3 Expressive segmented slider preference participating natively in
  * {@code SettingsPreferenceGroupAdapter}'s rounded card sections, with a tabular-numeral tonal
@@ -54,10 +56,13 @@ public class CustomSeekBarPreference extends SliderPreference {
     private static final String SETTINGS_NS = "http://schemas.android.com/apk/res/com.android.settings";
     private static final String ANDROIDNS = "http://schemas.android.com/apk/res/android";
     private static final float DISABLED_ALPHA = 0.38f;
+    private static final float DISABLED_BADGE_ALPHA = 0.60f;
 
     private boolean mShowSign;
     @Nullable
     private String mUnits = "";
+    private float mDisplayDivisor = 1f;
+    private int mDisplayDecimals = -1;
     @Nullable
     private String mDefaultValueText;
     private boolean mDefaultValueTextExists;
@@ -100,7 +105,13 @@ public class CustomSeekBarPreference extends SliderPreference {
         try {
             mShowSign = a.getBoolean(R.styleable.CustomSeekBarPreference_showSign, false);
             final String units = a.getString(R.styleable.CustomSeekBarPreference_units);
-            if (units != null) mUnits = units;
+            if (units != null) mUnits = units.trim();
+
+            final float divisor = a.getFloat(
+                    R.styleable.CustomSeekBarPreference_displayDivisor, 1f);
+            mDisplayDivisor = divisor > 0f ? divisor : 1f;
+            mDisplayDecimals = a.getInt(
+                    R.styleable.CustomSeekBarPreference_displayDecimals, -1);
 
             final boolean continuous = a.getBoolean(
                     R.styleable.CustomSeekBarPreference_continuousUpdates, false);
@@ -164,11 +175,24 @@ public class CustomSeekBarPreference extends SliderPreference {
         if (mDefaultValueExists && mDefaultValueTextExists && v == mDefaultValue) {
             return mDefaultValueText;
         }
-        String s = String.valueOf(v);
+        String s;
+        if (mDisplayDivisor > 1f) {
+            final double scaled = v / (double) mDisplayDivisor;
+            final int decimals = mDisplayDecimals >= 0
+                    ? mDisplayDecimals
+                    : (mDisplayDivisor >= 1000f ? 2 : 1);
+            s = String.format(Locale.getDefault(), "%." + decimals + "f", scaled);
+        } else {
+            s = String.valueOf(v);
+        }
         if (mShowSign && v > 0) s = "+" + s;
         if (mUnits != null && !mUnits.isEmpty()) {
-            // Attach compact symbols (%, °, px) cleanly; keep a space for word units.
-            if ("%".equals(mUnits) || "\u00B0".equals(mUnits) || "°".equals(mUnits)) {
+            // Attach compact symbols (%, °, ×) cleanly; keep a space for word units.
+            if ("%".equals(mUnits)
+                    || "\u00B0".equals(mUnits)
+                    || "°".equals(mUnits)
+                    || "\u00D7".equals(mUnits)
+                    || "×".equals(mUnits)) {
                 s = s + mUnits;
             } else {
                 s = s + " " + mUnits;
@@ -209,7 +233,7 @@ public class CustomSeekBarPreference extends SliderPreference {
                 (TextView) holder.findViewById(R.id.custom_seekbar_value_badge);
         if (valueBadge != null) {
             valueBadge.setText(formatValueForSummary(currentValue));
-            valueBadge.setAlpha(enabled ? 1f : DISABLED_ALPHA);
+            valueBadge.setAlpha(enabled ? 1f : DISABLED_BADGE_ALPHA);
         }
 
         final View resetButton = holder.findViewById(R.id.custom_seekbar_reset_button);
@@ -250,7 +274,8 @@ public class CustomSeekBarPreference extends SliderPreference {
 
         if (minusFrame != null && minusIcon != null) {
             styleStepButton(context, minusFrame, minusIcon, R.drawable.ic_custom_seekbar_minus,
-                    /* isStart= */ true, titleText + " -");
+                    /* isStart= */ true,
+                    context.getString(R.string.custom_seekbar_decrease_desc, titleText));
             minusFrame.setOnClickListener(v -> {
                 if (!isEnabled()) return;
                 int base = slider != null ? Math.round(slider.getValue()) : getValue();
@@ -266,7 +291,8 @@ public class CustomSeekBarPreference extends SliderPreference {
 
         if (plusFrame != null && plusIcon != null) {
             styleStepButton(context, plusFrame, plusIcon, R.drawable.ic_custom_seekbar_plus,
-                    /* isStart= */ false, titleText + " +");
+                    /* isStart= */ false,
+                    context.getString(R.string.custom_seekbar_increase_desc, titleText));
             plusFrame.setOnClickListener(v -> {
                 if (!isEnabled()) return;
                 int base = slider != null ? Math.round(slider.getValue()) : getValue();
@@ -351,9 +377,9 @@ public class CustomSeekBarPreference extends SliderPreference {
     private void styleStepButton(@NonNull Context context, @NonNull ViewGroup frame,
             @NonNull ImageView icon, int drawableRes, boolean isStart,
             @NonNull CharSequence contentDescription) {
-        final int sizePx = dp(context, 36);
+        final int sizePx = dp(context, 48);
         final int iconPx = dp(context, 18);
-        final int gapPx = dp(context, 4);
+        final int gapPx = dp(context, 2);
 
         ViewGroup.LayoutParams rawLp = frame.getLayoutParams();
         if (rawLp instanceof LinearLayout.LayoutParams) {

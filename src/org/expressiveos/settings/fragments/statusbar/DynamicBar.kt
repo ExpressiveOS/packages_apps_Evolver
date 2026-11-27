@@ -19,8 +19,11 @@ import androidx.preference.SwitchPreferenceCompat
 import com.android.internal.logging.nano.MetricsProto
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
 import org.json.JSONArray
 
+@SearchIndexable
 class DynamicBar : SettingsPreferenceFragment() {
 
     private val resolver: ContentResolver
@@ -195,5 +198,8 @@ class DynamicBar : SettingsPreferenceFragment() {
                 UserHandle.USER_CURRENT
             )
         }
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = BaseSearchIndexProvider(R.xml.dynamic_bar)
     }
 }

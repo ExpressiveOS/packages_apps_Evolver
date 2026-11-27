@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2022-2025 crDroid Android Project
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,6 @@ import static com.android.internal.util.expressiveos.ThemeUtils.ICON_SHAPE_KEY;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,14 +38,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
+import com.android.internal.util.expressiveos.ThemeUtils;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
+import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.Utils;
-import com.android.internal.util.expressiveos.ThemeUtils;
+import com.android.settingslib.search.SearchIndexable;
+import com.android.settingslib.search.SearchIndexableRaw;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+@SearchIndexable
 public class IconShapes extends SettingsPreferenceFragment {
 
     private static final String TAG = "IconShapes";
@@ -84,7 +92,6 @@ public class IconShapes extends SettingsPreferenceFragment {
             }
             return;
         }
-
         super.setDivider(divider);
     }
 
@@ -102,13 +109,28 @@ public class IconShapes extends SettingsPreferenceFragment {
         return MetricsEvent.EXPRESSIVE_STUDIO;
     }
 
+    public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
+            new BaseSearchIndexProvider() {
+                @Override
+                public List<SearchIndexableRaw> getRawDataToIndex(Context context, boolean enabled) {
+                    SearchIndexableRaw raw = new SearchIndexableRaw(context);
+                    raw.key = "adaptive_icon_shape";
+                    raw.title = context.getString(R.string.themes_icon_shape_title);
+                    raw.summaryOn = context.getString(R.string.themes_adaptive_icon_shape_summary);
+                    raw.screenTitle = context.getString(R.string.themes_icon_shape_title);
+                    return Collections.singletonList(raw);
+                }
+            };
+
     public static class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
+        private static final ExecutorService OVERLAY_EXECUTOR = Executors.newSingleThreadExecutor();
+
         private final WeakReference<Context> contextRef;
         private final List<String> mPkgs;
         private final ThemeUtils mThemeUtils;
         private final String mCategory;
         private final RecyclerView mRecyclerView;
-        private final String mAppliedPkg;
+        private String mAppliedPkg;
         private String mSelectedPkg;
 
         public Adapter(Context context, List<String> pkgs, ThemeUtils themeUtils, String category, RecyclerView recyclerView) {
@@ -141,37 +163,35 @@ public class IconShapes extends SettingsPreferenceFragment {
 
             String pkg = mPkgs.get(position);
             Drawable drawable = mThemeUtils.createShapeDrawable(pkg);
-            if (drawable != null) {
-                holder.image.setBackground(drawable);
-            }
+            holder.image.setBackground(drawable);
 
-            String label = getLabel(context, pkg);
-            holder.name.setText("android".equals(pkg) ? "Default" : label);
+            String label = "android".equals(pkg)
+                    ? context.getString(R.string.themes_default_label)
+                    : getLabel(context, pkg);
+            holder.name.setText(label);
 
-            boolean isDefault = "android".equals(mAppliedPkg) && "android".equals(pkg);
+            boolean isSelected = Objects.equals(pkg, mSelectedPkg);
             int color = ColorUtils.setAlphaComponent(
                     Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent),
-                    pkg.equals(mAppliedPkg) || isDefault ? 170 : 75);
+                    isSelected ? 190 : 75);
             holder.image.setBackgroundTintList(ColorStateList.valueOf(color));
 
             holder.itemView.findViewById(R.id.option_tile).setBackground(null);
-            holder.itemView.setActivated(pkg.equals(mSelectedPkg));
+            holder.itemView.setActivated(isSelected);
             holder.itemView.setOnClickListener(view -> {
-                if (!pkg.equals(mSelectedPkg)) {
+                if (!Objects.equals(pkg, mSelectedPkg)) {
                     mSelectedPkg = pkg;
-                    mThemeUtils.setOverlayEnabled(mCategory, pkg, "android");
+                    mAppliedPkg = pkg;
+                    notifyDataSetChanged();
+                    OVERLAY_EXECUTOR.execute(() ->
+                            mThemeUtils.setOverlayEnabled(mCategory, pkg, "android"));
                 }
-                updateActivatedStatus();
             });
         }
 
         @Override
         public int getItemCount() {
             return mPkgs.size();
-        }
-
-        private void updateActivatedStatus() {
-            notifyDataSetChanged();
         }
 
         public static class CustomViewHolder extends RecyclerView.ViewHolder {

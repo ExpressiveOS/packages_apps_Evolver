@@ -28,7 +28,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent
 import com.android.settings.R
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 
+@SearchIndexable
 class UdfpsIconPicker : SettingsPreferenceFragment() {
 
     private var udfpsPkg = "org.expressiveos.udfps.icons"
@@ -126,6 +130,23 @@ class UdfpsIconPicker : SettingsPreferenceFragment() {
                 UserHandle.USER_CURRENT
             )
         }
+
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "udfps_icon"
+                    title = res.getString(R.string.themes_udfps_icon_title)
+                    summaryOn = res.getString(R.string.themes_udfps_icon_summary)
+                    screenTitle = res.getString(R.string.themes_title)
+                }
+                return listOf(raw)
+            }
+        }
     }
 
     private data class IconItem(
@@ -165,7 +186,13 @@ class UdfpsIconPicker : SettingsPreferenceFragment() {
             }
 
             holder.image.setImageDrawable(iconLoader(item))
-            holder.image.setPadding(20, 20, 20, 20)
+            val padPx = (8 * holder.image.resources.displayMetrics.density).toInt()
+            holder.image.setPadding(padPx, padPx, padPx, padPx)
+            holder.image.contentDescription = null
+            holder.itemView.contentDescription = holder.itemView.context.getString(
+                R.string.udfps_icon_option_desc,
+                position + 1
+            )
             holder.name.visibility = View.GONE
 
             holder.itemView.isActivated = (position == selectedPos)

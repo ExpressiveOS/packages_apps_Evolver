@@ -25,30 +25,38 @@
         android:summary="@string/lockscreen_widgets_enabled_summary"
         android:defaultValue="false" />
 
-    <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
-        android:key="lockscreen_info_widgets_enabled"
-        android:dependency="lockscreen_widgets_enabled"
-        android:title="@string/lockscreen_display_widgets_title"
-        android:summary="@string/lockscreen_display_widgets_summary"
-        android:defaultValue="false" />
+    <PreferenceCategory
+        android:key="lockscreen_widgets_display_category"
+        android:title="@string/lockscreen_widgets_display_category">
 
-    <org.expressiveos.settings.preferences.SystemSettingListPreference
-        android:key="lockscreen_widgets_color_mode"
-        android:title="@string/lockscreen_widgets_color_mode_title"
-        android:entries="@array/lockscreen_custom_clock_color_mode_entries"
-        android:entryValues="@array/lockscreen_custom_clock_color_mode_values"
-        android:summary="%s"
-        android:defaultValue="default" 
-        android:dependency="lockscreen_info_widgets_enabled" />
+        <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
+            android:key="lockscreen_info_widgets_enabled"
+            android:dependency="lockscreen_widgets_enabled"
+            android:title="@string/lockscreen_display_widgets_title"
+            android:summary="@string/lockscreen_display_widgets_summary"
+            android:defaultValue="false" />
 
-    <org.expressiveos.settings.preferences.colorpicker.SystemSettingColorPickerPreference
-        android:key="lockscreen_widgets_custom_color"
-        android:title="@string/custom_color"
-        android:defaultValue="0xFFFFFFFF"
-        alphaSlider="true" 
-        android:dependency="lockscreen_info_widgets_enabled" />
+        <org.expressiveos.settings.preferences.SystemSettingListPreference
+            android:key="lockscreen_widgets_color_mode"
+            android:title="@string/lockscreen_widgets_color_mode_title"
+            android:entries="@array/lockscreen_custom_clock_color_mode_entries"
+            android:entryValues="@array/lockscreen_custom_clock_color_mode_values"
+            android:summary="%s"
+            android:defaultValue="default"
+            android:dependency="lockscreen_info_widgets_enabled" />
 
-    <PreferenceCategory>
+        <org.expressiveos.settings.preferences.colorpicker.SystemSettingColorPickerPreference
+            android:key="lockscreen_widgets_custom_color"
+            android:title="@string/custom_color"
+            android:defaultValue="0xFFFFFFFF"
+            alphaSlider="true"
+            android:dependency="lockscreen_info_widgets_enabled" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="lockscreen_widgets_style_category"
+        android:title="@string/lockscreen_widgets_style_category">
 
         <org.expressiveos.settings.preferences.SystemSettingListPreference
             android:key="lockscreen_widgets_style"
@@ -68,66 +76,68 @@
             settings:interval="1"
             settings:units="%"
             android:max="100"
-            android:min="0" />
+            settings:min="0" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory>
+    <PreferenceCategory
+        android:key="lockscreen_widgets_slots_category"
+        android:title="@string/lockscreen_widgets_slots_category">
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/main_custom_widgets1"
             android:key="main_custom_widgets1"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/main_custom_widgets2"
             android:key="main_custom_widgets2"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/custom_widgets1"
             android:key="custom_widgets1"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/custom_widgets2"
             android:key="custom_widgets2"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/custom_widgets3"
             android:key="custom_widgets3"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
 
-        <org.expressiveos.settings.preferences.SystemSettingListPreference
+        <org.expressiveos.settings.preferences.PickerListPreference
             android:entries="@array/widget_entries"
             android:dependency="lockscreen_widgets_enabled"
             android:title="@string/custom_widgets4"
             android:key="custom_widgets4"
             android:entryValues="@array/widget_values"
+            android:persistent="false"
             android:summary="%s" />
-    
-    </PreferenceCategory>
 
-    <!-- ButtonPreference only supports start/center alignment, not end; the
-         button is start-aligned here instead of the original's right alignment. -->
-    <com.android.settingslib.widget.ButtonPreference
-        android:key="apply_change_button"
-        android:title="@string/action_apply" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

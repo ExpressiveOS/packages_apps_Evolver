@@ -73,6 +73,7 @@
 
     <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="depth_wallpaper_opacity"
+        android:dependency="depth_wallpaper_enabled"
         android:title="@string/depthwall_wallpaper_opacity_title"
         android:max="100"
         settings:min="1"
@@ -82,14 +83,17 @@
 
     <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="depth_wallpaper_bottom_fade"
+        android:dependency="depth_wallpaper_enabled"
         android:title="@string/depth_wallpaper_bottom_fade_title"
         android:summary="@string/depth_wallpaper_bottom_fade_summary"
         android:max="600"
         settings:min="0"
+        settings:units="dp"
         android:defaultValue="100" />
 
     <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="depth_wallpaper_fade_curve"
+        android:dependency="depth_wallpaper_enabled"
         android:title="@string/depth_wallpaper_fade_curve_title"
         android:summary="@string/depth_wallpaper_fade_curve_summary"
         android:max="100"
@@ -99,6 +103,7 @@
     
     <org.expressiveos.settings.preferences.SystemSettingSeekBarPreference
         android:key="depth_wallpaper_bottom_inset"
+        android:dependency="depth_wallpaper_enabled"
         android:title="@string/depth_wallpaper_bottom_inset_title"
         android:summary="@string/depth_wallpaper_bottom_inset_summary"
         android:max="400"

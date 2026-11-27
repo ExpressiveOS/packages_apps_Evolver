@@ -214,16 +214,19 @@
         <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
             android:key="qs_footer_show_edit"
             android:title="@string/quick_settings_footer_edit_icon_title"
+            android:summary="@string/qs_footer_show_edit_summary"
             android:defaultValue="true" />
 
         <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
             android:key="qs_footer_show_power_menu"
             android:title="@string/quick_settings_footer_show_power_menu_title"
+            android:summary="@string/qs_footer_show_power_menu_summary"
             android:defaultValue="true" />
 
         <org.expressiveos.settings.preferences.SystemSettingSwitchPreference
             android:key="qs_footer_show_settings"
             android:title="@string/quick_settings_footer_settings_icon_title"
+            android:summary="@string/qs_footer_show_settings_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 

@@ -120,7 +120,8 @@ public class Clock extends SettingsPreferenceFragment
             parseClockDateFormats();
             return true;
       } else if (preference == mClockDateStyle) {
-          parseClockDateFormats();
+          int dateStyle = Integer.parseInt((String) newValue);
+          parseClockDateFormats(dateStyle);
           return true;
       } else if (preference == mClockDateFormat) {
           int index = mClockDateFormat.findIndexOfValue((String) newValue);
@@ -151,6 +152,12 @@ public class Clock extends SettingsPreferenceFragment
     }
 
     private void parseClockDateFormats() {
+        int dateFormat = Settings.System.getIntForUser(getActivity()
+                .getContentResolver(), Settings.System.STATUS_BAR_CLOCK_DATE_STYLE, 0, UserHandle.USER_CURRENT);
+        parseClockDateFormats(dateFormat);
+    }
+
+    private void parseClockDateFormats(int dateFormat) {
         String[] dateEntries = getResources().getStringArray(
                 R.array.status_bar_date_format_entries_values);
         CharSequence parsedDateEntries[];
@@ -158,8 +165,6 @@ public class Clock extends SettingsPreferenceFragment
         Date now = new Date();
 
         int lastEntry = dateEntries.length - 1;
-        int dateFormat = Settings.System.getIntForUser(getActivity()
-                .getContentResolver(), Settings.System.STATUS_BAR_CLOCK_DATE_STYLE, 0, UserHandle.USER_CURRENT);
         for (int i = 0; i < dateEntries.length; i++) {
             if (i == lastEntry) {
                 parsedDateEntries[i] = dateEntries[i];

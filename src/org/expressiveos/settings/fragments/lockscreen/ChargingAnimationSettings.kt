@@ -106,13 +106,14 @@ class ChargingAnimationSettings : SettingsPreferenceFragment(),
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
         if (preference.key == "charging_animation_style") {
-            updatePreferenceVisibility()
+            val selectedStyle = (newValue as? String)?.toIntOrNull()
+            updatePreferenceVisibility(selectedStyle)
         }
         return true
     }
 
-    private fun updatePreferenceVisibility() {
-        val style = Settings.System.getInt(
+    private fun updatePreferenceVisibility(styleOverride: Int? = null) {
+        val style = styleOverride ?: Settings.System.getInt(
             contentResolver,
             "charging_animation_style",
             STYLE_PLASMA

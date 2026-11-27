@@ -95,10 +95,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import org.json.JSONObject
 import java.util.Locale
 import kotlin.math.roundToInt
 
+@SearchIndexable
 class UserSelectedAppSpoofSettings : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +123,24 @@ class UserSelectedAppSpoofSettings : Fragment() {
                 ExpressiveTheme {
                     AppSpoofingContent(requireContext())
                 }
+            }
+        }
+    }
+
+    companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "user_selected_app_spoof"
+                    title = res.getString(R.string.user_selectable_app_spoofing_title)
+                    screenTitle = res.getString(R.string.spoofing_title)
+                }
+                return listOf(raw)
             }
         }
     }

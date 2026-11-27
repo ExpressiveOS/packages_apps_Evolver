@@ -86,7 +86,7 @@ public class ColorPickerPreference extends Preference {
             defaultValue = mDefaultValue;
         }
         mCurrentValue = getPersistedInt((Integer) defaultValue);
-        onColorChanged(mCurrentValue);
+        setColor(mCurrentValue);
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -172,24 +172,28 @@ public class ColorPickerPreference extends Preference {
         }
 
         final Context context = getContext();
-        FrameLayout resetPill = new FrameLayout(context);
-        resetPill.setTag("default");
-        LinearLayout.LayoutParams pillLp = new LinearLayout.LayoutParams(dp(32), dp(32));
-        pillLp.setMarginEnd(dp(10));
-        resetPill.setLayoutParams(pillLp);
-        resetPill.setBackgroundResource(R.drawable.bg_custom_seekbar_reset_pill);
-        resetPill.setContentDescription(context.getString(R.string.color_picker_reset));
-        resetPill.setEnabled(isEnabled());
-        resetPill.setClickable(isEnabled());
-        resetPill.setFocusable(isEnabled());
-        resetPill.setAlpha(isEnabled() ? 1f : DISABLED_ALPHA);
-        resetPill.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+        FrameLayout resetTarget = new FrameLayout(context);
+        resetTarget.setTag("default");
+        LinearLayout.LayoutParams targetLp = new LinearLayout.LayoutParams(dp(48), dp(48));
+        targetLp.setMarginEnd(dp(4));
+        resetTarget.setLayoutParams(targetLp);
+        resetTarget.setContentDescription(context.getString(R.string.color_picker_reset));
+        resetTarget.setEnabled(isEnabled());
+        resetTarget.setClickable(isEnabled());
+        resetTarget.setFocusable(isEnabled());
+        resetTarget.setAlpha(isEnabled() ? 1f : DISABLED_ALPHA);
+        resetTarget.setAccessibilityDelegate(new View.AccessibilityDelegate() {
             @Override
             public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
                 super.onInitializeAccessibilityNodeInfo(host, info);
                 info.setClassName(Button.class.getName());
             }
         });
+
+        FrameLayout resetPill = new FrameLayout(context);
+        resetPill.setLayoutParams(new FrameLayout.LayoutParams(dp(32), dp(32), Gravity.CENTER));
+        resetPill.setBackgroundResource(R.drawable.bg_custom_seekbar_reset_pill);
+        resetPill.setDuplicateParentStateEnabled(true);
 
         ImageView resetIcon = new ImageView(context);
         FrameLayout.LayoutParams iconLp =
@@ -200,13 +204,14 @@ public class ColorPickerPreference extends Preference {
                 com.android.settingslib.widget.theme.R.color.settingslib_materialColorOnSurfaceVariant)));
         resetIcon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         resetPill.addView(resetIcon);
+        resetTarget.addView(resetPill);
 
-        resetPill.setOnClickListener(v -> {
+        resetTarget.setOnClickListener(v -> {
             if (!isEnabled()) return;
             v.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
             onColorChanged(mDefaultValue);
         });
-        mWidgetFrameView.addView(resetPill, 0);
+        mWidgetFrameView.addView(resetTarget, 0);
     }
 
     private void setPreviewColor() {
@@ -264,16 +269,15 @@ public class ColorPickerPreference extends Preference {
     }
 
     public void onColorChanged(int color) {
+        if (!callChangeListener(color)) {
+            return;
+        }
         mCurrentValue = color;
         mCurrentHexValue = formatSummary(color);
         if (mAutoSummary) setSummary(mCurrentHexValue);
         setDefaultButton();
         setPreviewColor();
         persistInt(color);
-        OnPreferenceChangeListener listener = getOnPreferenceChangeListener();
-        if (listener != null) {
-            listener.onPreferenceChange(this, color);
-        }
     }
 
     protected void showDialog() {

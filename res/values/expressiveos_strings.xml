@@ -360,7 +360,7 @@
     <string name="depthwall_clear_subject_confirm_message">This will remove the current depth wallpaper subject image. Continue?</string>
     <string name="depthwall_clear_subject_done_toast">Subject image cleared</string>
     <string name="depthwall_spatial_effect_title">Spatial Effect</string>
-    <string name="depthwall_spatial_effect_summary">Adds an 3D spatial effect to the lockscreen depth wallpaper when you tilt your device.</string>
+    <string name="depthwall_spatial_effect_summary">Adds a 3D spatial effect to the lock screen depth wallpaper when you tilt your device.</string>
     <string name="depthwall_spatial_sensitivity_title">Spatial Sensitivity</string>
     <string name="depthwall_spatial_sensitivity_summary">Adjust the movement sensitivity of the 3D spatial effect</string>
     <string name="dw_footer_text">Depth Wallpaper overlays a subject image above the lock screen clock, inspired by iOS wallpaper subject segmentation.\n\nSetup:\n1. Set a wallpaper with the background you want behind the subject.\n2. Select a subject image to overlay above the lock screen clock.\n3. Adjust the offsets and opacity to your preference.</string>
@@ -887,7 +887,7 @@
     <string name="qs_widget_slider_corner_summary">Show rounded style vertical widget sliders in QS panel</string>
 
     <!-- Notifications -->
-    <string name="notifications_heads_up_title">Heads up</string>
+    <string name="notifications_heads_up_title">Heads-up</string>
     <string name="notifications_interface_category">Interface</string>
     <string name="notifications_kill_app_button_title">Kill app</string>
     <string name="notifications_kill_app_button_summary">Show a kill app button in the notification long-press menu</string>
@@ -898,7 +898,7 @@
     <string name="compact_heads_up_notifications_enabled_summary">Display notifications in a compact size</string>
     <string name="notifications_less_boring_heads_up_title">Less boring</string>
     <string name="notifications_less_boring_heads_up_summary">Show pop-up notifications only for alarms, calls, and messaging apps</string>
-    <string name="notification_heads_up_timeout_title">Time out</string>
+    <string name="notification_heads_up_timeout_title">Timeout</string>
     <string name="notification_heads_up_timeout_summary">Time to display heads up notifications</string>
     <string name="notification_use_app_icons_title">Use app icons in notifications</string>
     <string name="notification_use_app_icons_summary">Show the app launcher icon instead of the small notification icon</string>
@@ -1298,7 +1298,7 @@
     <string name="toast_emoji_slots_full">No free emoji font slot. Pick a built-in style to reset it, then try again</string>
     <string name="toast_invalid_emoji_file">Invalid emoji font file</string>
     <string name="toast_emoji_font_too_old">A newer version of this emoji font is already installed</string>
-    <string name="custom_system_theme_title">Themes</string>
+    <string name="custom_system_theme_title">Theme Store &amp; icon packs</string>
     <string name="custom_system_theme_summary">Customize system appearance with themes and icon packs</string>
 
     <!-- About -->
@@ -1497,4 +1497,59 @@
     <string name="dynamic_island_popup_color_mode_entry_default">Default</string>
     <string name="dynamic_island_popup_color_mode_entry_blur">Blur</string>
     <string name="dynamic_island_popup_color_mode_entry_solid_black">Solid black</string>
+
+    <!-- Wave 4 ExpressiveOS 2.0 additions -->
+    <string name="miscellaneous_sound_category">Sound &amp; volume</string>
+    <string name="volume_panel_vertical_sliders_title">Vertical expanded volume panel</string>
+    <string name="volume_panel_vertical_sliders_summary">Show vertical volume sliders in the expanded volume panel</string>
+    <string name="power_menu_style_category">Power menu style</string>
+    <string name="battery_bar_animate_summary">Animate the battery bar while charging</string>
+    <string name="battery_bar_use_charging_color_summary">Use a dedicated color while the device is charging</string>
+    <string name="depthwall_extract_failed_toast">Failed to start subject extractor</string>
+    <string name="wallpaper_styles_apply_title">Apply wallpaper changes</string>
+    <string name="wallpaper_styles_apply_summary">Changes are saved. Tap to restart SystemUI and preview them</string>
+    <string name="themes_default_label">Default</string>
+    <string name="themes_adaptive_icon_shape_summary">Choose the shape of app icons across the system</string>
+    <string name="themes_boot_animation_summary">Choose the animation shown when starting the device</string>
+    <string name="studio_clock_styles_summary">Choose custom lock screen clock faces</string>
+    <string name="studio_wallpaper_styles_summary">Blur, dim, and color effects for wallpapers</string>
+    <string name="studio_holiday_themes_summary">Seasonal themes that apply automatically or on demand</string>
+
+    <!-- Wave 4 Batch 2 additions -->
+    <string name="clock_picker_custom_active_title">Custom clock active</string>
+    <string name="clock_picker_custom_active_summary">Overrides Wallpaper &amp; style clocks until reset to system default</string>
+    <string name="clock_picker_use_default_action">Use system default</string>
+    <string name="clock_picker_customize_action">Customize</string>
+    <string name="lockscreen_custom_clock_font_category_title">Typography</string>
+
+    <!-- Wave 4 Batch 3 additions -->
+    <string name="custom_seekbar_decrease_desc">Decrease %1$s</string>
+    <string name="custom_seekbar_increase_desc">Increase %1$s</string>
+    <string name="udfps_icon_option_desc">Fingerprint icon %1$d</string>
+    <string name="charging_animation_style_category">Style</string>
+    <string name="cutout_progress_ring_category">Progress ring</string>
+    <string name="dynamic_bar_lockscreen_category">Lock screen</string>
+    <string name="dynamic_bar_main_switch_summary">Show live activities, media, timers, and alerts around the front camera</string>
+    <string name="lockscreen_widgets_display_category">Display</string>
+    <string name="lockscreen_widgets_style_category">Style</string>
+    <string name="lockscreen_widgets_slots_category">Widget slots</string>
+    <string name="qs_footer_show_edit_summary">Show the edit tiles button in the Quick Settings footer</string>
+    <string name="qs_footer_show_power_menu_summary">Show the power menu shortcut in the Quick Settings footer</string>
+    <string name="qs_footer_show_settings_summary">Show the Settings shortcut in the Quick Settings footer</string>
+    <string name="power_menu_actions_screenshot_summary">Capture a screenshot directly from the power menu</string>
+    <string name="power_menu_actions_onthego_summary">Toggle transparent camera overlay while walking</string>
+    <string name="power_menu_actions_airplane_summary">Toggle airplane mode from the power menu</string>
+    <string name="power_menu_actions_users_summary">Switch between device users from the power menu</string>
+    <string name="power_menu_actions_lockdown_summary">Disable biometrics and lock screen notifications until unlocked</string>
+    <string name="power_menu_actions_emergency_summary">Show the emergency call shortcut in the power menu</string>
+    <string name="power_menu_actions_devicecontrols_summary">Access smart home controls from the power menu</string>
+    <string name="pif_validation_empty">Value cannot be empty</string>
+    <string name="pif_validation_invalid_integer">Must be a valid integer</string>
+    <string name="lock_glymps_folder_not_found">Folder not found. Tap to create.</string>
+    <string name="lock_glymps_wallpapers_found">%1$d wallpapers found in %2$s</string>
+    <string name="unit_chars">chars</string>
+    <string name="boot_animation_reduced_motion_hint">Animations paused · Tap to preview</string>
+    <string name="color_picker_swatch_desc">Color %1$s</string>
+    <string name="font_preview_sample_headline">Aa Bb Cc</string>
+    <string name="font_preview_sample_digits">12:34 · 0123456789</string>
 </resources>

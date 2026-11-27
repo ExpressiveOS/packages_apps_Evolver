@@ -65,7 +65,7 @@ class LockClockFontsPreference @JvmOverloads constructor(
         val options = pkgs.map { pkg ->
             val selected = pkg == current
             PickerOption(
-                label = if (pkg == "android") "Default" else getLabelSafe(ctx, pkg),
+                label = if (pkg == "android") ctx.getString(R.string.themes_default_label) else getLabelSafe(ctx, pkg),
                 trailing = {
                     // Loaded when the row scrolls into view, not for the whole list up front.
                     val family = remember(pkg) { getTypefaceSafe(ctx, pkg)?.let { FontFamily(it) } }
@@ -125,13 +125,18 @@ class LockClockFontsPreference @JvmOverloads constructor(
                         Toast.makeText(ctx, R.string.toast_failed_apply_font, Toast.LENGTH_SHORT).show()
                     }
                 ) {
+                    updateSummary()
                     SystemUtils.restartSystemUI(ctx)
                 }
             },
             onLater = {
-                mainHandler.post {
-                    themeUtils.setOverlayEnabled(CATEGORY, old, old)
-                    themeUtils.setOverlayEnabled(CATEGORY, pkg, "android")
+                applyOverlayInBackground(
+                    old, pkg,
+                    onFailed = {
+                        Toast.makeText(ctx, R.string.toast_failed_apply_font, Toast.LENGTH_SHORT).show()
+                    }
+                ) {
+                    updateSummary()
                 }
             },
         )
@@ -163,7 +168,7 @@ class LockClockFontsPreference @JvmOverloads constructor(
     private fun updateSummary() {
         val applied = getAppliedPkg()
         summary = if (applied == "android") {
-            "Default"
+            context.getString(R.string.themes_default_label)
         } else {
             getLabelSafe(context, applied)
         }

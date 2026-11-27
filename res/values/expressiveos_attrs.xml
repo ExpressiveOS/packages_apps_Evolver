@@ -20,6 +20,8 @@
         <attr name="showSign" format="boolean" />
         <attr name="units" format="string|reference" />
         <attr name="continuousUpdates" format="boolean" />
+        <attr name="displayDivisor" format="float" />
+        <attr name="displayDecimals" format="integer" />
     </declare-styleable>
 
     <!-- Base attributes available to DeviceConfigSwitchPreference. -->

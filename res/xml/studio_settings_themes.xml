@@ -79,6 +79,7 @@
         <Preference
             android:key="android.theme.customization.adaptive_icon_shape"
             android:title="@string/themes_icon_shape_title"
+            android:summary="@string/themes_adaptive_icon_shape_summary"
             android:fragment="org.expressiveos.settings.fragments.themes.IconShapes"/>
 
         <!-- Navigation bar icons -->
@@ -105,6 +106,7 @@
         <Preference
             android:key="boot_animation"
             android:title="@string/themes_boot_animation_title"
+            android:summary="@string/themes_boot_animation_summary"
             android:fragment="org.expressiveos.settings.fragments.themes.BootAnimation"
             settings:controller="org.expressiveos.settings.fragments.themes.BootAnimationController" />
 

@@ -23,36 +23,43 @@
     <SwitchPreferenceCompat
         android:key="screenshot"
         android:title="@string/power_menu_actions_screenshot_title"
+        android:summary="@string/power_menu_actions_screenshot_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="onthego"
         android:title="@string/power_menu_actions_onthego_title"
+        android:summary="@string/power_menu_actions_onthego_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="airplane"
         android:title="@string/power_menu_actions_airplane_title"
+        android:summary="@string/power_menu_actions_airplane_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="users"
         android:title="@string/power_menu_actions_users_title"
+        android:summary="@string/power_menu_actions_users_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="lockdown"
         android:title="@string/power_menu_actions_lockdown_title"
+        android:summary="@string/power_menu_actions_lockdown_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="emergency"
         android:title="@string/power_menu_actions_emergency_title"
+        android:summary="@string/power_menu_actions_emergency_summary"
         android:defaultValue="false" />
 
     <SwitchPreferenceCompat
         android:key="devicecontrols"
         android:title="@string/power_menu_actions_devicecontrols_title"
+        android:summary="@string/power_menu_actions_devicecontrols_summary"
         android:defaultValue="false"
         android:enabled="false" />
 </PreferenceScreen>

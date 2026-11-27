@@ -75,6 +75,9 @@ import com.android.settings.R
 import com.android.settings.widget.scrollbar
 import com.android.settingslib.spa.framework.theme.SettingsSpace
 import com.android.settings.SettingsPreferenceFragment
+import com.android.settings.search.BaseSearchIndexProvider
+import com.android.settingslib.search.SearchIndexable
+import com.android.settingslib.search.SearchIndexableRaw
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -105,9 +108,26 @@ private val EXCLUDED_SUFFIXES = listOf(
     ".systemui.plugin", ".theme", ".iconpack",
 )
 
+@SearchIndexable
 class TrickyStoreAppSettings : SettingsPreferenceFragment() {
 
     companion object {
+        @JvmField
+        val SEARCH_INDEX_DATA_PROVIDER = object : BaseSearchIndexProvider() {
+            override fun getRawDataToIndex(
+                context: android.content.Context,
+                enabled: Boolean
+            ): List<SearchIndexableRaw> {
+                val res = context.resources
+                val raw = SearchIndexableRaw(context).apply {
+                    key = "tricky_store_app_settings"
+                    title = res.getString(R.string.ts_manage_target_apps)
+                    screenTitle = res.getString(R.string.tricky_store_title)
+                }
+                return listOf(raw)
+            }
+        }
+
         const val TARGET_KEY = "spoof_trickystore_target"
         // The default target list lives in the framework
         // (TrickyStoreService.DEFAULT_TARGET_LIST), where AxSpoofManager seeds it
@@ -191,7 +211,7 @@ class TrickyStoreAppSettings : SettingsPreferenceFragment() {
         requireActivity().title = getString(R.string.tricky_store_title)
     }
 
-    override fun getMetricsCategory() = MetricsProto.MetricsEvent.VIEW_UNKNOWN
+    override fun getMetricsCategory() = MetricsProto.MetricsEvent.EXPRESSIVE_STUDIO
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {}
 

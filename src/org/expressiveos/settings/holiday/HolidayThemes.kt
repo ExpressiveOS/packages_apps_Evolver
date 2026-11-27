@@ -130,7 +130,7 @@ object HolidayThemes {
     // HolidayActionReceiver.evaluate
     // -------------------------------------------------------------------------
 
-    fun isAuto(context: Context): Boolean = prefs(context)?.getBoolean(KEY_AUTO, true) ?: true
+    fun isAuto(context: Context): Boolean = prefs(context)?.getBoolean(KEY_AUTO, false) ?: false
 
     fun setAuto(context: Context, on: Boolean) {
         prefs(context)?.edit()?.putBoolean(KEY_AUTO, on)?.apply()
@@ -396,7 +396,7 @@ object HolidayThemes {
     /** What should be showing: the trial, else the date's holiday unless off or skipped. */
     private fun planFor(context: Context, prefs: SharedPreferences, today: LocalDate): Plan? {
         val trial = trial(prefs)
-        val dated = if (trial == null && prefs.getBoolean(KEY_AUTO, true)) {
+        val dated = if (trial == null && prefs.getBoolean(KEY_AUTO, false)) {
             scheduled(today)?.takeIf { (holiday, window) -> !isSkipped(prefs, holiday, window) }
         } else {
             null
