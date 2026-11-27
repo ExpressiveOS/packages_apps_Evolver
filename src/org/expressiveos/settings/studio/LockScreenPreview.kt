@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -266,6 +267,7 @@ private fun DefaultClock(width: Dp, ink: Color, modifier: Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = time,
+            style = LocalTextStyle.current.copy(fontFeatureSettings = "tnum"),
             color = ink,
             fontFamily = BloomRounded,
             fontWeight = FontWeight.Bold,

@@ -18,6 +18,14 @@ import android.util.AttributeSet
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -80,7 +88,27 @@ class StatusBarLogoStylePreference @JvmOverloads constructor(
         val selectedIndex = if (current in logoDrawables.indices) current else 0
         val options = logoDrawables.indices.map { index ->
             val icon = getIconDrawable(index)
-            PickerOption(labelForIndex(index).orEmpty()) { PickerDrawableIcon(icon) }
+            val selected = index == selectedIndex
+            PickerOption(labelForIndex(index).orEmpty()) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
+                    },
+                    contentColor = if (selected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.size(40.dp),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        PickerDrawableIcon(icon)
+                    }
+                }
+            }
         }
 
         // "Add logo" sits next to Cancel, like "Add font" in the font picker.

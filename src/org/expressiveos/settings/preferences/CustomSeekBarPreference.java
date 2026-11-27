@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016-2025 crDroid Android Project
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +17,23 @@
 
 package org.expressiveos.settings.preferences;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.ViewCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
@@ -39,10 +43,17 @@ import com.android.settingslib.widget.SliderPreference;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.Slider;
 
+/**
+ * Material 3 Expressive segmented slider preference participating natively in
+ * {@code SettingsPreferenceGroupAdapter}'s rounded card sections, with a tabular-numeral tonal
+ * value pill badge, inline reset pill button, accessible +/- fine-step buttons, thick pill track,
+ * and outcome-gated tactile haptics.
+ */
 public class CustomSeekBarPreference extends SliderPreference {
 
     private static final String SETTINGS_NS = "http://schemas.android.com/apk/res/com.android.settings";
     private static final String ANDROIDNS = "http://schemas.android.com/apk/res/android";
+    private static final float DISABLED_ALPHA = 0.38f;
 
     private boolean mShowSign;
     @Nullable
@@ -53,36 +64,37 @@ public class CustomSeekBarPreference extends SliderPreference {
     private boolean mDefaultValueExists;
     private int mDefaultValue;
 
-    private CharSequence mUserSummary;  
-
+    @Nullable
+    private CharSequence mUserSummary;
     private boolean mInUserDrag = false;
+    private int mLastHapticValue = Integer.MIN_VALUE;
 
-    public CustomSeekBarPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public CustomSeekBarPreference(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setLayoutResource(R.layout.preference_custom_seekbar_expressive);
+        mUserSummary = super.getSummary();
         readLegacyAttrs(context, attrs);
         initDefaults();
-        mUserSummary = super.getSummary();
-        updateSummaryNow();
     }
 
-    public CustomSeekBarPreference(Context context) {
-        super(context, null);
-        initDefaults();
-        mUserSummary = super.getSummary();
-        updateSummaryNow();
+    public CustomSeekBarPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public CustomSeekBarPreference(@NonNull Context context) {
+        this(context, null, 0);
     }
 
     private void initDefaults() {
-        setShowSliderValue(true);
-        setHapticFeedbackMode(HAPTIC_FEEDBACK_MODE_ON_TICKS);
-        setLabelFormater(new LabelFormatter() {
-            @Override public String getFormattedValue(float value) {
-                return formatValueForSummary((int) value);
-            }
-        });
+        // Value is rendered live in the header's tabular-numeral secondaryContainer pill badge.
+        setShowSliderValue(false);
+        // Disable base tick haptic so outcome-gated step vs min/max haptics never double-fire.
+        setHapticFeedbackMode(HAPTIC_FEEDBACK_MODE_NONE);
+        setLabelFormater(value -> formatValueForSummary(Math.round(value)));
     }
 
-    private void readLegacyAttrs(Context c, AttributeSet attrs) {
+    private void readLegacyAttrs(Context c, @Nullable AttributeSet attrs) {
         if (attrs == null) return;
         final TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.CustomSeekBarPreference);
         try {
@@ -124,7 +136,7 @@ public class CustomSeekBarPreference extends SliderPreference {
 
             int step = getSliderIncrement();
             if (step <= 0 || span == 0) {
-                setSliderIncrement(1); // Always use discrete steps for CustomSeekBarPreference
+                setSliderIncrement(1);
             } else if ((span % step) != 0) {
                 int gcd = gcd(span, step);
                 if (gcd <= 0) gcd = 1;
@@ -138,20 +150,14 @@ public class CustomSeekBarPreference extends SliderPreference {
     }
 
     @Override
-    public void setSummary(CharSequence summary) {
+    public void setSummary(@Nullable CharSequence summary) {
         mUserSummary = summary;
-        updateSummaryNow();
+        super.setSummary(summary);
     }
 
     @Override
     public void setValue(int sliderValue) {
         super.setValue(sliderValue);
-        if (!mInUserDrag) updateSummaryNow();
-    }
-
-    private void updateSummaryNow() {
-        CharSequence composed = composeSummary(mUserSummary, getValue());
-        super.setSummary(composed);
     }
 
     private String formatValueForSummary(int v) {
@@ -160,14 +166,15 @@ public class CustomSeekBarPreference extends SliderPreference {
         }
         String s = String.valueOf(v);
         if (mShowSign && v > 0) s = "+" + s;
-        if (mUnits != null && !mUnits.isEmpty()) s = s + " " + mUnits;
+        if (mUnits != null && !mUnits.isEmpty()) {
+            // Attach compact symbols (%, °, px) cleanly; keep a space for word units.
+            if ("%".equals(mUnits) || "\u00B0".equals(mUnits) || "°".equals(mUnits)) {
+                s = s + mUnits;
+            } else {
+                s = s + " " + mUnits;
+            }
+        }
         return s;
-    }
-
-    private CharSequence composeSummary(CharSequence userSummary, int v) {
-        final String valueText = formatValueForSummary(v);
-        if (userSummary == null || userSummary.length() == 0) return valueText;
-        return valueText + " \u2022 " + userSummary;
     }
 
     @Override
@@ -177,96 +184,159 @@ public class CustomSeekBarPreference extends SliderPreference {
             mDefaultValue = (Integer) defaultValue;
         }
         super.setDefaultValue(defaultValue);
-        updateSummaryNow();
+        notifyChanged();
     }
 
     @Override
     public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
 
+        final Context context = holder.itemView.getContext();
+        final boolean enabled = isEnabled();
+        final int currentValue = getValue();
+
         final TextView summaryView = (TextView) holder.findViewById(android.R.id.summary);
         if (summaryView != null) {
-            summaryView.setText(composeSummary(mUserSummary, getValue()));
+            if (!TextUtils.isEmpty(mUserSummary)) {
+                summaryView.setText(mUserSummary);
+                summaryView.setVisibility(View.VISIBLE);
+            } else {
+                summaryView.setVisibility(View.GONE);
+            }
         }
 
-        final View labelFrame = holder.findViewById(
-                com.android.settingslib.widget.preference.slider.R.id.label_frame);
-        final TextView startText = (TextView) holder.findViewById(android.R.id.text1);
-        final TextView endText = (TextView) holder.findViewById(android.R.id.text2);
-
-        if (labelFrame != null) {
-            boolean hasStart = startText != null && startText.getText() != null
-                    && startText.getText().length() > 0;
-            boolean hasEnd = endText != null && endText.getText() != null
-                    && endText.getText().length() > 0;
-            boolean parentWantsLabels = hasStart || hasEnd;
-
-            labelFrame.setVisibility((parentWantsLabels || mDefaultValueExists) ? View.VISIBLE : View.GONE);
+        final TextView valueBadge =
+                (TextView) holder.findViewById(R.id.custom_seekbar_value_badge);
+        if (valueBadge != null) {
+            valueBadge.setText(formatValueForSummary(currentValue));
+            valueBadge.setAlpha(enabled ? 1f : DISABLED_ALPHA);
         }
 
-        if (endText != null) {
-            attachResetIcon(endText);
-        }
-
-        ViewGroup minusFrame = (ViewGroup) holder.findViewById(
-                com.android.settingslib.widget.preference.slider.R.id.icon_start_frame);
-        ImageView minusIcon = (ImageView) holder.findViewById(
-                com.android.settingslib.widget.preference.slider.R.id.icon_start);
-
-        ViewGroup plusFrame = (ViewGroup) holder.findViewById(
-                com.android.settingslib.widget.preference.slider.R.id.icon_end_frame);
-        ImageView plusIcon = (ImageView) holder.findViewById(
-                com.android.settingslib.widget.preference.slider.R.id.icon_end);
-
+        final View resetButton = holder.findViewById(R.id.custom_seekbar_reset_button);
         final Slider slider = (Slider) holder.findViewById(
                 com.android.settingslib.widget.preference.slider.R.id.slider);
 
-        int stepForClicks = Math.max(1, getSliderIncrement());
+        if (resetButton != null) {
+            installButtonAccessibilityDelegate(resetButton);
+            updateResetButtonState(resetButton, currentValue, false /* animate */);
+            resetButton.setOnClickListener(v -> {
+                if (!isEnabled() || !mDefaultValueExists || getValue() == mDefaultValue) return;
+                v.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                applyUserValue(mDefaultValue, slider, valueBadge, resetButton, holder);
+            });
+        }
+
+        final View labelFrame = holder.findViewById(R.id.custom_seekbar_label_frame);
+        final TextView startText = (TextView) holder.findViewById(android.R.id.text1);
+        final TextView endText = (TextView) holder.findViewById(android.R.id.text2);
+        if (labelFrame != null) {
+            boolean hasStart = startText != null && !TextUtils.isEmpty(startText.getText());
+            boolean hasEnd = endText != null && !TextUtils.isEmpty(endText.getText());
+            labelFrame.setVisibility((hasStart || hasEnd) ? View.VISIBLE : View.GONE);
+        }
+
+        final ViewGroup minusFrame = (ViewGroup) holder.findViewById(
+                com.android.settingslib.widget.preference.slider.R.id.icon_start_frame);
+        final ImageView minusIcon = (ImageView) holder.findViewById(
+                com.android.settingslib.widget.preference.slider.R.id.icon_start);
+
+        final ViewGroup plusFrame = (ViewGroup) holder.findViewById(
+                com.android.settingslib.widget.preference.slider.R.id.icon_end_frame);
+        final ImageView plusIcon = (ImageView) holder.findViewById(
+                com.android.settingslib.widget.preference.slider.R.id.icon_end);
+
+        final int stepForClicks = Math.max(1, getSliderIncrement());
+        final CharSequence titleText = getTitle() != null ? getTitle() : "";
 
         if (minusFrame != null && minusIcon != null) {
-            minusFrame.setVisibility(View.VISIBLE);
-            minusIcon.setImageResource(R.drawable.ic_custom_seekbar_minus);
+            styleStepButton(context, minusFrame, minusIcon, R.drawable.ic_custom_seekbar_minus,
+                    /* isStart= */ true, titleText + " -");
             minusFrame.setOnClickListener(v -> {
                 if (!isEnabled()) return;
                 int base = slider != null ? Math.round(slider.getValue()) : getValue();
-                int newVal = Math.max(getMin(), base - stepForClicks);
-                applyUserValue(newVal, slider);
-                updatePlusMinusEnabledStates(holder);
+                int min = getMin();
+                int newVal = Math.max(min, base - stepForClicks);
+                if (newVal == base) return;
+                v.performHapticFeedback(newVal <= min
+                        ? HapticFeedbackConstants.CONFIRM
+                        : HapticFeedbackConstants.CLOCK_TICK);
+                applyUserValue(newVal, slider, valueBadge, resetButton, holder);
             });
         }
 
         if (plusFrame != null && plusIcon != null) {
-            plusFrame.setVisibility(View.VISIBLE);
-            plusIcon.setImageResource(R.drawable.ic_custom_seekbar_plus);
+            styleStepButton(context, plusFrame, plusIcon, R.drawable.ic_custom_seekbar_plus,
+                    /* isStart= */ false, titleText + " +");
             plusFrame.setOnClickListener(v -> {
                 if (!isEnabled()) return;
                 int base = slider != null ? Math.round(slider.getValue()) : getValue();
-                int newVal = Math.min(getMax(), base + stepForClicks);
-                applyUserValue(newVal, slider);
-                updatePlusMinusEnabledStates(holder);
+                int max = getMax();
+                int newVal = Math.min(max, base + stepForClicks);
+                if (newVal == base) return;
+                v.performHapticFeedback(newVal >= max
+                        ? HapticFeedbackConstants.CONFIRM
+                        : HapticFeedbackConstants.CLOCK_TICK);
+                applyUserValue(newVal, slider, valueBadge, resetButton, holder);
             });
         }
 
-        updatePlusMinusEnabledStates(holder);
+        updatePlusMinusEnabledStates(holder, currentValue);
 
-        if (slider != null && summaryView != null) {
+        if (slider != null) {
+            // Enforce M3 Expressive thick pill track & crisp vertical bar thumb geometry.
+            slider.setLabelBehavior(LabelFormatter.LABEL_GONE);
+            slider.setTrackHeight(dp(context, 18));
+            slider.setTrackInsideCornerSize(dp(context, 2));
+            slider.setTrackStopIndicatorSize(dp(context, 4));
+            slider.setThumbWidth(dp(context, 4));
+            slider.setThumbHeight(dp(context, 40));
+            slider.setThumbElevation(0f);
+            slider.setThumbStrokeWidth(0f);
+            slider.setThumbTrackGapSize(dp(context, 6));
+
+            mLastHapticValue = currentValue;
+            final String initialStateDesc = formatValueForSummary(currentValue);
+            slider.setStateDescription(initialStateDesc);
+
             slider.addOnChangeListener((s, value, fromUser) -> {
-                if (fromUser) {
-                    summaryView.setText(composeSummary(mUserSummary, (int) value));
-                    updatePlusMinusEnabledStates(holder);
+                final int rounded = Math.round(value);
+                if (valueBadge != null) {
+                    valueBadge.setText(formatValueForSummary(rounded));
+                }
+                s.setStateDescription(formatValueForSummary(rounded));
+                if (resetButton != null) {
+                    updateResetButtonState(resetButton, rounded, fromUser /* animate */);
+                }
+                updatePlusMinusEnabledStates(holder, rounded);
+
+                if (fromUser && rounded != mLastHapticValue) {
+                    mLastHapticValue = rounded;
+                    if (rounded <= getMin() || rounded >= getMax()) {
+                        s.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                    } else {
+                        s.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                    }
                 }
             });
+
             slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
                 @Override
                 public void onStartTrackingTouch(@NonNull Slider s) {
                     mInUserDrag = true;
+                    mLastHapticValue = Math.round(s.getValue());
                 }
 
                 @Override
                 public void onStopTrackingTouch(@NonNull Slider s) {
                     mInUserDrag = false;
-                    applyUserValue(Math.round(s.getValue()), s);
-                    updatePlusMinusEnabledStates(holder);
+                    final int finalVal = Math.round(s.getValue());
+                    if (valueBadge != null) {
+                        valueBadge.setText(formatValueForSummary(finalVal));
+                    }
+                    if (resetButton != null) {
+                        updateResetButtonState(resetButton, finalVal, true);
+                    }
+                    updatePlusMinusEnabledStates(holder, finalVal);
                 }
             });
         }
@@ -278,99 +348,160 @@ public class CustomSeekBarPreference extends SliderPreference {
         notifyChanged();
     }
 
-    private void applyUserValue(int newVal, @Nullable Slider slider) {
-        if (newVal == getValue()) return;
-        if (!callChangeListener(newVal)) {
+    private void styleStepButton(@NonNull Context context, @NonNull ViewGroup frame,
+            @NonNull ImageView icon, int drawableRes, boolean isStart,
+            @NonNull CharSequence contentDescription) {
+        final int sizePx = dp(context, 36);
+        final int iconPx = dp(context, 18);
+        final int gapPx = dp(context, 4);
+
+        ViewGroup.LayoutParams rawLp = frame.getLayoutParams();
+        if (rawLp instanceof LinearLayout.LayoutParams) {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) rawLp;
+            lp.width = sizePx;
+            lp.height = sizePx;
+            if (isStart) {
+                lp.setMarginEnd(gapPx);
+            } else {
+                lp.setMarginStart(gapPx);
+            }
+            frame.setLayoutParams(lp);
+        }
+
+        frame.setVisibility(View.VISIBLE);
+        frame.setBackgroundResource(R.drawable.bg_custom_seekbar_step_button);
+        frame.setClickable(true);
+        frame.setFocusable(true);
+        frame.setContentDescription(contentDescription);
+        installButtonAccessibilityDelegate(frame);
+
+        ViewGroup.LayoutParams iconLp = icon.getLayoutParams();
+        if (iconLp != null) {
+            iconLp.width = iconPx;
+            iconLp.height = iconPx;
+            icon.setLayoutParams(iconLp);
+        }
+        icon.setBackground(null);
+        icon.setImageResource(drawableRes);
+        icon.setImageTintList(ColorStateList.valueOf(
+                context.getColor(com.android.settingslib.widget.theme.R.color.settingslib_materialColorOnSurface)));
+    }
+
+    private static void installButtonAccessibilityDelegate(@NonNull View view) {
+        view.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+            @Override
+            public void onInitializeAccessibilityNodeInfo(@NonNull View host,
+                    @NonNull AccessibilityNodeInfo info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                info.setClassName(Button.class.getName());
+            }
+        });
+    }
+
+    private void updateResetButtonState(@NonNull View resetButton, int currentValue,
+            boolean animate) {
+        final boolean show = mDefaultValueExists && isEnabled() && currentValue != mDefaultValue;
+        resetButton.setEnabled(show);
+        resetButton.setClickable(show);
+        resetButton.animate().cancel();
+        if (!animate || !ValueAnimator.areAnimatorsEnabled()) {
+            resetButton.setAlpha(show ? 1f : 0f);
+            resetButton.setScaleX(1f);
+            resetButton.setScaleY(1f);
+            resetButton.setVisibility(show ? View.VISIBLE : View.GONE);
+            return;
+        }
+        if (show) {
+            if (resetButton.getVisibility() != View.VISIBLE) {
+                resetButton.setAlpha(0f);
+                resetButton.setScaleX(0.8f);
+                resetButton.setScaleY(0.8f);
+                resetButton.setVisibility(View.VISIBLE);
+            }
+            resetButton.animate()
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(150L)
+                    .start();
+        } else if (resetButton.getVisibility() == View.VISIBLE) {
+            resetButton.animate()
+                    .alpha(0f)
+                    .scaleX(0.8f)
+                    .scaleY(0.8f)
+                    .setDuration(120L)
+                    .withEndAction(() -> resetButton.setVisibility(View.GONE))
+                    .start();
+        }
+    }
+
+    private void applyUserValue(int newVal, @Nullable Slider slider,
+            @Nullable TextView valueBadge, @Nullable View resetButton,
+            @NonNull PreferenceViewHolder holder) {
+        final int clamped = Math.max(getMin(), Math.min(getMax(), newVal));
+        if (clamped == getValue()) {
+            if (slider != null && Math.round(slider.getValue()) != clamped) {
+                slider.setValue(clamped);
+            }
+            return;
+        }
+        if (!callChangeListener(clamped)) {
             if (slider != null) slider.setValue(getValue());
             return;
         }
-        setValue(newVal);
-        updateSummaryNow();
-        notifyChanged();
+        mLastHapticValue = clamped;
+        setValue(clamped);
+        if (slider != null && Math.round(slider.getValue()) != clamped) {
+            slider.setValue(clamped);
+        }
+        if (valueBadge != null) {
+            valueBadge.setText(formatValueForSummary(clamped));
+        }
+        if (resetButton != null) {
+            updateResetButtonState(resetButton, clamped, true);
+        }
+        updatePlusMinusEnabledStates(holder, clamped);
     }
 
     private static int gcd(int a, int b) {
-        a = Math.abs(a); b = Math.abs(b);
+        a = Math.abs(a);
+        b = Math.abs(b);
         if (a == 0) return b;
         if (b == 0) return a;
         while (b != 0) {
-            int t = b; b = a % b; a = t;
+            int t = b;
+            b = a % b;
+            a = t;
         }
         return a;
     }
 
-    private void updatePlusMinusEnabledStates(PreferenceViewHolder holder) {
-        View minusFrame = holder.findViewById(
+    private void updatePlusMinusEnabledStates(@NonNull PreferenceViewHolder holder, int value) {
+        final View minusFrame = holder.findViewById(
                 com.android.settingslib.widget.preference.slider.R.id.icon_start_frame);
-        ImageView minusIcon = (ImageView) holder.findViewById(
+        final ImageView minusIcon = (ImageView) holder.findViewById(
                 com.android.settingslib.widget.preference.slider.R.id.icon_start);
-        View plusFrame = holder.findViewById(
+        final View plusFrame = holder.findViewById(
                 com.android.settingslib.widget.preference.slider.R.id.icon_end_frame);
-        ImageView plusIcon = (ImageView) holder.findViewById(
+        final ImageView plusIcon = (ImageView) holder.findViewById(
                 com.android.settingslib.widget.preference.slider.R.id.icon_end);
-        boolean enabled = isEnabled();
-        int value = getValue();
+        final boolean enabled = isEnabled();
 
         if (minusFrame != null && minusIcon != null) {
-            int min = getMin();
-            minusFrame.setEnabled(enabled && (value > min));
-            minusIcon.setEnabled(enabled && (value > min));
+            final boolean canDecrease = enabled && (value > getMin());
+            minusFrame.setEnabled(canDecrease);
+            minusIcon.setEnabled(canDecrease);
+            minusFrame.setAlpha(canDecrease ? 1f : DISABLED_ALPHA);
         }
-        if (plusFrame  != null && plusIcon != null) {
-            int max = getMax();
-            plusFrame.setEnabled(enabled && (value < max));
-            plusIcon.setEnabled(enabled && (value < max));
-        }
-    }
-
-    private void attachResetIcon(TextView tv) {
-        if (!mDefaultValueExists) {
-            tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
-            tv.setOnTouchListener(null);
-            tv.setClickable(false);
-            return;
-        }
-
-        final Drawable icon = ResourcesCompat.getDrawable(
-                tv.getResources(), R.drawable.ic_custom_seekbar_reset, tv.getContext().getTheme());
-        if (icon == null) return;
-
-        tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, icon, null);
-        tv.setCompoundDrawablePadding(dp(tv, 6));
-        tv.setClickable(isEnabled());
-        tv.setFocusable(isEnabled());
-
-        final int tapSlop = dp(tv, 8);
-
-        tv.setOnTouchListener((v, ev) -> {
-            if (!isEnabled() || ev.getAction() != MotionEvent.ACTION_UP) return false;
-
-            final boolean isRtl = ViewCompat.getLayoutDirection(tv) == ViewCompat.LAYOUT_DIRECTION_RTL;
-            final Drawable[] drs = tv.getCompoundDrawablesRelative();
-            final Drawable end = drs[2];
-            if (end == null) return false;
-
-            final int iconW = end.getIntrinsicWidth();
-            final int x = (int) ev.getX();
-
-            if (!isRtl) {
-                final int left = tv.getWidth() - ViewCompat.getPaddingEnd(tv) - iconW - tapSlop;
-                if (x >= left) { performReset(); return true; }
-            } else {
-                final int right = ViewCompat.getPaddingStart(tv) + iconW + tapSlop;
-                if (x <= right) { performReset(); return true; }
-            }
-            return false;
-        });
-    }
-
-    private void performReset() {
-        if (mDefaultValueExists) {
-            applyUserValue(mDefaultValue, null);
+        if (plusFrame != null && plusIcon != null) {
+            final boolean canIncrease = enabled && (value < getMax());
+            plusFrame.setEnabled(canIncrease);
+            plusIcon.setEnabled(canIncrease);
+            plusFrame.setAlpha(canIncrease ? 1f : DISABLED_ALPHA);
         }
     }
 
-    private static int dp(TextView v, int dp) {
-        return Math.round(dp * v.getResources().getDisplayMetrics().density);
+    private static int dp(@NonNull Context context, int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 }

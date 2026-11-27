@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,7 +82,10 @@ public class WallpaperPreviewPreference extends Preference {
         mApplyButton = (MaterialButton) holder.findViewById(R.id.apply_now_button);
 
         if (mApplyButton != null) {
-            mApplyButton.setOnClickListener(v -> applyNewWallpaper());
+            mApplyButton.setOnClickListener(v -> {
+                v.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                applyNewWallpaper();
+            });
         }
 
         loadWallpaperPreviews();

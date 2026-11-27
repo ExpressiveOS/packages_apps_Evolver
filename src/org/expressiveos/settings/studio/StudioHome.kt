@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+
 package org.expressiveos.settings.studio
 
 import android.app.WallpaperManager
@@ -31,6 +33,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -404,7 +407,7 @@ private fun FontsTile(onClick: () -> Unit, modifier: Modifier) {
                     )
                     Text(
                         text = stringResource(R.string.studio_fonts_specimen_digits),
-                        style = type.bodyMedium,
+                        style = type.bodyMedium.copy(fontFeatureSettings = "tnum"),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                     )
@@ -506,6 +509,7 @@ private fun ClockStylesCard(onClick: () -> Unit) {
                 text = DateFormat.format(
                     if (DateFormat.is24HourFormat(context)) "HH\nmm" else "hh\nmm", now
                 ).toString(),
+                style = LocalTextStyle.current.copy(fontFeatureSettings = "tnum"),
                 color = Petal.Coral.light,
                 fontFamily = BloomRounded,
                 fontWeight = FontWeight.Bold,
@@ -584,10 +588,8 @@ private fun SectionTile(section: Section, onClick: () -> Unit, modifier: Modifie
             }
             Text(
                 text = stringResource(section.title),
+                style = MaterialTheme.typography.labelLargeEmphasized,
                 color = section.petal.ink,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
-                lineHeight = 1.25.em,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,

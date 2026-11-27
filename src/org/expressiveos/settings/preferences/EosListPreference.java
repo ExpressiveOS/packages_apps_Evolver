@@ -18,6 +18,7 @@ import androidx.preference.PreferenceViewHolder;
 public abstract class EosListPreference extends ListPreference {
 
     private final EosConstraintsHelper mConstraints;
+    private ComposeDialogHandle mPickerDialog;
 
     public EosListPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -41,6 +42,20 @@ public abstract class EosListPreference extends ListPreference {
     public void onAttached() {
         super.onAttached();
         mConstraints.onAttached();
+    }
+
+    @Override
+    protected void onClick() {
+        mPickerDialog = ListPreferencePicker.openListPicker(this, mPickerDialog);
+    }
+
+    @Override
+    public void onDetached() {
+        if (mPickerDialog != null) {
+            mPickerDialog.dismiss();
+            mPickerDialog = null;
+        }
+        super.onDetached();
     }
 
     @Override

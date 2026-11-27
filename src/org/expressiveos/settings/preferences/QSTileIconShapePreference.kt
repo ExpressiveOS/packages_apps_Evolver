@@ -9,10 +9,15 @@ import android.content.Context
 import android.provider.Settings
 import android.util.AttributeSet
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.PathParser
@@ -52,7 +57,27 @@ class QSTileIconShapePreference @JvmOverloads constructor(
 
         val selectedIndex = indexOfValue(getCurrentShapeKey()).coerceAtLeast(0)
         val options = entryValues.mapIndexed { index, key ->
-            PickerOption(entries[index]) { TileShapeIcon(QSTileIconShapes.pathForKey(key)) }
+            val selected = index == selectedIndex
+            PickerOption(entries[index]) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
+                    },
+                    contentColor = if (selected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.size(40.dp),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        TileShapeIcon(QSTileIconShapes.pathForKey(key))
+                    }
+                }
+            }
         }
 
         dialog = context.showPickerDialog(title, options, selectedIndex) { position ->
@@ -98,7 +123,7 @@ private fun TileShapeIcon(pathData: String) {
         }
     }
     val color = LocalContentColor.current
-    Canvas(Modifier.size(32.dp)) {
+    Canvas(Modifier.size(24.dp)) {
         val factor = size.minDimension / 100f
         scale(factor, factor, pivot = Offset.Zero) { drawPath(path, color) }
     }

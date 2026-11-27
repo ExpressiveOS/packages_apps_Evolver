@@ -71,9 +71,10 @@ class ClockBackgroundChipPreference @JvmOverloads constructor(
         val options = chipLabels.indices.map { index ->
             val chip = getChipDrawable(index)
             val textColor = chipTextColor(index)
-            PickerOption(labelForIndex(index).orEmpty()) {
-                ClockChipPreview(time, chip, textColor)
-            }
+            PickerOption(
+                label = labelForIndex(index).orEmpty(),
+                trailing = { ClockChipPreview(time, chip, textColor) },
+            )
         }
 
         dialog = context.showPickerDialog(
@@ -153,7 +154,7 @@ class ClockBackgroundChipPreference @JvmOverloads constructor(
 private fun ClockChipPreview(time: String, chip: Drawable?, textColor: Color?) {
     Text(
         text = time,
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
         color = textColor ?: LocalContentColor.current,
         textAlign = TextAlign.Center,
         maxLines = 1,

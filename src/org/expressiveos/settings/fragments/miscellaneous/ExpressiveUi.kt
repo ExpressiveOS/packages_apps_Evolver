@@ -45,11 +45,14 @@ import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.ui.text.input.VisualTransformation
+import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.provider.Settings
+import android.view.HapticFeedbackConstants
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import com.android.internal.util.expressiveos.ThemeUtils
@@ -276,17 +279,23 @@ private fun currentExpressiveRowShapes(): ListItemShapes =
     LocalExpressiveRowShapes.current ?: expressiveRowShapes(index = 0, count = 1)
 
 /**
- * Corner roles shared by every Expressive container, taken from SettingsLib's expressive
- * preference backgrounds (settingslib_round_background{,_top,_center,_bottom}.xml): 20dp outer
- * corners, 4dp inner corners, and the 24dp popup of the expressive spinner
- * (settingslib_expressive_spinner_dropdown_background.xml). Buttons, chips and search fields stay
- * fully rounded; containers never do.
+ * True when system animations are enabled (`ANIMATOR_DURATION_SCALE != 0f`). Callers running
+ * manual springs or continuous morphs check this so reduced-motion users get instant transitions.
+ */
+@Composable
+fun rememberAnimatorsEnabled(): Boolean = remember { ValueAnimator.areAnimatorsEnabled() }
+
+fun areAnimatorsEnabled(): Boolean = ValueAnimator.areAnimatorsEnabled()
+
+/**
+ * Corner roles shared by every Expressive container: 24dp outer segmented corners, 4dp inner
+ * corners, 28dp dialogs/sheets, and 24dp popups. Buttons, chips and search fields stay full pills.
  */
 object ExpressiveCorners {
-    private val outer = SettingsRadius.large2
+    private val outer = SettingsRadius.large3
     private val inner = SettingsRadius.extraSmall2
 
-    /** Standalone card or lone row: all four corners are outer corners. */
+    /** Standalone card or lone row: all four corners are 24dp outer corners. */
     val single = RoundedCornerShape(outer)
     val first = RoundedCornerShape(
         topStart = outer, topEnd = outer, bottomStart = inner, bottomEnd = inner,
@@ -296,14 +305,17 @@ object ExpressiveCorners {
         topStart = inner, topEnd = inner, bottomStart = outer, bottomEnd = outer,
     )
 
-    /** Dropdown popup, same radius as the XML spinner popup. */
+    /** Dialogs and bottom sheets: 28dp extra-large corners. */
+    val dialog = SettingsShape.CornerExtraLarge1
+
+    /** Dropdown popup, same radius as the XML spinner popup (24dp). */
     val popup = SettingsShape.CornerLarge3
 
-    /** Colour pickers and sliders, swatches and thumbnails: 12dp, SettingsLib's medium corner. */
-    val picker = SettingsShape.CornerMedium
+    /** Colour pickers, sliders, swatches and thumbnails: 16dp rounded squircle. */
+    val picker = SettingsShape.CornerLarge1
 
-    /** Large preview surfaces such as the boot animation viewport: 16dp. */
-    val preview = SettingsShape.CornerLarge1
+    /** Large preview surfaces such as the boot animation viewport: 24dp. */
+    val preview = SettingsShape.CornerLarge3
 }
 
 /**
@@ -790,9 +802,41 @@ fun ExpressiveTextButton(
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
     content: @Composable RowScope.() -> Unit,
 ) {
+    val view = LocalView.current
     val shapes = expressiveButtonShapes()
     TextButton(
-        onClick = onClick,
+        onClick = {
+            view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            onClick()
+        },
+        shapes = shapes,
+        modifier = modifier.insetFocusRing(shapes.shape, ringHeight = ButtonDefaults.MinHeight),
+        enabled = enabled,
+        colors = colors,
+        content = content,
+    )
+}
+
+/**
+ * Primary filled pill dialog action matching SettingsLib's `Widget.SettingsLib.DialogButton.Filled`:
+ * full pill at rest, pressed-shape morph via [expressiveButtonShapes], and a confirm haptic tick.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun ExpressiveFilledButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    content: @Composable RowScope.() -> Unit,
+) {
+    val view = LocalView.current
+    val shapes = expressiveButtonShapes()
+    Button(
+        onClick = {
+            view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            onClick()
+        },
         shapes = shapes,
         modifier = modifier.insetFocusRing(shapes.shape, ringHeight = ButtonDefaults.MinHeight),
         enabled = enabled,
@@ -844,19 +888,22 @@ fun ExpressiveConfirmDialog(
 ) {
     ExpressiveDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = title, style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(text = title, style = MaterialTheme.typography.headlineSmallEmphasized) },
         text = {
             Column(Modifier.expressiveVerticalScroll()) {
                 Text(text = message, style = MaterialTheme.typography.bodyMedium)
             }
         },
         confirmButton = {
-            ExpressiveTextButton(
+            ExpressiveFilledButton(
                 onClick = { onDismiss(); onConfirm() },
                 colors = if (destructive) {
-                    ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    )
                 } else {
-                    ButtonDefaults.textButtonColors()
+                    ButtonDefaults.buttonColors()
                 },
             ) { Text(confirmText) }
         },

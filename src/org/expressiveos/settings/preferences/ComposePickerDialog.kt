@@ -1,7 +1,10 @@
 /*
  * SPDX-FileCopyrightText: Evolution X
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
+
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 
 package org.expressiveos.settings.preferences
 
@@ -12,12 +15,18 @@ import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.core.SnapSpec
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,12 +40,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,18 +60,21 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.android.settings.widget.scrollbar
-import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveDialog
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveFilledButton
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTextButton
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTheme
 import org.expressiveos.settings.fragments.miscellaneous.insetFocusRing
+import org.expressiveos.settings.fragments.miscellaneous.rememberAnimatorsEnabled
 
 private const val TAG = "ComposePickerDialog"
 
@@ -121,9 +138,9 @@ class PickerOption(
 class PickerAction(val label: String, val onClick: () -> Unit)
 
 /**
- * Picker dialog: [options] in a scrollable list (two columns in landscape) with the current one
- * highlighted. [onSelect] returns true to close the dialog, false to keep it open. [action] adds
- * a button before Cancel, and [onClosed] runs however the dialog goes away.
+ * Picker dialog: [options] in a scrollable segmented list (two columns in landscape) with the
+ * current one highlighted. [onSelect] returns true to close the dialog, false to keep it open.
+ * [action] adds a button before Cancel, and [onClosed] runs however the dialog goes away.
  */
 fun Context.showPickerDialog(
     title: CharSequence?,
@@ -158,10 +175,10 @@ fun Context.showChoiceDialog(
 ): ComposeDialogHandle? = showComposeDialog { dismiss ->
     ExpressiveDialog(
         onDismissRequest = dismiss,
-        title = { Text(text = title, style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(text = title, style = MaterialTheme.typography.headlineSmallEmphasized) },
         text = { Text(text = message, style = MaterialTheme.typography.bodyMedium) },
         confirmButton = {
-            ExpressiveTextButton(onClick = { dismiss(); onConfirm() }) { Text(confirmText) }
+            ExpressiveFilledButton(onClick = { dismiss(); onConfirm() }) { Text(confirmText) }
         },
         dismissButton = {
             ExpressiveTextButton(onClick = { dismiss(); onLater() }) { Text(laterText) }
@@ -180,6 +197,7 @@ private fun PickerDialog(
 ) {
     val configuration = LocalConfiguration.current
     val landscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val columns = if (landscape) 2 else 1
     val maxHeight = (configuration.screenHeightDp * if (landscape) 0.75f else 0.6f).dp
     val firstVisible = selectedIndex.coerceAtLeast(0)
     val gridState = rememberLazyGridState(
@@ -188,21 +206,26 @@ private fun PickerDialog(
 
     ExpressiveDialog(
         onDismissRequest = onDismiss,
-        title = title?.let { { Text(text = it, style = MaterialTheme.typography.headlineSmall) } },
+        title = title?.let {
+            { Text(text = it, style = MaterialTheme.typography.headlineSmallEmphasized) }
+        },
         text = {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(if (landscape) 2 else 1),
+                columns = GridCells.Fixed(columns),
                 state = gridState,
                 modifier = Modifier
                     .heightIn(max = maxHeight)
                     .scrollbar(gridState.scrollIndicatorState, Orientation.Vertical),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 itemsIndexed(options) { index, option ->
                     PickerOptionRow(
                         option = option,
                         selected = index == selectedIndex,
+                        index = index,
+                        count = options.size,
+                        columns = columns,
                         onClick = { onSelect(index) },
                     )
                 }
@@ -223,9 +246,63 @@ private fun PickerDialog(
     )
 }
 
+private data class CornerQuad(
+    val topStart: Dp,
+    val topEnd: Dp,
+    val bottomStart: Dp,
+    val bottomEnd: Dp,
+)
+
+private fun segmentedPickerCorners(index: Int, count: Int, columns: Int): CornerQuad {
+    val outer = 24.dp
+    val inner = 4.dp
+    if (count <= 1) return CornerQuad(outer, outer, outer, outer)
+    if (columns <= 1) {
+        return CornerQuad(
+            topStart = if (index == 0) outer else inner,
+            topEnd = if (index == 0) outer else inner,
+            bottomStart = if (index == count - 1) outer else inner,
+            bottomEnd = if (index == count - 1) outer else inner,
+        )
+    }
+    val row = index / 2
+    val lastRow = (count - 1) / 2
+    val isLeft = index % 2 == 0
+    return CornerQuad(
+        topStart = if (row == 0 && isLeft) outer else inner,
+        topEnd = if (row == 0 && !isLeft) outer else inner,
+        bottomStart = if (row == lastRow && isLeft) outer else inner,
+        bottomEnd = if (
+            (!isLeft && row == lastRow) ||
+            (isLeft && index == count - 1) ||
+            (!isLeft && index == count - 2 && count % 2 == 1)
+        ) outer else inner,
+    )
+}
+
 @Composable
-private fun PickerOptionRow(option: PickerOption, selected: Boolean, onClick: () -> Unit) {
-    val shape = ExpressiveCorners.single
+private fun PickerOptionRow(
+    option: PickerOption,
+    selected: Boolean,
+    index: Int,
+    count: Int,
+    columns: Int,
+    onClick: () -> Unit,
+) {
+    val view = LocalView.current
+    val animatorsEnabled = rememberAnimatorsEnabled()
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val resting = remember(index, count, columns) { segmentedPickerCorners(index, count, columns) }
+    val spatialSpec = MaterialTheme.motionScheme.fastSpatialSpec<Dp>()
+    val spec = if (animatorsEnabled) spatialSpec else SnapSpec(0)
+
+    val topStart by animateDpAsState(if (pressed) 24.dp else resting.topStart, spec, label = "ts")
+    val topEnd by animateDpAsState(if (pressed) 24.dp else resting.topEnd, spec, label = "te")
+    val bottomStart by animateDpAsState(if (pressed) 24.dp else resting.bottomStart, spec, label = "bs")
+    val bottomEnd by animateDpAsState(if (pressed) 24.dp else resting.bottomEnd, spec, label = "be")
+    val shape = RoundedCornerShape(topStart, topEnd, bottomEnd, bottomStart)
+
     val colors = MaterialTheme.colorScheme
     val contentColor = if (selected) colors.onSecondaryContainer else colors.onSurface
     Row(
@@ -233,15 +310,23 @@ private fun PickerOptionRow(option: PickerOption, selected: Boolean, onClick: ()
             .fillMaxWidth()
             .insetFocusRing(shape)
             .clip(shape)
-            .background(if (selected) colors.secondaryContainer else colors.surfaceContainerHigh)
-            .clickable(role = Role.RadioButton, onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .background(if (selected) colors.secondaryContainer else colors.surfaceBright)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                role = Role.RadioButton,
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    onClick()
+                },
+            )
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
             option.icon?.let { icon ->
                 Box(
-                    modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp),
+                    modifier = Modifier.defaultMinSize(minWidth = 44.dp, minHeight = 44.dp),
                     contentAlignment = Alignment.Center,
                 ) { icon() }
                 Spacer(Modifier.size(12.dp))
@@ -249,16 +334,30 @@ private fun PickerOptionRow(option: PickerOption, selected: Boolean, onClick: ()
             val family = remember(option) { option.labelFontFamily?.invoke() }
             Text(
                 text = option.label,
-                style = MaterialTheme.typography.bodyLarge,
+                style = if (selected) {
+                    MaterialTheme.typography.titleMediumEmphasized
+                } else {
+                    MaterialTheme.typography.bodyLarge
+                },
                 fontFamily = family,
                 color = contentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(vertical = if (option.icon == null) 12.dp else 0.dp),
+                    .padding(vertical = if (option.icon == null) 8.dp else 0.dp),
             )
-            option.trailing?.invoke()
+            if (option.trailing != null) {
+                option.trailing.invoke()
+            } else if (selected) {
+                Spacer(Modifier.size(8.dp))
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null,
+                    tint = colors.onSecondaryContainer,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
         }
     }
 }
@@ -272,7 +371,7 @@ fun pickerClockText(context: Context): String {
 /** A 32dp [drawable] tinted with the current content colour. Draws nothing for null. */
 @Composable
 fun PickerDrawableIcon(drawable: Drawable?) {
-    val px = with(LocalDensity.current) { 32.dp.roundToPx() }
+    val px = with(LocalDensity.current) { 28.dp.roundToPx() }
     val bitmap = remember(drawable, px) {
         drawable?.let { runCatching { it.toBitmap(px, px).asImageBitmap() }.getOrNull() }
     }
@@ -280,10 +379,10 @@ fun PickerDrawableIcon(drawable: Drawable?) {
         Image(
             bitmap = bitmap,
             contentDescription = null,
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(28.dp),
             colorFilter = ColorFilter.tint(LocalContentColor.current),
         )
     } else {
-        Spacer(Modifier.size(32.dp))
+        Spacer(Modifier.size(28.dp))
     }
 }

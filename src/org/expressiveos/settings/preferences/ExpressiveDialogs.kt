@@ -4,6 +4,7 @@
  */
 
 @file:JvmName("ExpressiveDialogs")
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 
 package org.expressiveos.settings.preferences
 
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveDialog
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveFilledButton
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTextButton
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTextField
 import org.expressiveos.settings.fragments.miscellaneous.expressiveVerticalScroll
@@ -61,14 +63,16 @@ fun showConfirmDialog(
             dismissOnClickOutside = cancelable,
             usePlatformDefaultWidth = false,
         ),
-        title = { Text(text = title.toString(), style = MaterialTheme.typography.headlineSmall) },
+        title = {
+            Text(text = title.toString(), style = MaterialTheme.typography.headlineSmallEmphasized)
+        },
         text = {
             Column(Modifier.expressiveVerticalScroll()) {
                 Text(text = message.toString(), style = MaterialTheme.typography.bodyMedium)
             }
         },
         confirmButton = {
-            ExpressiveTextButton(onClick = { dismiss(); onConfirm?.onConfirmed() }) {
+            ExpressiveFilledButton(onClick = { dismiss(); onConfirm?.onConfirmed() }) {
                 Text(confirmText.toString())
             }
         },
@@ -104,7 +108,9 @@ fun showTextInputDialog(
 
     ExpressiveDialog(
         onDismissRequest = dismiss,
-        title = { Text(text = title.toString(), style = MaterialTheme.typography.headlineSmall) },
+        title = {
+            Text(text = title.toString(), style = MaterialTheme.typography.headlineSmallEmphasized)
+        },
         text = {
             Column(Modifier.expressiveVerticalScroll()) {
                 if (!message.isNullOrEmpty()) {
@@ -123,7 +129,7 @@ fun showTextInputDialog(
             }
         },
         confirmButton = {
-            ExpressiveTextButton(
+            ExpressiveFilledButton(
                 onClick = { dismiss(); onConfirm.onConfirmed(text) },
                 enabled = allowEmpty || text.isNotBlank(),
             ) { Text(confirmText.toString()) }

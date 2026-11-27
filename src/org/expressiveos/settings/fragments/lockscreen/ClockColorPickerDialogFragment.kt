@@ -22,11 +22,13 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
+import com.android.settings.R
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTheme
 import org.expressiveos.settings.utils.ClockColorPickerDialog
 
@@ -39,11 +41,19 @@ class ClockColorPickerDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, android.R.style.Theme_Material_Dialog_NoActionBar)
+        setStyle(STYLE_NO_FRAME, R.style.Transparent)
         arguments?.let { args ->
             targetKey = args.getString(ARG_KEY, KEY_CLOCK_COLOR)
             defaultArgb = args.getInt(ARG_DEFAULT_ARGB, DEFAULT_COLOR_ARGB)
             dialogTitle = args.getString(ARG_TITLE)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
     }
 
@@ -59,6 +69,7 @@ class ClockColorPickerDialogFragment : DialogFragment() {
             UserHandle.USER_CURRENT
         )
         val initialHex = String.format("%06X", storedArgb and 0x00FFFFFF)
+        val defaultHex = String.format("%06X", defaultArgb and 0x00FFFFFF)
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -66,6 +77,7 @@ class ClockColorPickerDialogFragment : DialogFragment() {
                 ExpressiveTheme {
                     ClockColorPickerDialog(
                         initialColor = initialHex,
+                        defaultColor = defaultHex,
                         title = dialogTitle,
                         onDismiss = { dismiss() },
                         onColorSelected = { color ->

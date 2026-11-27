@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2021 crDroid Android Project
+     SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -23,31 +24,30 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_height="0dp"
         android:layout_weight="1.0"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp"
         android:scrollbarStyle="outsideOverlay"
         android:gravity="top">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/bg_studio_section_card"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/changelog_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dip"
-                android:paddingEnd="16dip"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dip">
-
-                <TextView
-                    android:id="@+id/changelog_text"
-                    android:textAppearance="@style/TextAppearance.SettingsLib.BodyMedium"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:padding="6dp"/>
-
-            </LinearLayout>
+                android:lineSpacingExtra="4dp"
+                android:textIsSelectable="true"
+                android:textAppearance="@style/TextAppearance.SettingsLib.BodyMedium"
+                android:textColor="?android:attr/textColorPrimary" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

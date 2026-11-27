@@ -1,24 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
+<!--
+     SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="32dp"> 
+    android:orientation="vertical"
+    android:paddingVertical="4dp">
 
-    <ImageView
-        android:id="@+id/illustArtImageView"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/illust_art"
-        app:layout_constraintHeight_max="250dp"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintWidth_percent="1"
-        android:scaleType="centerInside"
-        android:layout_marginTop="16dp" 
-        android:layout_marginBottom="16dp" /> 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_studio_hero_card"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/illustArtImageView"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/illust_art"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_monet_swatch_primary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="3dp"
+                android:background="@drawable/bg_monet_swatch_secondary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="3dp"
+                android:background="@drawable/bg_monet_swatch_tertiary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_monet_swatch_container" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

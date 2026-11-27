@@ -23,7 +23,6 @@ import android.util.AttributeSet;
 import com.android.settingslib.development.SystemPropPoker;
 
 public class SystemPropertyListPreference extends EosListPreference {
-    private ComposeDialogHandle mPickerDialog;
 
     public SystemPropertyListPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -51,19 +50,5 @@ public class SystemPropertyListPreference extends EosListPreference {
     @Override
     protected String getString(String key, String defaultValue) {
         return SystemProperties.get(key, defaultValue);
-    }
-
-    @Override
-    protected void onClick() {
-        mPickerDialog = ListPreferencePicker.openListPicker(this, mPickerDialog);
-    }
-
-    @Override
-    public void onDetached() {
-        if (mPickerDialog != null) {
-            mPickerDialog.dismiss();
-            mPickerDialog = null;
-        }
-        super.onDetached();
     }
 }

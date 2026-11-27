@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+
 package org.expressiveos.settings.preferences
 
 import android.content.Context
@@ -19,12 +21,18 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -32,10 +40,10 @@ import androidx.preference.PreferenceManager
 import com.android.internal.util.expressiveos.ThemeUtils
 import com.android.internal.util.expressiveos.ThemeUtils.FONT_KEY
 import com.android.settings.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveDialog
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveFilledButton
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTextButton
 import org.expressiveos.settings.fragments.miscellaneous.expressiveVerticalScroll
 import org.expressiveos.settings.fragments.themes.fonts.ExternalFontInstaller
@@ -256,25 +264,52 @@ class FontsPickerPreference @JvmOverloads constructor(
             pendingCustomFontTypeface = null
         }
         context.showComposeDialog { dismiss ->
+            val previewFamily = FontFamily(typeface)
             ExpressiveDialog(
                 onDismissRequest = { dismiss(); clear() },
                 title = {
                     Text(
                         text = stringResource(R.string.font_preview_dialog_title),
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineSmallEmphasized,
                     )
                 },
                 text = {
                     Column(Modifier.expressiveVerticalScroll()) {
-                        Text(
-                            text = stringResource(R.string.font_preview_quote),
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
-                            fontFamily = FontFamily(typeface),
-                        )
+                        Surface(
+                            shape = ExpressiveCorners.single,
+                            color = MaterialTheme.colorScheme.surfaceBright,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(20.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                Text(
+                                    text = "Aa Bb Cc",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontFamily = previewFamily,
+                                )
+                                Text(
+                                    text = stringResource(R.string.font_preview_quote),
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 17.sp),
+                                    fontFamily = previewFamily,
+                                )
+                                Text(
+                                    text = "0123456789",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontFeatureSettings = "tnum",
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontFamily = previewFamily,
+                                )
+                            }
+                        }
                     }
                 },
                 confirmButton = {
-                    ExpressiveTextButton(onClick = {
+                    ExpressiveFilledButton(onClick = {
                         dismiss()
                         installCustomFont(uri, installer, activity)
                     }) { Text(stringResource(R.string.add_font)) }

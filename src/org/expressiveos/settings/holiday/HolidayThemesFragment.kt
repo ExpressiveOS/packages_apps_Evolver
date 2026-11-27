@@ -8,6 +8,7 @@ package org.expressiveos.settings.holiday
 import android.content.Context
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.HapticFeedbackConstants
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreferenceCompat
@@ -129,6 +130,7 @@ class HolidayThemesFragment : SettingsPreferenceFragment(), Preference.OnPrefere
     /** Makes [edit] through the engine, then shows the page again now and once it's applied. */
     private fun change(edit: (Context) -> Unit) {
         val app = context?.applicationContext ?: return
+        view?.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
         edit(app)
         refresh()
         HolidayActionReceiver.evaluate(app) { if (isAdded) refresh() }

@@ -20,10 +20,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
+import com.android.settings.R
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTheme
 import org.expressiveos.settings.utils.WallpaperColorPickerDialog
 
@@ -33,7 +35,15 @@ class WallpaperColorPickerDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, android.R.style.Theme_Material_Dialog_NoActionBar)
+        setStyle(STYLE_NO_FRAME, R.style.Transparent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
     }
 
     override fun onCreateView(

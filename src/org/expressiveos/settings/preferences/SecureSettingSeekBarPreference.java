@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016-2025 crDroid Android Project
+ * SPDX-FileCopyrightText: 2026 The ExpressiveOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +20,22 @@ package org.expressiveos.settings.preferences;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class SecureSettingSeekBarPreference extends CustomSeekBarPreference {
 
-    public SecureSettingSeekBarPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public SecureSettingSeekBarPreference(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         setPreferenceDataStore(new SecureSettingsStore(context.getContentResolver()));
     }
 
-    public SecureSettingSeekBarPreference(Context context) {
-        super(context, null);
-        setPreferenceDataStore(new SecureSettingsStore(context.getContentResolver()));
+    public SecureSettingSeekBarPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public SecureSettingSeekBarPreference(@NonNull Context context) {
+        this(context, null, 0);
     }
 }

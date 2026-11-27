@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+
 package org.expressiveos.settings.preferences
 
 import android.content.Context
@@ -15,8 +17,10 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -59,18 +63,40 @@ class LockClockFontsPreference @JvmOverloads constructor(
         val current = getAppliedPkg()
         val time = pickerClockText(ctx)
         val options = pkgs.map { pkg ->
-            PickerOption(label = if (pkg == "android") "Default" else getLabelSafe(ctx, pkg)) {
-                // Loaded when the row scrolls into view, not for the whole list up front.
-                val family = remember(pkg) { getTypefaceSafe(ctx, pkg)?.let { FontFamily(it) } }
-                Text(
-                    text = time,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontFamily = family,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    modifier = Modifier.width(84.dp).padding(horizontal = 8.dp, vertical = 4.dp),
-                )
-            }
+            val selected = pkg == current
+            PickerOption(
+                label = if (pkg == "android") "Default" else getLabelSafe(ctx, pkg),
+                trailing = {
+                    // Loaded when the row scrolls into view, not for the whole list up front.
+                    val family = remember(pkg) { getTypefaceSafe(ctx, pkg)?.let { FontFamily(it) } }
+                    Surface(
+                        shape = CircleShape,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        },
+                        contentColor = if (selected) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    ) {
+                        Text(
+                            text = time,
+                            style = MaterialTheme.typography.titleMediumEmphasized.copy(
+                                fontFeatureSettings = "tnum",
+                            ),
+                            fontFamily = family,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .widthIn(min = 76.dp)
+                                .padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                },
+            )
         }
 
         dialog = ctx.showPickerDialog(

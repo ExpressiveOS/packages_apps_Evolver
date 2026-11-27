@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+
 package org.expressiveos.settings.preferences
 
 import android.content.Context
@@ -15,9 +17,13 @@ import android.util.AttributeSet
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,8 +40,12 @@ import com.android.internal.util.expressiveos.SystemRestartUtils
 import com.android.settings.R
 import com.android.settingslib.development.SystemPropPoker
 import kotlinx.coroutines.launch
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveCorners
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveDialog
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveFilledButton
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveStatusChip
 import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTextButton
+import org.expressiveos.settings.fragments.miscellaneous.ExpressiveTone
 import org.expressiveos.settings.fragments.miscellaneous.expressiveVerticalScroll
 import org.expressiveos.settings.fragments.themes.fonts.ExternalEmojiInstaller
 import org.expressiveos.settings.fragments.themes.fonts.ExternalFontInstaller
@@ -227,27 +237,37 @@ class EmojiStylePickerPreference @JvmOverloads constructor(
                 title = {
                     Text(
                         text = stringResource(R.string.emoji_preview_dialog_title),
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineSmallEmphasized,
                     )
                 },
                 text = {
-                    Column(Modifier.expressiveVerticalScroll()) {
-                        Text(
-                            text = stringResource(R.string.emoji_preview_sample),
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 32.sp),
-                            fontFamily = FontFamily(typeface),
-                        )
-                        Text(
+                    Column(
+                        modifier = Modifier.expressiveVerticalScroll(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Surface(
+                            shape = ExpressiveCorners.single,
+                            color = MaterialTheme.colorScheme.surfaceBright,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.emoji_preview_sample),
+                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 32.sp),
+                                fontFamily = FontFamily(typeface),
+                                modifier = Modifier.padding(20.dp),
+                            )
+                        }
+                        ExpressiveStatusChip(
                             text = stringResource(
                                 R.string.emoji_preview_coverage, coverage.first, coverage.second
                             ),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            tone = ExpressiveTone.Positive,
                         )
                     }
                 },
                 confirmButton = {
-                    ExpressiveTextButton(onClick = {
+                    ExpressiveFilledButton(onClick = {
                         dismiss()
                         installEmojiFont(uri, activity)
                     }) { Text(stringResource(R.string.add_emoji_font)) }

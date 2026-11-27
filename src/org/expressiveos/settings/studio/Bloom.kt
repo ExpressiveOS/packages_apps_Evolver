@@ -3,9 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+
 package org.expressiveos.settings.studio
 
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.core.SnapSpec
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -18,12 +26,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -34,6 +45,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.settings.R
 import org.expressiveos.settings.fragments.miscellaneous.insetFocusRing
+import org.expressiveos.settings.fragments.miscellaneous.rememberAnimatorsEnabled
 import org.expressiveos.settings.holiday.Holiday
 import org.expressiveos.settings.holiday.HolidayPetal
 import org.expressiveos.settings.holiday.HolidayThemes
@@ -178,12 +190,48 @@ fun BloomCard(
     color: Color = MaterialTheme.colorScheme.surfaceBright,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val view = LocalView.current
+    val animatorsEnabled = rememberAnimatorsEnabled()
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val restRadius = if (shape === BloomShapes.gridTile) 24.dp else 28.dp
+    val pressedRadius = if (shape === BloomShapes.gridTile) 16.dp else 20.dp
+    val dpSpec = if (animatorsEnabled) {
+        MaterialTheme.motionScheme.fastSpatialSpec<Dp>()
+    } else {
+        SnapSpec(0)
+    }
+    val floatSpec = if (animatorsEnabled) {
+        MaterialTheme.motionScheme.fastSpatialSpec<Float>()
+    } else {
+        SnapSpec(0)
+    }
+    val animatedRadius by animateDpAsState(
+        targetValue = if (pressed) pressedRadius else restRadius,
+        animationSpec = dpSpec,
+        label = "bloomCorner",
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 0.98f else 1f,
+        animationSpec = floatSpec,
+        label = "bloomScale",
+    )
+    val morphShape = RoundedCornerShape(animatedRadius)
+
     Surface(
-        onClick = onClick,
+        onClick = {
+            view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            onClick()
+        },
+        interactionSource = interactionSource,
         modifier = modifier
-            .insetFocusRing(shape)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .insetFocusRing(morphShape)
             .semantics { role = Role.Button },
-        shape = shape,
+        shape = morphShape,
         color = color,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
     ) {
